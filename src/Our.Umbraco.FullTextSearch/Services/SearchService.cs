@@ -1,10 +1,13 @@
 ﻿using Examine;
+using Umbraco.Core.Logging;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Umbraco.Examine;
+using Umbraco.Web;
 
 namespace Our.Umbraco.FullTextSearch.Services
 {
@@ -12,38 +15,52 @@ namespace Our.Umbraco.FullTextSearch.Services
     {
         private readonly IExamineManager _examineManager;
         private readonly IConfig _fullTextConfig;
+        private readonly ILogger _logger;
         private ISearch _search;
         private int _currentPage;
         List<SearchProperty> _searchProperties;
 
-        public SearchService(IExamineManager examineManager, IConfig fullTextConfig)
+        public SearchService(IExamineManager examineManager, IConfig fullTextConfig, ILogger logger)
         {
             _examineManager = examineManager;
             _fullTextConfig = fullTextConfig;
+            _logger = logger;
         }
         public IFullTextSearchResult Search(ISearch search, int currentPage = 1)
         {
             _search = search;
+            SetDefaults();
+
             _searchProperties = SetSearchProperties();
             _currentPage = currentPage;
 
-            var result = new Models.FullTextSearchResult();
+            var result = new FullTextSearchResult();
             var results = GetResults();
 
             result.CurrentPage = currentPage;
-            result.TotalPages = results.TotalItemCount / search.PageLength;
+            result.TotalPages = search.PageLength > 0 && results.TotalItemCount > 0 ? results.TotalItemCount / search.PageLength : 1;
             result.TotalResults = results.TotalItemCount;
-            result.Results = results.Skip(search.PageLength * (currentPage - 1)).Select(x => GetFullTextSearchResultItem(x));
+            result.Results = (search.PageLength > 0 ? results.Skip(search.PageLength * (currentPage - 1)) : results).Select(x => GetFullTextSearchResultItem(x));
 
             return result;
+        }
+
+        private void SetDefaults()
+        {
+            if (!_search.BodyProperties.Any()) _search.BodyProperties = new string[] { _fullTextConfig.GetFullTextFieldName() };
+            if (!_search.TitleProperties.Any()) _search.TitleProperties = new string[] { _fullTextConfig.GetDefaultTitleFieldName() };
+            if (!_search.SummaryProperties.Any()) _search.SummaryProperties = _search.BodyProperties;
         }
 
         private List<SearchProperty> SetSearchProperties()
         {
             _searchProperties = new List<SearchProperty>();
             var titleBoost = _fullTextConfig.GetSearchTitleBoost();
+
+            var bodyProperties = !_search.BodyProperties.Any() ? new string[] { _fullTextConfig.GetFullTextFieldName() } : _search.BodyProperties;
+
             _searchProperties.AddRange(GetProperties(_search.TitleProperties, titleBoost, _search.Fuzzyness, _search.AddWildcard));
-            _searchProperties.AddRange(GetProperties(_search.BodyProperties, 1.0, _search.Fuzzyness, _search.AddWildcard));
+            _searchProperties.AddRange(GetProperties(bodyProperties, 1.0, _search.Fuzzyness, _search.AddWildcard));
             return _searchProperties;
         }
 
@@ -127,7 +144,8 @@ namespace Our.Umbraco.FullTextSearch.Services
                     query.AppendFormat(" AND ({0})", rootNodeGroup);
                 }
                 var searcher = index.GetSearcher();
-                return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(_search.PageLength * _currentPage);
+                _logger.Info<SearchService>("Trying to search for {query}", query.ToString());
+                return searcher.CreateQuery("content").NativeQuery(query.ToString()).Execute(_search.PageLength * _currentPage);
             }
 
             return null;
@@ -260,15 +278,6 @@ namespace Our.Umbraco.FullTextSearch.Services
         }
 
         /// <summary>
-        /// Call Examine to execute the generated query
-        /// </summary> 
-        /// <param name="query">query to execute</param>
-        /// <returns>ISearchResults object or null</returns>
-        protected ISearchResults ExecuteSearch(StringBuilder query, int maxResults = 500)
-        {
-            return null;
-        }
-        /// <summary>
         /// Split up the comma separated string and retun a list of UmbracoProperty objects
         /// </summary>
         /// <param name="commaSeparated"></param>
@@ -294,12 +303,14 @@ namespace Our.Umbraco.FullTextSearch.Services
 
         public SearchResultItem GetFullTextSearchResultItem(ISearchResult result)
         {
-            var item = new Models.SearchResultItem();
-            item.Id = result.Id;
-            item.Fields = result.Values;
-            item.Score = result.Score;
-            item.Title = GetTitle(result);
-            item.Summary = GetSummary(result);
+            var item = new SearchResultItem
+            {
+                Id = result.Id,
+                Fields = result.Values,
+                Score = result.Score,
+                Title = GetTitle(result),
+                Summary = GetSummary(result)
+            };
 
             return item;
         }

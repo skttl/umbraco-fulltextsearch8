@@ -28,28 +28,25 @@ namespace Our.Umbraco.FullTextSearch.Services
         {
             using (_profilingLogger.DebugDuration<HtmlService>("GetHtmlByUrl(" + url + ")", "GetHtmlByUrl(" + url + ") done"))
             {
-                int timeout;
-                var httpTimeout = _fullTextConfig.GetByKey("HttpTimeout");
-                var cookieDictionary = GetQueryStringCollection();
 
-                if (string.IsNullOrEmpty(httpTimeout) || !int.TryParse(httpTimeout, out timeout))
+
+                if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
                 {
-                    timeout = 120;
+                    fullHtml = "";
+                    return false;
                 }
-
-                timeout *= 1000;
-
-                var host = _fullTextConfig.GetByKey("HttpHost");
-
+                
                 try
                 {
-                    var webRequest = (HttpWebRequest)WebRequest.Create(url);
+                    var httpHost = _fullTextConfig.GetHttpHost();
+                    var httpTimeout = _fullTextConfig.GetHttpTimeout();
 
-                    if (!string.IsNullOrEmpty(host))
-                        webRequest.Host = host;
-
-                    webRequest.Timeout = timeout;
+                    var cookieDictionary = GetQueryStringCollection();
+                    var webRequest = (HttpWebRequest)WebRequest.Create(uri);
+                    httpTimeout *= 1000;
+                    webRequest.Timeout = httpTimeout;
                     webRequest.UserAgent = "FullTextIndexer";
+
                     if (cookieDictionary != null && cookieDictionary.Count > 0)
                     {
                         var container = new CookieContainer();
@@ -84,7 +81,7 @@ namespace Our.Umbraco.FullTextSearch.Services
         public Dictionary<string, string> GetQueryStringCollection()
         {
             var queryString = new Dictionary<string, string>();
-            var getStringName = _fullTextConfig.GetByKey("SearchActiveStringName");
+            var getStringName = _fullTextConfig.GetSearchActiveStringName();;
             if (!string.IsNullOrWhiteSpace(getStringName))
             {
                 queryString.Add(getStringName, "1");
@@ -133,7 +130,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 return fullHtml;
             }
 
-            var xPathsToRemove = _fullTextConfig.GetMultiByKey("XPathsToRemove");
+            var xPathsToRemove = _fullTextConfig.GetXpathsToRemoveFromFullText();
             foreach (var xPath in xPathsToRemove)
             {
                 var nodes = doc.DocumentNode.SelectNodes(xPath);

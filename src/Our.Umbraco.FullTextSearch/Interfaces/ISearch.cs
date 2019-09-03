@@ -13,7 +13,6 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         string[] BodyProperties { get; set; }
         string[] SummaryProperties { get; set; }
         int[] RootNodeIds { get; set; }
-        bool UseHighlighting { get; set; }
         int SummaryLength { get; set; }
         int PageLength { get; set; }
         double Fuzzyness { get; set; }

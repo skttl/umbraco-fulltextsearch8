@@ -258,15 +258,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventHandlers\TransformIndexValues.cs" />
+    <Compile Include="Components\CacheComponent.cs" />
+    <Compile Include="Components\PerformCacheTasks.cs" />
+    <Compile Include="Components\AddFullTextItemsToIndex.cs" />
+    <Compile Include="Components\UpdateCacheOnPublish.cs" />
+    <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="FullTextComposer.cs" />
     <Compile Include="Helpers\RequestHelper.cs" />
+    <Compile Include="Helpers\SearchResultItemExtensions.cs" />
     <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\ISearch.cs" />
     <Compile Include="Interfaces\IFullTextSearchResult.cs" />
     <Compile Include="Interfaces\ISearchResultItem.cs" />
     <Compile Include="Interfaces\ISearchService.cs" />
     <Compile Include="Interfaces\IHtmlService.cs" />
+    <Compile Include="Migrations\CreateCacheTaskTable.cs" />
+    <Compile Include="Migrations\CreateCacheTable.cs" />
+    <Compile Include="Models\CacheItem.cs" />
+    <Compile Include="Models\CacheTask.cs" />
     <Compile Include="Models\Search.cs" />
     <Compile Include="Models\FullTextSearchResult.cs" />
     <Compile Include="Models\SearchResultItem.cs" />
@@ -275,7 +284,9 @@
     <Compile Include="Properties\SolutionInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Models\SearchProperty.cs" />
+    <Compile Include="Services\CacheService.cs" />
     <Compile Include="Services\Config.cs" />
+    <Compile Include="Interfaces\ICacheService.cs" />
     <Compile Include="Services\SearchService.cs" />
     <Compile Include="Services\HtmlService.cs" />
   </ItemGroup>

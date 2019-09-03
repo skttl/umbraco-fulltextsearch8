@@ -1,5 +1,4 @@
-﻿using Our.Umbraco.FullTextSearch.EventHandlers;
-using Our.Umbraco.FullTextSearch.Interfaces;
+﻿using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Services;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
@@ -13,8 +12,7 @@ namespace Our.Umbraco.FullTextSearch
             composition.Register<IConfig, Config>(Lifetime.Singleton);
             composition.Register<ISearchService, SearchService>(Lifetime.Request);
             composition.Register<IHtmlService, HtmlService>(Lifetime.Singleton);
-
-            composition.Components().Append<TransformIndexValues>();
+            composition.Register<ICacheService, CacheService>(Lifetime.Singleton);
         }
     }
 }

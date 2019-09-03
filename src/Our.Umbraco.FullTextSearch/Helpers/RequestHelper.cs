@@ -13,11 +13,9 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <returns>true if being indexed</returns>
         public static bool IsIndexingActive(this HttpRequest request)
         {
-            var config = Current.Factory.TryGetInstance(typeof(IConfig)) as IConfig;
+            if (!(Current.Factory.TryGetInstance(typeof(IConfig)) is IConfig config)) return false;
 
-            if (config == null) return false;
-
-            var searchActiveStringName = config.GetByKey("SearchActiveStringName");
+            var searchActiveStringName = config.GetSearchActiveStringName();;
 
             return !searchActiveStringName.IsNullOrWhiteSpace() && (request.QueryString[searchActiveStringName] != null || request.Cookies[searchActiveStringName] != null);
         }

@@ -9,6 +9,5 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         IReadOnlyDictionary<string, string> Fields { get; set; }
         string Title { get; set; }
         string Summary { get; set; }
-        string Url { get; set; }
     }
 }

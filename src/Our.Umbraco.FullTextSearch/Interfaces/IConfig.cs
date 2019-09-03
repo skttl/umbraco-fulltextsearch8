@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Our.Umbraco.FullTextSearch.Interfaces
 {
     public interface IConfig
     {
-        bool GetBooleanByKey(string key);
-        string GetByKey(string key);
-        double? GetDoubleByKey(string key);
-        List<string> GetMultiByKey(string key);
-        string GetFullTextFieldName();
-        string GetPathFieldName();
+        string GetDefaultTitleFieldName();
         List<string> GetDisallowedContentTypeAliases();
         List<string> GetDisallowedPropertyAliases();
+        string GetFullTextFieldName();
+        int GetHttpTimeout();
+        Uri GetHttpHost();
+        string GetPathFieldName();
+        string GetSearchActiveStringName();
         double GetSearchTitleBoost();
+        List<string> GetXpathsToRemoveFromFullText();
+        bool IsFullTextIndexingEnabled();
     }
 }

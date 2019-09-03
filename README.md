@@ -1,3 +1,5 @@
+# WIP and UNRELEASED!
+
 # Full Text Search
 
 [![Build status](https://img.shields.io/appveyor/ci/skttl/umbraco-full-text-search.svg)](https://ci.appveyor.com/project/skttl/umbraco-full-text-search)

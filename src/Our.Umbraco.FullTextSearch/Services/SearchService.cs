@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Umbraco.Examine;
 using Umbraco.Web;
+using System;
 
 namespace Our.Umbraco.FullTextSearch.Services
 {
@@ -38,7 +39,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             var results = GetResults();
 
             result.CurrentPage = currentPage;
-            result.TotalPages = search.PageLength > 0 && results.TotalItemCount > 0 ? results.TotalItemCount / search.PageLength : 1;
+            result.TotalPages = search.PageLength > 0 && results.TotalItemCount > 0 ? (int)Math.Ceiling((decimal)results.TotalItemCount / (decimal)search.PageLength) : 1;
             result.TotalResults = results.TotalItemCount;
             result.Results = (search.PageLength > 0 ? results.Skip(search.PageLength * (currentPage - 1)) : results).Select(x => GetFullTextSearchResultItem(x));
 

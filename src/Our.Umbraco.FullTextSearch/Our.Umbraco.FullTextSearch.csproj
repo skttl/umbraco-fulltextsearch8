@@ -266,6 +266,7 @@
     <Compile Include="FullTextComposer.cs" />
     <Compile Include="Helpers\RequestHelper.cs" />
     <Compile Include="Helpers\SearchResultItemExtensions.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\ISearch.cs" />
     <Compile Include="Interfaces\IFullTextSearchResult.cs" />

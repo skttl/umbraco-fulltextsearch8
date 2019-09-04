@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web;
 
 namespace Our.Umbraco.FullTextSearch.Interfaces
 {
@@ -8,6 +9,6 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         double Score { get; set; }
         IReadOnlyDictionary<string, string> Fields { get; set; }
         string Title { get; set; }
-        string Summary { get; set; }
+        IHtmlString Summary { get; set; }
     }
 }

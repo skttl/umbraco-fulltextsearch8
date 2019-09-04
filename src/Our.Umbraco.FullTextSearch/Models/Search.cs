@@ -11,9 +11,9 @@ namespace Our.Umbraco.FullTextSearch.Models
         {
             SearchType = SearchType.MultiRelevance;
             SearchTerm = searchTerm;
-            _titleProperties = new string[] { };
-            _bodyProperties = new string[] { };
-            _summaryProperties = new string[] { };
+            TitleProperties = new string[] { };
+            BodyProperties = new string[] { };
+            SummaryProperties = new string[] { };
             RootNodeIds = new int[] { };
             SummaryLength = 300;
             PageLength = 0;
@@ -23,50 +23,15 @@ namespace Our.Umbraco.FullTextSearch.Models
         public string Culture { get; set; }
         public SearchType SearchType { get; set; }
         public string SearchTerm { get; set; }
-        public string[] TitleProperties
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(Culture)) return _titleProperties.Select(x => x + "_" + Culture).ToArray();
-                else return _titleProperties;
-            }
-            set
-            {
-                _titleProperties = value;
-            }
-        }
-        private string[] _titleProperties { get; set; }
-        public string[] BodyProperties
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(Culture)) return _bodyProperties.Select(x => x + "_" + Culture).ToArray();
-                else return _bodyProperties;
-            }
-            set
-            {
-                _bodyProperties = value;
-            }
-        }
-        private string[] _bodyProperties { get; set; }
-        public string[] SummaryProperties
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(Culture)) return _summaryProperties.Select(x => x + "_" + Culture).ToArray();
-                else return _summaryProperties;
-            }
-            set
-            {
-                _summaryProperties = value;
-            }
-        }
-        private string[] _summaryProperties { get; set; }
+        public string[] TitleProperties { get; set; }
+        public string[] BodyProperties { get; set; }
+        public string[] SummaryProperties { get; set; }
         public int[] RootNodeIds { get; set; }
         public int SummaryLength { get; set; }
         public int PageLength { get; set; }
         public double Fuzzyness { get; set; }
         public bool AddWildcard { get; set; }
+        public bool HighlightSearchTerms { get; set; }
 
         public ICollection<string> SearchTermQuoted => new List<string> { '"' + QueryParser.Escape(SearchTerm) + '"' };
 
@@ -91,7 +56,7 @@ namespace Our.Umbraco.FullTextSearch.Models
 
         public Search AddTitleProperty(string alias)
         {
-            if (!_titleProperties.Contains(alias)) _titleProperties = _titleProperties.Append(alias).ToArray();
+            if (!TitleProperties.Contains(alias)) TitleProperties = TitleProperties.Append(alias).ToArray();
             return this;
         }
 
@@ -107,7 +72,7 @@ namespace Our.Umbraco.FullTextSearch.Models
 
         public Search RemoveTitleProperty(string alias)
         {
-            if (!_titleProperties.Contains(alias)) _titleProperties = _titleProperties.Where(x => x != alias).ToArray();
+            if (!TitleProperties.Contains(alias)) TitleProperties = TitleProperties.Where(x => x != alias).ToArray();
             return this;
         }
         #endregion
@@ -125,7 +90,7 @@ namespace Our.Umbraco.FullTextSearch.Models
 
         public Search AddBodyProperty(string alias)
         {
-            if (!_bodyProperties.Contains(alias)) _bodyProperties = _bodyProperties.Append(alias).ToArray();
+            if (!BodyProperties.Contains(alias)) BodyProperties = BodyProperties.Append(alias).ToArray();
             return this;
         }
 
@@ -141,7 +106,7 @@ namespace Our.Umbraco.FullTextSearch.Models
 
         public Search RemoveBodyProperty(string alias)
         {
-            if (!_bodyProperties.Contains(alias)) _bodyProperties = _bodyProperties.Where(x => x != alias).ToArray();
+            if (!BodyProperties.Contains(alias)) BodyProperties = BodyProperties.Where(x => x != alias).ToArray();
             return this;
         }
         #endregion
@@ -159,7 +124,7 @@ namespace Our.Umbraco.FullTextSearch.Models
 
         public Search AddSummaryProperty(string alias)
         {
-            if (!_summaryProperties.Contains(alias)) _summaryProperties = _summaryProperties.Append(alias).ToArray();
+            if (!SummaryProperties.Contains(alias)) SummaryProperties = SummaryProperties.Append(alias).ToArray();
             return this;
         }
 
@@ -175,7 +140,7 @@ namespace Our.Umbraco.FullTextSearch.Models
 
         public Search RemoveSummaryProperty(string alias)
         {
-            if (!_summaryProperties.Contains(alias)) _summaryProperties = _summaryProperties.Where(x => x != alias).ToArray();
+            if (!SummaryProperties.Contains(alias)) SummaryProperties = SummaryProperties.Where(x => x != alias).ToArray();
             return this;
         }
         #endregion
@@ -235,6 +200,18 @@ namespace Our.Umbraco.FullTextSearch.Models
         public Search DisableWildcards()
         {
             AddWildcard = false;
+            return this;
+        }
+
+        public Search EnableHighlighting()
+        {
+            HighlightSearchTerms = true;
+            return this;
+        }
+
+        public Search DisableHighlighting()
+        {
+            HighlightSearchTerms = false;
             return this;
         }
 

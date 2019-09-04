@@ -9,6 +9,9 @@ using System.Text.RegularExpressions;
 using Umbraco.Examine;
 using Umbraco.Web;
 using System;
+using Umbraco.Core;
+using Our.Umbraco.FullTextSearch.Helpers;
+using System.Web;
 
 namespace Our.Umbraco.FullTextSearch.Services
 {
@@ -144,9 +147,12 @@ namespace Our.Umbraco.FullTextSearch.Services
                     var rootNodeGroup = string.Join(" OR ", _search.RootNodeIds.Select(x => string.Format("{0}:{1}", pathName, x.ToString())));
                     query.AppendFormat(" AND ({0})", rootNodeGroup);
                 }
+
+                query.Append($" AND (__IndexType:content AND __Published_{_search.Culture}:y)");
+
                 var searcher = index.GetSearcher();
                 _logger.Info<SearchService>("Trying to search for {query}", query.ToString());
-                return searcher.CreateQuery("content").NativeQuery(query.ToString()).Execute(_search.PageLength * _currentPage);
+                return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(_search.PageLength * _currentPage);
             }
 
             return null;
@@ -243,7 +249,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 // wildcard queries get lower relevance than exact matches, and ignore fuzzieness
                 if (property.Wildcard)
                 {
-                    wildcardQuery = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}:{1}*^{2} ", property.PropertyName, term, boost * 0.5);
+                    wildcardQuery = string.Format(System.Globalization.CultureInfo.InvariantCulture, "({0}:{1}*^{2} OR {0}_{4}:{1}*^{2}) ", property.PropertyName, term, boost * 0.5, _search.Culture);
                 }
                 else
                 {
@@ -254,7 +260,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                     }
                 }
             }
-            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}:{1}{2}{3} {4}", property.PropertyName, term, fuzzyString, boostString, wildcardQuery);
+            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "({0}:{1}{2}{3} OR {0}_{5}:{1}{2}{3}) {4}", property.PropertyName, term, fuzzyString, boostString, wildcardQuery, _search.Culture);
         }
         protected string QuerySingleItemSimple(string term, SearchProperty property)
         {
@@ -275,7 +281,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                     }
                 }
             }
-            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}:{1}{2}{3} ", property.PropertyName, term, fuzzyString, wildcard);
+            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "({0}:{1}{2}{3} OR {0}_{4}:{1}{2}{3}) ", property.PropertyName, term, fuzzyString, wildcard, _search.Culture);
         }
 
         /// <summary>
@@ -310,7 +316,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 Fields = result.Values,
                 Score = result.Score,
                 Title = GetTitle(result),
-                Summary = GetSummary(result)
+                Summary = new HtmlString(GetSummary(result))
             };
 
             return item;
@@ -319,10 +325,11 @@ namespace Our.Umbraco.FullTextSearch.Services
         public string GetTitle(ISearchResult result)
         {
             var title = string.Empty;
-            foreach (var prop in _search.TitleProperties.Where(prop => result.GetValues(prop).Any()))
+            var props = _search.TitleProperties.SelectMany(x => new string[] { $"{x}_{_search.Culture}", x });
+            foreach (var prop in props)
             {
                 title = result.GetValues(prop).FirstOrDefault();
-                if (!string.IsNullOrEmpty(title)) break;
+                if (!title.IsNullOrWhiteSpace()) break;
             }
             return title;
         }
@@ -330,26 +337,65 @@ namespace Our.Umbraco.FullTextSearch.Services
         public string GetSummary(ISearchResult result)
         {
             var summary = string.Empty;
-            foreach (var prop in _search.BodyProperties.Where(prop => result.GetValues(prop).Any()))
+            var props = _search.SummaryProperties.Concat(_search.BodyProperties).SelectMany(x => new string[] { $"{x}_{_search.Culture}", x });
+            foreach (var prop in props)
             {
-                summary = GetSummaryText(result, prop);
-                if (!string.IsNullOrEmpty(summary)) break;
+                summary = result.GetValues(prop).FirstOrDefault();
+                if (summary.IsNullOrWhiteSpace()) continue;
+                
+                summary = SummarizeText(summary);
+                break;
             }
             return summary;
         }
 
-        protected string GetSummaryText(ISearchResult result, string propertyName)
+        protected string SummarizeText(string input)
         {
-            string summary;
-            var value = result.GetValues(propertyName).FirstOrDefault();
-            if (value.Length > _search.SummaryLength)
+            var summaryBuilder = new StringBuilder();
+            var summary = "";
+            if (!input.IsNullOrWhiteSpace() && (input.Length > _search.SummaryLength || _search.HighlightSearchTerms))
             {
-                summary = value.Substring(0, _search.SummaryLength);
-                summary = Regex.Replace(summary, @"\S*$", string.Empty, RegexOptions.Compiled);
+                //(\\S*.{0,10})?("+ queryString +")(.{0,10}\\S*)?
+                var searchTerm = "";
+                if (_search.SearchTerm.Contains('"'))
+                {
+                    searchTerm = string.Join("|", _search.SearchTermSplit);
+                }
+                else if (!_search.SearchTerm.Contains('"') && !_search.SearchTerm.Contains(' '))
+                {
+                    searchTerm = string.Join("|", _search.SearchTermSplit);
+                }
+                else
+                {
+                    searchTerm = $"{_search.SearchTerm}|{string.Join("|", _search.SearchTermSplit)}";
+                }
+                var matches = Regex.Matches(input, @"(\S*.{0,20})(" + searchTerm + @")(.{0,20}\S*)?", RegexOptions.IgnoreCase);
+
+                if (matches.Count == 0)
+                {
+                    summaryBuilder.Append(input);
+                }
+                else
+                {
+                    foreach (Match match in matches)
+                    {
+                        if (match.Groups.Count > 3)
+                        {
+                            if (match.Index > 0 && !match.Groups[1].Value.IsNullOrWhiteSpace()) summaryBuilder.Append($" &hellip;{match.Groups[1].Value}");
+
+                            if (_search.HighlightSearchTerms) summaryBuilder.Append($"<b>{match.Groups[2].Value}</b>");
+                            else summaryBuilder.Append(match.Groups[2].Value);
+
+                            if (!match.Groups[3].Value.IsNullOrWhiteSpace()) summaryBuilder.Append($"{match.Groups[3].Value}&hellip; ");
+                        }
+                    }
+                }
+
+                summary = summaryBuilder.ToString().TruncateHtml(_search.SummaryLength, "&hellip;");
             }
             else
             {
-                summary = value;
+                summary = input.TruncateHtml(_search.SummaryLength, "&hellip;");
             }
             return summary;
         }

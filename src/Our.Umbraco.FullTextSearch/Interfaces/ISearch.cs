@@ -17,5 +17,7 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         int PageLength { get; set; }
         double Fuzzyness { get; set; }
         bool AddWildcard { get; set; }
+        bool HighlightSearchTerms { get; set; }
+        string Culture { get; set; }
     }
 }

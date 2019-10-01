@@ -1,8 +1,6 @@
-# WIP and UNRELEASED!
-
 # Full Text Search
 
-[![Build status](https://img.shields.io/appveyor/ci/skttl/umbraco-full-text-search.svg)](https://ci.appveyor.com/project/skttl/umbraco-full-text-search)
+[![Build status](https://img.shields.io/appveyor/ci/skttl/our-umbraco-fulltextsearch.svg)](https://ci.appveyor.com/project/skttl/our-umbraco-fulltextsearch)
 [![NuGet release](https://img.shields.io/nuget/v/Our.Umbraco.FullTextSearch.svg)](https://www.nuget.org/packages/Our.Umbraco.FullTextSearch)
 [![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/backoffice-extensions/full-text-search-8)
 
@@ -17,7 +15,7 @@ Full Text Search is a fast, powerful and easy to setup search solution for Umbra
 ### Installation
 > *Note:* Full Text Search has been developed against **Umbraco v8.1.0** and will support that version and above.
 
-Full Text Search can be installed from either Our Umbraco package repository, NuGet, or build manually from the source-code.
+Full Text Search can be installed from either Our Umbraco package repository, NuGet, or build manually from the source-code. Remember to enable the full text search rendering/indexing in web.config. See developers guide for more information.
 
 #### Our Umbraco package repository
 
@@ -42,7 +40,7 @@ If you prefer, you can compile  Full Text Search yourself, you'll need:
 
 To clone it locally click the "Clone in Windows" button above or run the following git commands.
 
-	git clone https://github.com/skttl/umbraco-full-text-search.git umbraco-full-text-search
+	git clone https://github.com/skttl/Our.Umbraco.FullTextSearch.git umbraco-full-text-search
 	cd umbraco-full-text-search
 	.\build.cmd
 
@@ -73,7 +71,7 @@ Anyone and everyone is welcome to contribute. Please take a moment to review the
 
 Have a question?
 
-* [Raise an issue](https://github.com/skttl/umbraco-full-text-search/issues) on GitHub
+* [Raise an issue](https://github.com/skttl/Our.Umbraco.FullTextSearch/issues) on GitHub
 
 
 ## Dev Team
@@ -83,7 +81,7 @@ Have a question?
 ### Special thanks
 
 * Thanks to [Rigardt Pheiffer](https://github.com/rigardtpheiffer) for building the original Full Text Search package, which this one is inspired by and somewhat based off.
-
+* Icon made by [Vectors Market](https://www.flaticon.com/authors/vectors-market) from [www.flaticon.com](https://www.flaticon.com/)
 
 ## License
 

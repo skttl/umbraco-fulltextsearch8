@@ -58,12 +58,6 @@ namespace Our.Umbraco.FullTextSearch.Services
             int.TryParse(string.IsNullOrEmpty(value) ? timeout.ToString() : value, out timeout);
             return timeout;
         }
-        public Uri GetHttpHost()
-        {
-            var value = ConfigurationManager.AppSettings["FullTextSearch.HttpHost"];
-            Debug("FullTextSearch.HttpHost", value);
-            return new Uri(string.IsNullOrWhiteSpace(value) ? "http://localhost/default.aspx" : value);
-        }
 
         public string GetPathFieldName()
         {

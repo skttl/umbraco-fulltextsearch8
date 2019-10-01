@@ -10,7 +10,6 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         List<string> GetDisallowedPropertyAliases();
         string GetFullTextFieldName();
         int GetHttpTimeout();
-        Uri GetHttpHost();
         string GetPathFieldName();
         string GetSearchActiveStringName();
         double GetSearchTitleBoost();

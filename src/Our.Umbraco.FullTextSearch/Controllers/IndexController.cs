@@ -78,7 +78,6 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                 {
                     _cacheService.AddToCache(id);
                 }
-
                 index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(ids).ToArray()));
             }
 

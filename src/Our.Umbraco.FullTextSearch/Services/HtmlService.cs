@@ -38,7 +38,6 @@ namespace Our.Umbraco.FullTextSearch.Services
                 
                 try
                 {
-                    var httpHost = _fullTextConfig.GetHttpHost();
                     var httpTimeout = _fullTextConfig.GetHttpTimeout();
 
                     var cookieDictionary = GetQueryStringCollection();

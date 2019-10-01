@@ -120,10 +120,9 @@
 			<BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\$(ProjectName).dll" />
 			<PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\$(ProjectName).pdb" />
 			<SrcFiles Include="$(CoreProjectDir)\**\*.cs" Exclude="$(CoreProjectDir)\obj\**"/>
-			<PluginFiles Include="$(CoreProjectDir)\Web\UI\**\*.*" />
+			<PluginFiles Include="$(CoreProjectDir)\UI\**\*.*" />
 			<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
-			<NugetReadme Include="$(MSBuildProjectDirectory)\readme.txt" />
 			<InstallPsFile Include="$(MSBuildProjectDirectory)\install.ps1" />
 		</ItemGroup>
 		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />

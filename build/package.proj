@@ -33,7 +33,7 @@
 		<NuGetPackageName>Full Text Search for Umbraco</NuGetPackageName>
 		<Copyright>Copyright &#169; 2019 Søren Kottal</Copyright>
 		<Owners>Søren Kottal</Owners>
-		<IconUrl></IconUrl>
+    <IconUrl>https://github.com/skttl/Our.Umbraco.FullTextSearch/raw/develop/docs/search.png</IconUrl>
 		<Tags>umbraco full text search</Tags>
 		<Language>en-GB</Language>
 		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>

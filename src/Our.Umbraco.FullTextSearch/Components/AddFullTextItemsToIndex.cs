@@ -6,9 +6,11 @@ using System.Linq;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
+using Umbraco.Web.Search;
 
 namespace Our.Umbraco.FullTextSearch.Components
 {
+    [ComposeAfter(typeof(ExamineComposer))]
     public class AddFullTextItemsToIndexComposer : ComponentComposer<AddFullTextItemsToIndex> { }
     public class AddFullTextItemsToIndex : IComponent
     {

@@ -122,7 +122,8 @@ namespace Our.Umbraco.FullTextSearch.Services
                     query.Append($" AND ({rootNodeGroup})");
                 }
 
-                query.Append($" AND (__IndexType:content AND __Published_{_search.Culture}:y)");
+                var publishedPropertyName = string.IsNullOrEmpty(_search.Culture) ? "__Published" : $"__Published_{_search.Culture}";
+                query.Append($" AND (__IndexType:content AND {publishedPropertyName}:y)");
 
                 var searcher = index.GetSearcher();
                 _logger.Info<SearchService>("Trying to search for {query}", query.ToString());

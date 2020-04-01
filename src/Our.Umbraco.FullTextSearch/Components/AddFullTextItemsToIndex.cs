@@ -3,6 +3,7 @@ using Examine.Providers;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System;
 using System.Linq;
+using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Examine;
@@ -10,6 +11,7 @@ using Umbraco.Web.Search;
 
 namespace Our.Umbraco.FullTextSearch.Components
 {
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     [ComposeAfter(typeof(ExamineComposer))]
     public class AddFullTextItemsToIndexComposer : ComponentComposer<AddFullTextItemsToIndex> { }
     public class AddFullTextItemsToIndex : IComponent

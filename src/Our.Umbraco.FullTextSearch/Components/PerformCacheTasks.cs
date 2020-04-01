@@ -1,6 +1,7 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System;
+using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
@@ -9,6 +10,7 @@ using Umbraco.Web.Scheduling;
 
 namespace Our.Umbraco.FullTextSearch.Components
 {
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     public class PerformCacheTasksComposer : ComponentComposer<PerformCacheTasksComponent>
     {
     }
@@ -25,7 +27,7 @@ namespace Our.Umbraco.FullTextSearch.Components
         private readonly BackgroundTaskRunner<IBackgroundTask> _performCacheTasksRunner;
 
         public PerformCacheTasksComponent(
-            IProfilingLogger profilingLogger, 
+            IProfilingLogger profilingLogger,
             ILogger logger,
             IContentService contentService,
             ICacheService cacheService,
@@ -45,7 +47,7 @@ namespace Our.Umbraco.FullTextSearch.Components
         public void Initialize()
         {
 
-            var task = new PerformCacheTasks(_performCacheTasksRunner, 1000, 60*1000, _profilingLogger, _logger, _contentService, _cacheService, _examineManager, _valueSetBuilder, _fullTextConfig);
+            var task = new PerformCacheTasks(_performCacheTasksRunner, 1000, 60 * 1000, _profilingLogger, _logger, _contentService, _cacheService, _examineManager, _valueSetBuilder, _fullTextConfig);
 
             _performCacheTasksRunner.TryAdd(task);
         }
@@ -73,7 +75,7 @@ namespace Our.Umbraco.FullTextSearch.Components
             ICacheService cacheService,
             IExamineManager examineManager,
             IPublishedContentValueSetBuilder valueSetBuilder,
-            IConfig fullTextConfig) 
+            IConfig fullTextConfig)
             : base(runner, delayMilliseconds, periodMilliseconds)
         {
             _valueSetBuilder = valueSetBuilder;

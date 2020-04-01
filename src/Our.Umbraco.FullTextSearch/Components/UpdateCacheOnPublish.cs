@@ -1,6 +1,7 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System;
+using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
@@ -12,6 +13,7 @@ using Umbraco.Web.Cache;
 
 namespace Our.Umbraco.FullTextSearch.Components
 {
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     public class UpdateCacheOnPublishComposer : ComponentComposer<UpdateCacheOnPublish>
     {
     }

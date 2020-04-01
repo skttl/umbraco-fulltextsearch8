@@ -96,7 +96,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql().Delete().From<CacheItem>().Where<CacheItem>(x => x.NodeId == id);
-                scope.Database.Delete(sql);
+                scope.Database.Execute(sql);
             }
         }
 

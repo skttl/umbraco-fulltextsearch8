@@ -35,7 +35,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                     fullHtml = "";
                     return false;
                 }
-                
+
                 try
                 {
                     var httpTimeout = _fullTextConfig.GetHttpTimeout();
@@ -65,7 +65,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 }
                 catch (WebException ex)
                 {
-                    _logger.Error<HtmlService>(ex, "Error in FullTextSearch retrieval.");
+                    _logger.Error<HtmlService>(ex, $"Error in FullTextSearch retrieval. Url: {url}");
                     fullHtml = string.Empty;
                 }
                 return false;
@@ -80,7 +80,7 @@ namespace Our.Umbraco.FullTextSearch.Services
         public Dictionary<string, string> GetQueryStringCollection()
         {
             var queryString = new Dictionary<string, string>();
-            var getStringName = _fullTextConfig.GetSearchActiveStringName();;
+            var getStringName = _fullTextConfig.GetSearchActiveStringName(); ;
             if (!string.IsNullOrWhiteSpace(getStringName))
             {
                 queryString.Add(getStringName, "1");
@@ -105,7 +105,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 // Decode any HTML entities
                 fullText = HttpUtility.HtmlDecode(fullText);
 
-                // replace multiple spaces with single spaces. 
+                // replace multiple spaces with single spaces.
                 fullText = Regex.Replace(fullText, @"(\s)(\s+)", "$1", RegexOptions.Singleline);
                 return fullText;
             }
@@ -125,7 +125,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 if (HttpContext.Current != null) HttpContext.Current.Trace.Warn("Search", "There was an exception cleaning HTML: " + ex);
 
                 _logger.Error(GetType(), "RemoveByXpaths exception.", ex);
-                // swallow the exception and run the regex based tag stripper on it anyway. Won't be perfect but better than nothing. 
+                // swallow the exception and run the regex based tag stripper on it anyway. Won't be perfect but better than nothing.
                 return fullHtml;
             }
 

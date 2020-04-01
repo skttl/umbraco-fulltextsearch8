@@ -14,7 +14,7 @@ FullTextSearch needs to be enabled in your web.config by adding an application s
 Here is an overview of the different config settings you can add.
 
 `FullTextSearch.Enabled`
-This enables the full text indexing. If the setting does not exists, or is set to false, full text indexing will not happen. The default value is `True`.
+This enables the full text indexing. If the setting does not exists, or is set to false, full text indexing will not happen. The default value is `False`.
 
 `FullTextSearch.DefaultTitleFieldName`
 The name of the field containing the title of the page in the index. The default value is `nodeName`. You can also override this when searching.

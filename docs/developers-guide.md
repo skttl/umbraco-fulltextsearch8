@@ -9,7 +9,7 @@ Install using the nuget package, or from the package repository.
 This package requires Umbraco 8.1 as a minimum version.
 
 #Configuration
-FullTextSearch needs to be enabled in your web.config by adding an application setting with they key `FullTextSearch.Enabled` and a value of True.
+FullTextSearch needs to be enabled in your web.config by adding an application setting with the key `FullTextSearch.Enabled` and a value of True.
 
 Here is an overview of the different config settings you can add.
 

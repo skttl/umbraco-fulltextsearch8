@@ -68,6 +68,18 @@ namespace Our.Umbraco.FullTextSearch.Components
                 return;
             }
 
+            if (_fullTextConfig.GetDisallowedPropertyAliases().Any())
+            {
+                foreach (var disallowedPropertyAlias in _fullTextConfig.GetDisallowedPropertyAliases())
+                {
+                    var value = e.ValueSet.GetValue(disallowedPropertyAlias);
+                    if (value != null && value.ToString() == "1")
+                    {
+                        return;
+                    }
+                }
+            }
+
             // check if there is a template
             var templateId = e.ValueSet.GetValue("templateID");
             if (templateId == null || templateId.ToString() == "0")

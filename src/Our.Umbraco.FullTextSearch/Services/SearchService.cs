@@ -269,7 +269,7 @@ namespace Our.Umbraco.FullTextSearch.Services
         /// <param name="fuzzy"></param>
         /// <param name="wildcard"></param>
         /// <returns></returns>
-        private static IEnumerable<SearchProperty> GetProperties(string[] properties, double boost, double fuzzy, bool wildcard)
+        private static IEnumerable<SearchProperty> GetProperties(ICollection<string> properties, double boost, double fuzzy, bool wildcard)
         {
             var umbracoProperties = new List<SearchProperty>();
             if (properties.Any())

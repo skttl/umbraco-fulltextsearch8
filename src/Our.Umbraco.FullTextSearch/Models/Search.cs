@@ -44,7 +44,7 @@ namespace Our.Umbraco.FullTextSearch.Models
         }
 
         #region TitleProperties
-        public Search AddTitleProperties(string[] aliases)
+        public Search AddTitleProperties(params string[] aliases)
         {
             foreach (var alias in aliases)
             {
@@ -60,7 +60,7 @@ namespace Our.Umbraco.FullTextSearch.Models
             return this;
         }
 
-        public Search RemoveTitleProperties(string[] aliases)
+        public Search RemoveTitleProperties(params string[] aliases)
         {
             foreach (var alias in aliases)
             {
@@ -78,7 +78,7 @@ namespace Our.Umbraco.FullTextSearch.Models
         #endregion
 
         #region BodyProperties
-        public Search AddBodyProperties(string[] aliases)
+        public Search AddBodyProperties(params string[] aliases)
         {
             foreach (var alias in aliases)
             {
@@ -94,7 +94,7 @@ namespace Our.Umbraco.FullTextSearch.Models
             return this;
         }
 
-        public Search RemoveBodyProperties(string[] aliases)
+        public Search RemoveBodyProperties(params string[] aliases)
         {
             foreach (var alias in aliases)
             {
@@ -112,7 +112,7 @@ namespace Our.Umbraco.FullTextSearch.Models
         #endregion
 
         #region SummaryProperties
-        public Search AddSummaryProperties(string[] aliases)
+        public Search AddSummaryProperties(params string[] aliases)
         {
             foreach (var alias in aliases)
             {
@@ -128,7 +128,7 @@ namespace Our.Umbraco.FullTextSearch.Models
             return this;
         }
 
-        public Search RemoveSummaryProperties(string[] aliases)
+        public Search RemoveSummaryProperties(params string[] aliases)
         {
             foreach (var alias in aliases)
             {

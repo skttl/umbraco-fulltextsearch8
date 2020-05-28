@@ -353,13 +353,30 @@ namespace Our.Umbraco.FullTextSearch.Services
                     {
                         if (match.Groups.Count > 3)
                         {
-                            if (match.Index > 0 && !match.Groups[1].Value.IsNullOrWhiteSpace()) summaryBuilder.Append($" &hellip;{match.Groups[1].Value}");
+                            if (match.Index > 0 && !match.Groups[1].Value.IsNullOrWhiteSpace())
+                            {
+                                if (match.Groups[1].Index > 0)
+                                {
+                                    // this match is not the start of the summary, add ellipsis
+                                    summaryBuilder.Append(" &hellip;");
+                                }
+                                summaryBuilder.Append(match.Groups[1].Value);
+                            }
 
                             summaryBuilder.Append(_search.HighlightSearchTerms
                                 ? $"<b>{match.Groups[2].Value}</b>"
                                 : match.Groups[2].Value);
 
-                            if (!match.Groups[3].Value.IsNullOrWhiteSpace()) summaryBuilder.Append($"{match.Groups[3].Value}&hellip; ");
+                            if (!match.Groups[3].Value.IsNullOrWhiteSpace())
+                            {
+                                summaryBuilder.Append(match.Groups[3].Value);
+
+                                if (match.Groups[3].Index + match.Groups[3].Length < input.Length)
+                                {
+                                    // this match is not the end of the summary, add ellipsis
+                                    summaryBuilder.Append("&hellip; ");
+                                }
+                            }
                         }
                     }
                 }

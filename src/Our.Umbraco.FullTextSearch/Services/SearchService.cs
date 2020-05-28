@@ -122,11 +122,13 @@ namespace Our.Umbraco.FullTextSearch.Services
                     query.Append($" AND ({rootNodeGroup})");
                 }
 
-                var publishedPropertyName = string.IsNullOrEmpty(_search.Culture) ? "__Published" : $"__Published_{_search.Culture}";
-                query.Append($" AND (__IndexType:content AND {publishedPropertyName}:y)");
+
+                var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture}";
+                var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
+                query.Append($" AND (__IndexType:content AND {publishedQuery})");
 
                 var searcher = index.GetSearcher();
-                _logger.Info<SearchService>("Trying to search for {query}", query.ToString());
+                _logger.Debug<SearchService>("Trying to search for {query}", query.ToString());
                 return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(_search.PageLength * _currentPage);
             }
 

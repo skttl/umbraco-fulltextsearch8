@@ -243,7 +243,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                     var fuzzyLocal = property.FuzzyMultiplier;
                     if (fuzzyLocal < 1.0 && fuzzyLocal > 0.0)
                     {
-                        fuzzyString = "~" + fuzzyLocal;
+                        fuzzyString = "~" + fuzzyLocal.ToString(CultureInfo.InvariantCulture);
                     }
                 }
             }
@@ -264,7 +264,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                     var fuzzyLocal = property.FuzzyMultiplier;
                     if (fuzzyLocal < 1.0 && fuzzyLocal > 0.0)
                     {
-                        fuzzyString = "~" + fuzzyLocal;
+                        fuzzyString = "~" + fuzzyLocal.ToString(CultureInfo.InvariantCulture);
                     }
                 }
             }

@@ -125,8 +125,22 @@ namespace Our.Umbraco.FullTextSearch.Services
                 var publishedPropertyName = string.IsNullOrEmpty(_search.Culture) ? "__Published" : $"__Published_{_search.Culture}";
                 query.Append($" AND (__IndexType:content AND {publishedPropertyName}:y)");
 
+                var disallowedContentTypes = _fullTextConfig.GetDisallowedContentTypeAliases();
+                if (disallowedContentTypes.Any())
+                {
+                    var disallowedContentTypeGroup = string.Join(" OR ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"));
+                    query.Append($" AND ({disallowedContentTypeGroup})");
+                }
+
+                var disallowedPropertyAliases = _fullTextConfig.GetDisallowedPropertyAliases();
+                if (disallowedPropertyAliases.Any())
+                {
+                    var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"({x}_{_search.Culture}:1 OR {x}:1)"));
+                    query.Append($" AND ({disallowedPropertyAliasGroup})");
+                }
+
                 var searcher = index.GetSearcher();
-                _logger.Info<SearchService>("Trying to search for {query}", query.ToString());
+                _logger.Debug<SearchService>("Trying to search for {query}", query.ToString());
                 return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(_search.PageLength * _currentPage);
             }
 

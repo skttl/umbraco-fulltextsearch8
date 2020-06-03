@@ -126,17 +126,13 @@ namespace Our.Umbraco.FullTextSearch.Services
                 query.Append($" AND (__IndexType:content AND {publishedPropertyName}:y)");
 
                 var disallowedContentTypes = _fullTextConfig.GetDisallowedContentTypeAliases();
-                if (disallowedContentTypes.Any())
-                {
-                    var disallowedContentTypeGroup = string.Join(" OR ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"));
-                    query.Append($" AND ({disallowedContentTypeGroup})");
-                }
+                if (disallowedContentTypes.Any()) query.Append($" AND -(__NodeTypeAlias:{string.Join(" ", disallowedContentTypes)})");
 
                 var disallowedPropertyAliases = _fullTextConfig.GetDisallowedPropertyAliases();
                 if (disallowedPropertyAliases.Any())
                 {
-                    var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"({x}_{_search.Culture}:1 OR {x}:1)"));
-                    query.Append($" AND ({disallowedPropertyAliasGroup})");
+                    var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"{x}_{_search.Culture}:1 OR {x}:1"));
+                    query.Append($" AND -({disallowedPropertyAliasGroup})");
                 }
 
                 var searcher = index.GetSearcher();

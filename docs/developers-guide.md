@@ -21,9 +21,11 @@ The name of the field containing the title of the page in the index. The default
 
 `FullTextSearch.DisallowedContentTypeAliases`
 Aliases of content types that should NOT be indexed by FullTextSearch. If you add an alias here, the nodes of that alias will not be rendered and indexed by FullTextSearch. By default nodes without templates are excluded, so you don't need to add them here.
+Adding to this config on a site already indexed doesn't clean the index. You have to do this manually - but the search will exclude nodes of the disallowed types for you.
 
 `FullTextSearch.DisallowedPropertyAliases`
 You can use this setting to create your own "umbracoNaviHide" for FullTextSearch. Add a boolean property to your document type, and reference its alias in this setting. If the node has that property set to true, it will be excluded from full text indexing.
+Adding to this config on a site already indexed doesn't clean the index. You have to do this manually - but the search will exclude nodes with the disallowed properties for you.
 
 `FullTextSearch.FullTextFieldName`
 The field name where FullTextSearch should store the rendered full text. The default of this is `FullTextSearch`.

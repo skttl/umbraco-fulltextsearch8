@@ -58,6 +58,18 @@ Full Text Search reads the content of pages indexed, by downloading them via a w
 
 ---
 
+## Roadmap
+
+**Now**
+- Change the config format #35
+- Switch to using RenderTemplate() for getting the content #36
+- Change project structure to match the official package template, and use Github actions for building/releasing
+
+**Next**
+- New dashboard #37
+
+---
+
 ## Contributing to this project
 
 Anyone and everyone is welcome to contribute. Please take a moment to review the [guidelines for contributing](CONTRIBUTING.md).

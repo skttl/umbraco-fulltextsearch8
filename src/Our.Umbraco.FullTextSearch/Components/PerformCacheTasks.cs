@@ -1,5 +1,6 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Services;
 using System;
 using Umbraco.Core;
 using Umbraco.Core.Composing;
@@ -18,7 +19,7 @@ namespace Our.Umbraco.FullTextSearch.Components
     public class PerformCacheTasksComponent : IComponent
     {
         private readonly ICacheService _cacheService;
-        private readonly IConfig _fullTextConfig;
+        private readonly FullTextSearchConfig _fullTextConfig;
         private readonly IPublishedContentValueSetBuilder _valueSetBuilder;
         private readonly IExamineManager _examineManager;
         private readonly IProfilingLogger _profilingLogger;
@@ -33,7 +34,7 @@ namespace Our.Umbraco.FullTextSearch.Components
             ICacheService cacheService,
             IExamineManager examineManager,
             IPublishedContentValueSetBuilder valueSetBuilder,
-            IConfig fullTextConfig)
+            FullTextSearchConfig fullTextConfig)
         {
             _profilingLogger = profilingLogger;
             _logger = logger;
@@ -47,7 +48,7 @@ namespace Our.Umbraco.FullTextSearch.Components
         public void Initialize()
         {
 
-            var task = new PerformCacheTasks(_performCacheTasksRunner, 1000, 60 * 1000, _profilingLogger, _logger, _contentService, _cacheService, _examineManager, _valueSetBuilder, _fullTextConfig);
+            var task = new PerformCacheTasks(_performCacheTasksRunner, 1000, 10000, _profilingLogger, _logger, _contentService, _cacheService, _examineManager, _valueSetBuilder, _fullTextConfig);
 
             _performCacheTasksRunner.TryAdd(task);
         }
@@ -60,7 +61,7 @@ namespace Our.Umbraco.FullTextSearch.Components
     {
         private readonly IProfilingLogger _profilingLogger;
         private readonly ICacheService _cacheService;
-        private readonly IConfig _fullTextConfig;
+        private readonly FullTextSearchConfig _fullTextConfig;
         private readonly IPublishedContentValueSetBuilder _valueSetBuilder;
         private readonly IExamineManager _examineManager;
         private readonly ILogger _logger;
@@ -75,7 +76,7 @@ namespace Our.Umbraco.FullTextSearch.Components
             ICacheService cacheService,
             IExamineManager examineManager,
             IPublishedContentValueSetBuilder valueSetBuilder,
-            IConfig fullTextConfig)
+            FullTextSearchConfig fullTextConfig)
             : base(runner, delayMilliseconds, periodMilliseconds)
         {
             _valueSetBuilder = valueSetBuilder;
@@ -89,7 +90,7 @@ namespace Our.Umbraco.FullTextSearch.Components
 
         public override bool PerformRun()
         {
-            if (!_fullTextConfig.IsFullTextIndexingEnabled()) return false;
+            if (!_fullTextConfig.Enabled) return false;
             if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
             {
                 _logger.Error<PerformCacheTasks>(new InvalidOperationException("No index found by name ExternalIndex"));

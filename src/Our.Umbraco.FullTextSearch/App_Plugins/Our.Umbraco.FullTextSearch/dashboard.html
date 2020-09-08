@@ -1,0 +1,33 @@
+﻿<div ng-controller="Our.Umbraco.FullTextSearch.Dashboard.Controller as vm">
+    <umb-box>
+        <umb-box-header title="Full Text Search"></umb-box-header>
+        <umb-box-content>
+            <umb-button action="vm.reIndexNodes()" type="button" button-style="action" label="Reindex all nodes"></umb-button>
+        </umb-box-content>
+    </umb-box>
+
+    <umb-box>
+        <umb-box-content>
+            <umb-loading ng-if="vm.loadingCacheTasks"></umb-loading>
+            <table ng-if="!vm.loadingCacheTasks">
+                <thead>
+                    <tr>
+                        <td>Node id</td>
+                        <td>Started</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="task in vm.cacheTasks">
+                        <td ng-bind="task.NodeId"></td>
+                        <td ng-bind="task.Started"></td>
+                        <td>
+                            <umb-button action="vm.deleteCacheTask(task.Id)" type="button" button-style="action" label="Delete">Delete</umb-button>
+                            <umb-button action="vm.restartCacheTask(task.Id, task.NodeId)" type="button" button-style="action"  label="Restart">Restart</umb-button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </umb-box-content>
+    </umb-box>
+</div>

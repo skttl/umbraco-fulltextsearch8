@@ -1,0 +1,15 @@
+﻿{
+    "javascript" : [
+        "/app_plugins/our.umbraco.fulltextsearch/dashboard.controller.js"
+    ],
+  "css": [],
+  "dashboards": [
+    {
+      "alias": "fullTextSearch",
+      "sections": [ "settings" ],
+      "weight": 0,
+      "view": "~/app_plugins/our.umbraco.fulltextsearch/dashboard.html"
+    }
+  ]
+
+}

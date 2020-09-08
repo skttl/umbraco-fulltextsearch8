@@ -1,0 +1,15 @@
+{
+  "name": "pkgtemplate",
+  "version": "1.0.0",
+  "description": "gulp script to manage file copies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Umbraco Collaborators",
+  "license": "ISC",
+  "private": true,
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}

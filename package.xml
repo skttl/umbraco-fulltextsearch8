@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<umbPackage>
+  <info>
+    <package>
+      <name>Our.Umbraco.FullTextSearch</name>
+      <version>1.0.0</version>
+      <iconUrl></iconUrl>
+      <licence url="https://opensource.org/licenses/MIT">MIT</licence>
+      <url>https://our.umbraco.com</url>
+      <requirements type="strict">
+        <major>8</major>
+        <minor>0</minor>
+        <patch>0</patch>
+      </requirements>
+    </package>
+    <author>
+      <name>UmbracoPackageTeam</name>
+      <website>https://our.umbraco.com</website>
+    </author>
+    <readme><![CDATA[Another awesome package]]></readme>
+  </info>
+  <files>
+    <folder path="src/Our.Umbraco.FullTextSearch/App_Plugins/Our.Umbraco.FullTextSearch" orgPath="App_Plugins/Our.Umbraco.FullTextSearch" />
+    <file path="src/Our.Umbraco.FullTextSearch/bin/release/Our.Umbraco.FullTextSearch.dll" orgPath="bin/Our.Umbraco.FullTextSearch.dll" />
+  </files>
+  <Actions />
+  <control />
+  <DocumentTypes />
+  <Templates />
+  <Stylesheets />
+  <Macros />
+  <DictionaryItems />
+  <Languages />
+  <DataTypes />
+</umbPackage>

@@ -12,6 +12,7 @@ namespace Our.Umbraco.FullTextSearch.Models
             SearchType = SearchType.MultiRelevance;
             SearchTerm = searchTerm;
             TitleProperties = new string[] { };
+            TitleBoost = 10.0;
             BodyProperties = new string[] { };
             SummaryProperties = new string[] { };
             RootNodeIds = new int[] { };
@@ -24,6 +25,7 @@ namespace Our.Umbraco.FullTextSearch.Models
         public SearchType SearchType { get; set; }
         public string SearchTerm { get; set; }
         public string[] TitleProperties { get; set; }
+        public double TitleBoost { get; set; }
         public string[] BodyProperties { get; set; }
         public string[] SummaryProperties { get; set; }
         public int[] RootNodeIds { get; set; }
@@ -73,6 +75,12 @@ namespace Our.Umbraco.FullTextSearch.Models
         public Search RemoveTitleProperty(string alias)
         {
             if (!TitleProperties.Contains(alias)) TitleProperties = TitleProperties.Where(x => x != alias).ToArray();
+            return this;
+        }
+
+        public Search SetTitleBoost(double titleBoost)
+        {
+            TitleBoost = titleBoost;
             return this;
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Services;
 using System;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
@@ -20,14 +21,14 @@ namespace Our.Umbraco.FullTextSearch.Components
     public class UpdateCacheOnPublish : IComponent
     {
         private readonly ICacheService _cacheService;
-        private readonly IConfig _fullTextConfig;
+        private readonly FullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private readonly IExamineManager _examineManager;
         private readonly IContentService _contentService;
 
         public UpdateCacheOnPublish(ICacheService cacheService,
             ILogger logger,
-            IConfig fullTextConfig,
+            FullTextSearchConfig fullTextConfig,
             IExamineManager examineManager,
             IContentService contentService)
         {
@@ -47,7 +48,7 @@ namespace Our.Umbraco.FullTextSearch.Components
             if (args.MessageType != MessageType.RefreshByPayload)
                 return;
 
-            if (!_fullTextConfig.IsFullTextIndexingEnabled())
+            if (!_fullTextConfig.Enabled)
             {
                 _logger.Debug<UpdateCacheOnPublish>("FullTextIndexing is not enabled");
                 return;
@@ -72,7 +73,7 @@ namespace Our.Umbraco.FullTextSearch.Components
                 }
                 else // RefreshNode or RefreshBranch (maybe trashed)
                 {
-                    _cacheService.AddCacheTask(payload.Id);
+                    _cacheService.AddToCache(payload.Id);
 
                     // branch
                     if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
@@ -88,7 +89,7 @@ namespace Our.Umbraco.FullTextSearch.Components
 
                             foreach (var descendant in descendants)
                             {
-                                _cacheService.AddCacheTask(descendant.Id);
+                                _cacheService.AddToCache(descendant.Id);
                             }
                         }
                     }

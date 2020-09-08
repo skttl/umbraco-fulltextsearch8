@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Our.Umbraco.FullTextSearch.Helpers
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {        /// <summary>
              /// Truncates a string containing HTML to a number of text characters, keeping whole words.
              /// The result contains HTML and any tags left open are closed.
              /// </summary>
              /// <param name="s"></param>
              /// <returns></returns>
-        public static string TruncateHtml(this string html, int maxCharacters, string trailingText)
+        internal static string TruncateHtml(this string html, int maxCharacters, string trailingText)
         {
             if (string.IsNullOrEmpty(html))
                 return html;
@@ -93,7 +93,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static string TruncateHtml(this string html, int maxCharacters)
+        internal static string TruncateHtml(this string html, int maxCharacters)
         {
             return html.TruncateHtml(maxCharacters, null);
         }
@@ -105,7 +105,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <param name="delimiter">The delimiter</param>
         /// <param name="comparison">The delimiter comparison type</param>
         /// <returns></returns>
-        public static string TruncateHtmlByDelimiter(this string html, string delimiter, StringComparison comparison = StringComparison.Ordinal)
+        internal static string TruncateHtmlByDelimiter(this string html, string delimiter, StringComparison comparison = StringComparison.Ordinal)
         {
             var index = html.IndexOf(delimiter, comparison);
             if (index <= 0) return html;
@@ -119,7 +119,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static string StripHtml(this string html)
+        internal static string StripHtml(this string html)
         {
             if (string.IsNullOrEmpty(html))
                 return html;
@@ -134,7 +134,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <param name="maxCharacters"></param>
         /// <param name="trailingText"></param>
         /// <returns></returns>
-        public static string Truncate(this string text, int maxCharacters)
+        internal static string Truncate(this string text, int maxCharacters)
         {
             return text.Truncate(maxCharacters, null);
         }
@@ -146,7 +146,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <param name="maxCharacters"></param>
         /// <param name="trailingText"></param>
         /// <returns></returns>
-        public static string Truncate(this string text, int maxCharacters, string trailingText)
+        internal static string Truncate(this string text, int maxCharacters, string trailingText)
         {
             if (string.IsNullOrEmpty(text) || maxCharacters <= 0 || text.Length <= maxCharacters)
                 return text;
@@ -162,7 +162,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <param name="maxCharacters"></param>
         /// <param name="trailingText"></param>
         /// <returns></returns>
-        public static string TruncateWords(this string text, int maxCharacters)
+        internal static string TruncateWords(this string text, int maxCharacters)
         {
             return text.TruncateWords(maxCharacters, null);
         }
@@ -174,7 +174,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <param name="maxCharacters"></param>
         /// <param name="trailingText"></param>
         /// <returns></returns>
-        public static string TruncateWords(this string text, int maxCharacters, string trailingText)
+        internal static string TruncateWords(this string text, int maxCharacters, string trailingText)
         {
             if (string.IsNullOrEmpty(text) || maxCharacters <= 0 || text.Length <= maxCharacters)
                 return text;

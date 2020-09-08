@@ -1,4 +1,5 @@
 ﻿using Our.Umbraco.FullTextSearch.Migrations;
+using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Migrations;
@@ -8,6 +9,7 @@ using Umbraco.Core.Services;
 
 namespace Our.Umbraco.FullTextSearch.Components
 {
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     public class CacheComposer : ComponentComposer<CacheComponent>
     {
     }

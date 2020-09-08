@@ -1,0 +1,57 @@
+# Builds a library, and packages it up.
+#
+# Works on a release/version tag
+#   e.g release/1.0.2 will build v1.0.2
+#
+
+name: Build and Package
+
+env:
+  OUTPUT: ./Output
+  LIBRARY_FOLDER: ./src/Our.Umbraco.FullTextSearch
+  CONFIG: release
+
+on:
+  push:
+    tags:
+      - "release/*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:      
+      - name: Get Version 
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/release\//}
+        shell: bash
+      
+      - name: checkout
+        uses: actions/checkout@v2
+        
+      - name: Setup NuGet.exe for use with actions
+        uses: NuGet/setup-nuget@v1.0.2        
+        
+      - name: Setup .net core
+        uses: actions/setup-dotnet@v1.4.0
+      
+      - name: Setup UmbPack
+        run: dotnet tool install Umbraco.Tools.Packages --global
+        
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+      
+      - name: Build Project
+        run: msbuild ./src -p:Configuration=${{ env.CONFIG }}
+      
+      - name: Create NuGet package file
+        run: dotnet pack ${{ env.LIBRARY_FOLDER }} -c ${{ env.CONFIG }} --no-build --include-symbols -o ${{ env.OUTPUT }} /p:version=${{ steps.get_version.outputs.VERSION }} 
+        
+      - name: Create Umbraco package file
+        run: UmbPack pack ./src/package.xml -o ${{ env.OUTPUT }} -v ${{ steps.get_version.outputs.VERSION }}
+        
+      - name: upload-artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build-Results-${{ steps.get_version.outputs.VERSION }}
+          path: ${{ env.OUTPUT }}/**/*

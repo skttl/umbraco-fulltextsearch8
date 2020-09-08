@@ -1,6 +1,7 @@
 ﻿using Examine;
 using Examine.Providers;
 using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Services;
 using System;
 using System.Linq;
 using Umbraco.Core;
@@ -17,13 +18,13 @@ namespace Our.Umbraco.FullTextSearch.Components
     public class AddFullTextItemsToIndex : IComponent
     {
         private readonly IExamineManager _examineManager;
-        private readonly IConfig _fullTextConfig;
+        private readonly FullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private readonly IProfilingLogger _profilingLogger;
         private readonly ICacheService _cacheService;
 
         public AddFullTextItemsToIndex(IExamineManager examineManager,
-            IConfig fullTextConfig,
+            FullTextSearchConfig fullTextConfig,
             ILogger logger,
             IProfilingLogger profilingLogger,
             ICacheService cacheService)
@@ -56,7 +57,7 @@ namespace Our.Umbraco.FullTextSearch.Components
         {
             if (e.Index.Name != "ExternalIndex") return;
             if (e.ValueSet.Category != IndexTypes.Content) return;
-            if (!_fullTextConfig.IsFullTextIndexingEnabled())
+            if (!_fullTextConfig.Enabled)
             {
                 _logger.Debug<AddFullTextItemsToIndex>("FullTextIndexing is not enabled");
                 return;
@@ -64,15 +65,15 @@ namespace Our.Umbraco.FullTextSearch.Components
 
             // check if contentType is allowed
             var nodeTypeAlias = e.ValueSet.GetValue("__NodeTypeAlias");
-            if (nodeTypeAlias != null && _fullTextConfig.GetDisallowedContentTypeAliases().Contains(nodeTypeAlias.ToString()))
+            if (nodeTypeAlias != null && _fullTextConfig.DisallowedContentTypeAliases.Contains(nodeTypeAlias.ToString()))
             {
-                _logger.Debug<AddFullTextItemsToIndex>("{nodeTypeAlias} is disallowed by DisallowedContentTypeAliases - {disallowedContentTypeAliases}", nodeTypeAlias.ToString(), string.Join(",", _fullTextConfig.GetDisallowedContentTypeAliases()));
+                _logger.Debug<AddFullTextItemsToIndex>("{nodeTypeAlias} is disallowed by DisallowedContentTypeAliases - {disallowedContentTypeAliases}", nodeTypeAlias.ToString(), string.Join(",", _fullTextConfig.DisallowedContentTypeAliases));
                 return;
             }
 
-            if (_fullTextConfig.GetDisallowedPropertyAliases().Any())
+            if (_fullTextConfig.DisallowedPropertyAliases.Any())
             {
-                foreach (var disallowedPropertyAlias in _fullTextConfig.GetDisallowedPropertyAliases())
+                foreach (var disallowedPropertyAlias in _fullTextConfig.DisallowedPropertyAliases)
                 {
                     var value = e.ValueSet.GetValue(disallowedPropertyAlias);
                     if (value != null && value.ToString() == "1")
@@ -94,7 +95,7 @@ namespace Our.Umbraco.FullTextSearch.Components
             var currentPath = e.ValueSet.GetValue("path");
             if (currentPath != null)
             {
-                var pathFieldName = _fullTextConfig.GetPathFieldName();
+                var pathFieldName = _fullTextConfig.FullTextPathField;
                 e.ValueSet.TryAdd(pathFieldName, currentPath.ToString().Replace(",", " "));
             }
 
@@ -108,7 +109,7 @@ namespace Our.Umbraco.FullTextSearch.Components
 
                 foreach (var item in cacheItems)
                 {
-                    var fieldName = _fullTextConfig.GetFullTextFieldName();
+                    var fieldName = _fullTextConfig.FullTextContentField;
                     if (item.Culture != "") fieldName += "_" + item.Culture;
 
                     e.ValueSet.TryAdd(fieldName, item.Text);

@@ -1,0 +1,49 @@
+﻿using Our.Umbraco.FullTextSearch.Interfaces;
+using System.Web;
+using System.Collections.Generic;
+using Umbraco.Core;
+using Umbraco.Web.Composing;
+using Our.Umbraco.FullTextSearch.Services;
+using Our.Umbraco.FullTextSearch.Models;
+
+namespace Our.Umbraco.FullTextSearch.Helpers
+{
+    public static class FullTextSearchHelper
+    {
+        /// <summary>
+        /// Check whether the current page is being rendered by the indexer
+        /// </summary>
+        /// <returns>true if being indexed</returns>
+        public static bool IsIndexingActive(this HttpRequestBase request)
+        {
+            if (!(Current.Factory.TryGetInstance(typeof(FullTextSearchConfig)) is FullTextSearchConfig config)) return false;
+
+            var searchActiveStringName = config.IndexingActiveKey;
+
+            return !searchActiveStringName.IsNullOrWhiteSpace() && request.RequestContext.HttpContext.Items[searchActiveStringName] != null;
+        }
+
+        public static IFullTextSearchResult Search(string searchTerms, string culture = null, int currentPage = 1)
+        {
+            if (!(Current.Factory.TryGetInstance(typeof(ISearchService)) is ISearchService searchService)) return null;
+
+            currentPage = currentPage < 1 ? 1 : currentPage;
+
+            var search = new Search(searchTerms);
+
+            if (!culture.IsNullOrWhiteSpace())
+                search = search.SetCulture(culture);
+
+            return searchService.Search(search, currentPage);
+        }
+
+        public static IFullTextSearchResult Search(Search search, int currentPage = 1)
+        {
+            if (!(Current.Factory.TryGetInstance(typeof(ISearchService)) is ISearchService searchService)) return null;
+
+            currentPage = currentPage < 1 ? 1 : currentPage;
+
+            return searchService.Search(search, currentPage);
+        }
+    }
+}

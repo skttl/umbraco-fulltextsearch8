@@ -2,7 +2,9 @@
 using Our.Umbraco.FullTextSearch.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Persistence;
@@ -17,13 +19,17 @@ namespace Our.Umbraco.FullTextSearch.Services
         private readonly ILogger _logger;
         private readonly IUmbracoContextFactory _umbracoContextFactory;
         private readonly IHtmlService _htmlService;
+        private readonly FullTextSearchConfig _fullTextConfig;
+        private readonly IUmbracoComponentRenderer _umbracoComponentRenderer;
 
-        public CacheService(IScopeProvider scopeProvider, ILogger logger, IUmbracoContextFactory umbracoContextFactory, IHtmlService htmlService)
+        public CacheService(IScopeProvider scopeProvider, ILogger logger, IUmbracoContextFactory umbracoContextFactory, IHtmlService htmlService, IUmbracoComponentRenderer umbracoComponentRenderer, FullTextSearchConfig config)
         {
             _scopeProvider = scopeProvider;
             _logger = logger;
             _umbracoContextFactory = umbracoContextFactory;
             _htmlService = htmlService;
+            _umbracoComponentRenderer = umbracoComponentRenderer;
+            _fullTextConfig = config;
         }
 
         /// <summary>
@@ -40,11 +46,19 @@ namespace Our.Umbraco.FullTextSearch.Services
                 foreach (var culture in publishedContent.Cultures)
                 {
                     // get content of page, and manipulate for indexing
-                    var url = publishedContent.Url(culture.Value.Culture, UrlMode.Absolute);
-                    _htmlService.GetHtmlByUrl(url, out string fullHtml);
+                    //var url = publishedContent.Url(culture.Value.Culture, UrlMode.Absolute);
+                    //_htmlService.GetHtmlByUrl(url, out string fullHtml);
+                    if (culture.Value.Culture.IsNullOrWhiteSpace())
+                        CultureInfo.CurrentUICulture = new CultureInfo(culture.Value.Culture);
+
+                    cref.UmbracoContext.HttpContext.Items.Add(_fullTextConfig.IndexingActiveKey, "1");
+
+                    var fullHtml = _umbracoComponentRenderer.RenderTemplate(id).ToString();
                     var fullText = _htmlService.GetTextFromHtml(fullHtml);
                     _logger.Info<CacheService>("Updating {nodeId} {culture} {fullText}", id, culture.Value.Culture, fullText);
                     AddToCache(id, culture.Value.Culture, fullText);
+
+                    cref.UmbracoContext.HttpContext.Items.Remove(_fullTextConfig.IndexingActiveKey);
                 }
             }
         }

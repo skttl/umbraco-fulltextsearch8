@@ -23,6 +23,13 @@ namespace Our.Umbraco.FullTextSearch.Helpers
             return !searchActiveStringName.IsNullOrWhiteSpace() && request.RequestContext.HttpContext.Items[searchActiveStringName] != null;
         }
 
+        /// <summary>
+        /// Perform a search using the default search settings
+        /// </summary>
+        /// <param name="searchTerms"></param>
+        /// <param name="culture"></param>
+        /// <param name="currentPage"></param>
+        /// <returns></returns>
         public static IFullTextSearchResult Search(string searchTerms, string culture = null, int currentPage = 1)
         {
             if (!(Current.Factory.TryGetInstance(typeof(ISearchService)) is ISearchService searchService)) return null;
@@ -37,6 +44,12 @@ namespace Our.Umbraco.FullTextSearch.Helpers
             return searchService.Search(search, currentPage);
         }
 
+        /// <summary>
+        /// Perform a search using a search settings object
+        /// </summary>
+        /// <param name="search"></param>
+        /// <param name="currentPage"></param>
+        /// <returns></returns>
         public static IFullTextSearchResult Search(Search search, int currentPage = 1)
         {
             if (!(Current.Factory.TryGetInstance(typeof(ISearchService)) is ISearchService searchService)) return null;

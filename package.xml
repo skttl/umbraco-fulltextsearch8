@@ -4,20 +4,25 @@
     <package>
       <name>Our.Umbraco.FullTextSearch</name>
       <version>1.0.0</version>
-      <iconUrl></iconUrl>
+      <iconUrl>https://raw.githubusercontent.com/skttl/umbraco-fulltextsearch8/develop/docs/search.png</iconUrl>
       <licence url="https://opensource.org/licenses/MIT">MIT</licence>
-      <url>https://our.umbraco.com</url>
+      <url>https://github.com/skttl/umbraco-fulltextsearch8</url>
       <requirements type="strict">
         <major>8</major>
-        <minor>0</minor>
+        <minor>1</minor>
         <patch>0</patch>
       </requirements>
     </package>
     <author>
-      <name>UmbracoPackageTeam</name>
-      <website>https://our.umbraco.com</website>
+      <name>Søren Kottal</name>
+      <website>https://github.com/skttl</website>
     </author>
-    <readme><![CDATA[Another awesome package]]></readme>
+    <readme>
+      <![CDATA[Full Text Search is a fast, powerful and easy to setup search solution for Umbraco sites.
+
+  - Searches the whole page content (also generated content)
+  - Simple and easy setup for multiple search types (quoted, fuzzy matching, wildcards etc.)
+  - Extends the default ExternalIndex]]></readme>
   </info>
   <files>
     <folder path="src/Our.Umbraco.FullTextSearch/App_Plugins/Our.Umbraco.FullTextSearch" orgPath="App_Plugins/Our.Umbraco.FullTextSearch" />

@@ -4,54 +4,61 @@
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>Our.Umbraco.FullTextSearch</RootNamespace>
 
-		<IncludeContentInPack>true</IncludeContentInPack>
-		<ContentTargetFolders>content</ContentTargetFolders>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <Product>Full Text Search for Umbraco</Product>
+    <Authors>Søren Kottal</Authors>
+    <Description>Full Text Search is a fast, powerful and easy to setup search solution for Umbraco sites. Searches the whole page content (also generated content) Simple and easy setup for multiple search types (quoted, fuzzy matching, wildcards etc.) Extends the default ExternalIndex</Description>
+    <Copyright>Copyright 2020</Copyright>
+    <PackageProjectUrl>https://github.com/skttl/umbraco-fulltextsearch8</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
+    <PackageTags>umbraco, umbraco-cms</PackageTags>
 
-	</PropertyGroup>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="App_Plugins\**\*" />
-		<Compile Remove="**\*" />
-	</ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Plugins\**\*" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <Compile Include="Controllers\**\*" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\**\*" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <None Remove="App_Plugins\Our.Umbraco.FullTextSearch\FullTextSearch.config" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Remove="App_Plugins\Our.Umbraco.FullTextSearch\FullTextSearch.config" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <Compile Include="Components\AddFullTextItemsToIndex.cs" />
-	  <Compile Include="Components\CacheComponent.cs" />
-	  <Compile Include="Components\UpdateCacheOnPublish.cs" />
-	  <Compile Include="FullTextComposer.cs" />
-	  <Compile Include="Helpers\FullTextSearchHelper.cs" />
-	  <Compile Include="Helpers\SearchResultItemExtensions.cs" />
-	  <Compile Include="Helpers\StringExtensions.cs" />
-	  <Compile Include="Interfaces\ICacheService.cs" />
-	  <Compile Include="Interfaces\IFullTextSearchResult.cs" />
-	  <Compile Include="Interfaces\IHtmlService.cs" />
-	  <Compile Include="Interfaces\ISearch.cs" />
-	  <Compile Include="Interfaces\ISearchResultItem.cs" />
-	  <Compile Include="Interfaces\ISearchService.cs" />
-	  <Compile Include="Migrations\ZeroOneZero\CreateCacheTable.cs" />
-	  <Compile Include="Migrations\ZeroOneZero\CreateCacheTaskTable.cs" />
-	  <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
-	  <Compile Include="Models\CacheItem.cs" />
-	  <Compile Include="Models\FullTextSearchResult.cs" />
-	  <Compile Include="Models\Search.cs" />
-	  <Compile Include="Models\SearchProperty.cs" />
-	  <Compile Include="Models\SearchResultItem.cs" />
-	  <Compile Include="Models\SearchType.cs" />
-	  <Compile Include="Services\CacheService.cs" />
-	  <Compile Include="Services\FullTextSearchConfig.cs" />
-	  <Compile Include="Services\HtmlService.cs" />
-	  <Compile Include="Services\SearchService.cs" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\AddFullTextItemsToIndex.cs" />
+    <Compile Include="Components\CacheComponent.cs" />
+    <Compile Include="Components\UpdateCacheOnPublish.cs" />
+    <Compile Include="FullTextComposer.cs" />
+    <Compile Include="Helpers\FullTextSearchHelper.cs" />
+    <Compile Include="Helpers\SearchResultItemExtensions.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="Interfaces\ICacheService.cs" />
+    <Compile Include="Interfaces\IFullTextSearchResult.cs" />
+    <Compile Include="Interfaces\IHtmlService.cs" />
+    <Compile Include="Interfaces\ISearch.cs" />
+    <Compile Include="Interfaces\ISearchResultItem.cs" />
+    <Compile Include="Interfaces\ISearchService.cs" />
+    <Compile Include="Migrations\ZeroOneZero\CreateCacheTable.cs" />
+    <Compile Include="Migrations\ZeroOneZero\CreateCacheTaskTable.cs" />
+    <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
+    <Compile Include="Models\CacheItem.cs" />
+    <Compile Include="Models\FullTextSearchResult.cs" />
+    <Compile Include="Models\Search.cs" />
+    <Compile Include="Models\SearchProperty.cs" />
+    <Compile Include="Models\SearchResultItem.cs" />
+    <Compile Include="Models\SearchType.cs" />
+    <Compile Include="Services\CacheService.cs" />
+    <Compile Include="Services\FullTextSearchConfig.cs" />
+    <Compile Include="Services\HtmlService.cs" />
+    <Compile Include="Services\SearchService.cs" />
+  </ItemGroup>
 </Project>

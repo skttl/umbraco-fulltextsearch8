@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="UmbracoCms.Web" Version="8.6.2" />
+    <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -53,9 +53,5 @@
 	  <Compile Include="Services\FullTextSearchConfig.cs" />
 	  <Compile Include="Services\HtmlService.cs" />
 	  <Compile Include="Services\SearchService.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Properties\" />
 	</ItemGroup>
 </Project>

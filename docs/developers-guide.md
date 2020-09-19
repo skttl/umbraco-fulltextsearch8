@@ -1,52 +1,71 @@
 # Full Text Search
-FullTextSearch works by extending the default `ExternalIndex` in Umbraco with its own fields for full text content. It renders a page by making a http request to the page, and indexes the content. If the server is unable to make the request, no content will be indexed.
+FullTextSearch works by extending the default `ExternalIndex` in Umbraco with its own fields for full text content. It renders nodes using Umbracos own `RenderTemplate` method, and indexes the content.
 
 The rendered content of nodes is cached in a seperate database table, so rendering can be skipped when reindexing Examine. FullTextSearch listens to events from the `ContentCacheRefresher`, and updates its own cache upon the `CacheUpdated` event.
-
-The rendering is managed by a queue of tasks. You can always see the current queue on the FullTextSearch dashboard in the settings section of Umbraco. From here, you can also rebuild and reindex all nodes.
 
 ## Installation
 Install using the nuget package, or from the package repository.
 This package requires Umbraco 8.1 as a minimum version.
 
 ## Configuration
-FullTextSearch needs to be enabled in your web.config by adding an application setting with the key `FullTextSearch.Enabled` and a value of True.
+FullTextSearch comes with its own configuration file, located in App_Plugins/Our.Umbraco.FullTextSearch/FullTextSearch.config.
 
 Here is an overview of the different config settings you can add.
 
-`FullTextSearch.Enabled`
-This enables the full text indexing. If the setting does not exists, or is set to false, full text indexing will not happen. The default value is `False`.
+### Indexing
+Indexing the full text content is by default enabled, but you can disable it by setting the `enabled` attribute on the `FullTextSearch` node to false.
 
-`FullTextSearch.DefaultTitleFieldName`
-The name of the field containing the title of the page in the index. The default value is `nodeName`. You can also override this when searching.
+Below, you can se an example of the `Indexing` section in the config file.
+```xml
+  <Indexing>
+    <DefaultTitleField>nodeName</DefaultTitleField>
+    <IndexingActiveKey>FullTextActive</IndexingActiveKey>
+    <DisallowedAliases>
+      <ContentTypes>
+          <add>settings</add>
+          <add>searchResultPage</add>
+      </ContentTypes>
+      <Properties>
+          <add>umbracoSearchHide</add>
+      </Properties>
+    </DisallowedAliases>
+    <XpathsToRemove>
+        <add>//script</add>
+        <add>//head</add>
+    </XpathsToRemove>
+    <ExamineFieldNames>
+      <FullTextContent>FullTextContent</FullTextContent>
+      <FullTextPath>FullTextPath</FullTextPath>
+    </ExamineFieldNames>
+  </Indexing>
+```
 
-`FullTextSearch.DisallowedContentTypeAliases`
-Aliases of content types that should NOT be indexed by FullTextSearch. If you add an alias here, the nodes of that alias will not be rendered and indexed by FullTextSearch. By default nodes without templates are excluded, so you don't need to add them here.
+#### Default Title Field
+The `DefaultTitleField` node contains the name of the field containing the title of the page in the index. The default value is `nodeName`. You can also override this when searching.
+
+#### Disallowed Aliases
+By default, all nodes with a template will be cached and indexed. You can control which nodes are being indexed, by adding the aliases of their Content Types, or the alias of a checkbox property on the nodes to exclude them from this.
+
+The disallowed property aliases can be used to create your own "umbracoNaviHide" for FullTextSearch. Add a boolean property to your document type, and reference its alias in this setting. If the node has that property set to true, it will be excluded from full text indexing.
+
 Adding to this config on a site already indexed doesn't clean the index. You have to do this manually - but the search will exclude nodes of the disallowed types for you.
 
-`FullTextSearch.DisallowedPropertyAliases`
-You can use this setting to create your own "umbracoNaviHide" for FullTextSearch. Add a boolean property to your document type, and reference its alias in this setting. If the node has that property set to true, it will be excluded from full text indexing.
-Adding to this config on a site already indexed doesn't clean the index. You have to do this manually - but the search will exclude nodes with the disallowed properties for you.
+By default, no content types og property aliases is disallowed.
 
-`FullTextSearch.FullTextFieldName`
-The field name where FullTextSearch should store the rendered full text. The default of this is `FullTextSearch`.
+#### Rendering
+When rendering, FullTextSearch adds the value of `IndexingActiveKey` as a key in HttpContext.Items[], so you can use that to send different content to the indexer. The default value is FullTextActive. You can also use the `IsIndexingActive` helper method, in your views, to determine whether or not indexing is active. You can use this to exclude parts of the views from the content being indexed.
 
-`FullTextSearch.HttpTimeout`
-This field contains the timeout (in seconds) for requests made when rendering content for full text indexing. The default value is `120` seconds. After that the request is aborted.
+##### XPaths to remove
+In addition to the IndexingActiveKey, you can also add specific Xpaths to remove from the indexed content. Using this, you can ie. remove scripts (`//script`) or the head area ('//head') of the page.
 
-`FullTextSearch.FullTextPathFieldName`
-FullTextSearch uses its own path field in examine, to be able to filter nodes by root node. You can configure the name of this here. The default value is `FullTextPath`.
+By default no XPaths are removed.
 
-`FullTextSearch.SearchActiveStringName`
-When rendering, FullTextSearch adds this value as a querystring parameter, so you can use that to send different content to the indexer. The default value is `FullTextActive`
+#### Examine Field Names
+Full Text Search works by extending the default `ExternalIndex` in Umbraco. Fields containing the full text content, and a searchable path to the node is added. By default these fields are called FullTextContent, and FullTextPath, but if you need them to be something else (like, if you had Umbraco properties using those aliases), you can change it in this config section.
 
-`FullTextSearch.SearchTitleBoost`
-When searching, FullTextSearch boosts the title field by the value of this. The default value is `10.0`.
+## Searching
 
-`FullTextSearch.XpathsToRemoveFromFullText`
-When indexing rendered content, elements in the html output matching regexes in this field is removed. You can add more, and separate them with commas, like `//script,//head`. Defaults to empty.
-
-#Searching
+### The clean way
 The preferred way of searching is by using the `ISearchService` interface. Below is the simplest possible example of a controller for a search node.
 ```
 using System.Web.Mvc;
@@ -84,11 +103,11 @@ namespace MyProject.Controllers
         }
     }
 }
-
 ```
-In this example I add `ISearchService` as a dependencies for the controller. `ISearchService` performs the searching, and takes a `Search` object, which can be configured in numerous ways. The result is then added to the `ViewBag`. Notice that you need to set the culture of the search in order to get results from the right fields. Also notice the `Request["p"]` and `Request["q"]` variables used for paging and getting search terms.
+In this example I add `ISearchService` as a dependency for the controller. `ISearchService` performs the searching, and takes a `Search` object, which can be configured in numerous ways. The result is then added to the `ViewBag`. Notice that you need to set the culture of the search in order to get results from the right fields. Also notice the `Request["p"]` and `Request["q"]` variables used for paging and getting search terms.
 
 My preferred way of searching looks like this:
+
 ```
 using Our.Umbraco.FullTextSearch.Interfaces;
 
@@ -99,8 +118,10 @@ namespace Umbraco.Web.PublishedModels
         public IFullTextSearchResult FullTextSearchResult { get; set; }
     }
 }
-
 ```
+First I extend the model of my search page from ModelsBuilder, by adding a partial class, and adding the `IFullTextSearchResult` property.
+
+
 ```
 using System.Web.Mvc;
 using Our.Umbraco.FullTextSearch.Interfaces;
@@ -158,7 +179,22 @@ Here I also include `IConfig` as a dependency, enabling me to get different keys
 
 On this search, I enable highlighting of text in the output by using `EnableHightling()`, I then configure it to use `metaTitle` and `nodeName` as fields for getting the title of each page (that way `nodeName` is used, if `metaTitle` is empty or doesn't exist). I configure it to use `metaDescription` or the default text field for the summary. And then I set the summary length to be 160 characters (the default is 300), and the pagelength to be 10 results per page (the default is 0, meaning no pagination will occur). Lastly I set the culture, to make FullTextSearch look for results with the same culture as the request.
 
+### The easy way
+Using `Our.Umbraco.FullTextSearch.Helpers` you can search directly from your Razor view. The simplest possible way of doing that, is by simple adding the following to your view:
+
+```
+@using Our.Umbraco.FullTextSerch.Helpers
+@{
+    var searchResult = FullTextSearchHelper.Search("putYourSearchTermHere");
+}
+```
+
+The Search helper method takes either a string searchTerm, and an optional culture string, or a `Search` object, like demonstrated in the controllers above. In addition to that, you can specify which page of the search results you want to show. By default, the first page will be shown, but if you wan't paging you need to implement that by your self. Feel free to take inspiration from the controllers.
+
+
 ## Rendering the search results
+When rendering you work with the `IFullTextSearchResult` value, that you either got using a controller or the helper method. The code sample below shows how to use it from the ModelsBuilder extension, but `Model.FullTextSearchResult` could also have been `ViewBag.FullTextSearchResult` or simply `searchResult` following the examples above.
+
 ```
 @if (Model.FullTextSearchResult != null)
 {
@@ -195,7 +231,7 @@ On this search, I enable highlighting of text in the output by using `EnableHigh
 
 ```
 
-Model.FullTextSearchResults now contains the result object, in which the following properties is available:
+Model.FullTextSearchResults now contains the result object (`IFullTextSearchResult`), in which the following properties is available:
 
 `long TotalPages`
 The total number of search result pages.
@@ -284,6 +320,5 @@ This sets the desired page length of your search results. If you set it to 0, yo
 `SetCulture(string culture)`
 This is used to define which culture to search in. You should probably always set this, but it might work without it, in invariant sites.
 
-
-
-
+## The dashboard
+A dashboard is added to the Settings section of Umbraco, where you can reindex all nodes at once. I want to revamp this dashboard, and if you have any inputs, feel free to voice your opinion in this [issue](https://github.com/skttl/umbraco-fulltextsearch8/issues/37)

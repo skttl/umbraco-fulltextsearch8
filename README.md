@@ -15,7 +15,7 @@ Full Text Search is a fast, powerful and easy to setup search solution for Umbra
 ### Installation
 > *Note:* Full Text Search has been developed against **Umbraco v8.1.0** and will support that version and above.
 
-Full Text Search can be installed from either Our Umbraco package repository, NuGet, or build manually from the source-code. Remember to enable the full text search rendering/indexing in web.config. See developers guide for more information.
+Full Text Search can be installed from either Our Umbraco package repository, or NuGet. See developers guide for more information.
 
 #### Our Umbraco package repository
 
@@ -31,42 +31,10 @@ To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.FullTextSearc
 
 We also have a [MyGet package repository](https://www.myget.org/gallery/umbraco-packages) - for bleeding-edge / development releases.
 
-#### Manual build
-
-If you prefer, you can compile  Full Text Search yourself, you'll need:
-
-* [Visual Studio 2017 (or above, including Community Editions)](https://www.visualstudio.com/downloads/)
-* Microsoft Build Tools 2015 (aka [MSBuild 15](https://www.microsoft.com/en-us/download/details.aspx?id=48159))
-
-To clone it locally click the "Clone in Windows" button above or run the following git commands.
-
-	git clone https://github.com/skttl/Our.Umbraco.FullTextSearch.git umbraco-full-text-search
-	cd umbraco-full-text-search
-	.\build.cmd
-
----
 
 ## Developers Guide
 
 For details on how to use the Full Text Search package, please refer to our [Developers Guide](docs/developers-guide.md) documentation.
-
----
-
-## Known Issues
-
-Full Text Search reads the content of pages indexed, by downloading them via a web request. Because of that, your site needs to be able to call itself. If not, the content can not be collected.
-
----
-
-## Roadmap
-
-**Now**
-- Change the config format #35
-- Switch to using RenderTemplate() for getting the content #36
-- Change project structure to match the official package template, and use Github actions for building/releasing
-
-**Next**
-- New dashboard #37
 
 ---
 
@@ -97,6 +65,6 @@ Have a question?
 
 ## License
 
-Copyright &copy; 2019 Søren Kottal
+Copyright &copy; 2020 Søren Kottal
 
 Licensed under the [MIT License](LICENSE.md)

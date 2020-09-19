@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Changed the config format #35 **BREAKING**
+- Switch to using RenderTemplate() for getting the content #36 **BREAKING**
+- Only index nodes with a template and check umbracoNaviHide #27
 - Adding a doctype to DisallowedContentTypeAliases doesn't remove already indexed pages #29
 - When HighlightSearchTerms = true, ellipsis are always shown #23
 - Fuzzy search does not return expected values #25

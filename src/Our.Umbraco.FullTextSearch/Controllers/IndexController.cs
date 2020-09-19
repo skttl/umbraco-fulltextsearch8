@@ -98,26 +98,5 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
             return true;
         }
-
-        [HttpGet]
-        public List<CacheTask> GetCacheTasks()
-        {
-            return _cacheService.GetAllCacheTasks();
-        }
-
-        [HttpPost]
-        public bool RestartCacheTask(int taskId, int nodeId)
-        {
-            _cacheService.DeleteCacheTask(taskId);
-            _cacheService.AddCacheTask(nodeId);
-            return true;
-        }
-
-        [HttpPost]
-        public bool DeleteCacheTask(int taskId)
-        {
-            _cacheService.DeleteCacheTask(taskId);
-            return true;
-        }
     }
 }

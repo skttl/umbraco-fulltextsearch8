@@ -4,7 +4,7 @@ using Umbraco.Core.Logging;
 using NPoco;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
-namespace Our.Umbraco.FullTextSearch.Migrations
+namespace Our.Umbraco.FullTextSearch.Migrations.ZeroOneZero
 {
     public class CreateCacheTable : MigrationBase
     {

@@ -5,6 +5,7 @@ using Umbraco.Core.Composing;
 
 namespace Our.Umbraco.FullTextSearch
 {
+    [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     public class FullTextComposer : IUserComposer
     {
         public void Compose(Composition composition)

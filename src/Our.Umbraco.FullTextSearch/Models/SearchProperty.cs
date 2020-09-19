@@ -5,7 +5,7 @@ namespace Our.Umbraco.FullTextSearch.Models
     /// <summary>
     /// Some data indicating how to process a given document property from umbraco in search
     /// </summary>
-    public class SearchProperty 
+    public class SearchProperty
     {
         public string PropertyName { get; private set; }
         public double BoostMultiplier { get; private set; }

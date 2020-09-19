@@ -1,6 +1,7 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
+using Our.Umbraco.FullTextSearch.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
     public class IndexController : UmbracoAuthorizedApiController
     {
         private readonly ICacheService _cacheService;
-        private readonly IConfig _fullTextConfig;
+        private readonly FullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private readonly IPublishedContentValueSetBuilder _valueSetBuilder;
         private readonly IExamineManager _examineManager;
@@ -29,7 +30,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
         public IndexController(ICacheService cacheService,
             ILogger logger,
-            IConfig fullTextConfig,
+            FullTextSearchConfig fullTextConfig,
             IExamineManager examineManager,
             IndexRebuilder indexRebuilder,
             IPublishedContentValueSetBuilder valueSetBuilder,
@@ -44,9 +45,9 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             _indexRebuilder = indexRebuilder;
         }
         [HttpPost]
-        public bool ReindexNode(string nodeIds)
+        public bool ReindexNode(string nodeIds, bool includeDescendants = false)
         {
-            if (!_fullTextConfig.IsFullTextIndexingEnabled())
+            if (!_fullTextConfig.Enabled)
             {
                 _logger.Debug<IndexController>("FullTextIndexing is not enabled");
                 return false;
@@ -59,10 +60,12 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             }
             if (nodeIds == "*")
             {
-                foreach (var content in Umbraco.ContentAtRoot())
+                var contentAtRoot = Umbraco.ContentAtRoot().ToList();
+                foreach (var content in contentAtRoot)
                 {
                     _cacheService.AddToCache(content.Id);
-                    foreach (var descendant in content.Descendants())
+                    var descendants = content.Descendants().ToList();
+                    foreach (var descendant in descendants)
                     {
                         _cacheService.AddToCache(descendant.Id);
                     }
@@ -77,31 +80,22 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                 foreach (var id in ids)
                 {
                     _cacheService.AddToCache(id);
+                    if (includeDescendants)
+                    {
+                        var node = Umbraco.Content(id);
+                        if (node != null)
+                        {
+                            var descendants = node.Descendants().ToList();
+                            foreach (var descendant in descendants)
+                            {
+                                _cacheService.AddToCache(descendant.Id);
+                            }
+                        }
+                    }
                 }
                 index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(ids).ToArray()));
             }
 
-            return true;
-        }
-
-        [HttpGet]
-        public List<CacheTask> GetCacheTasks()
-        {
-            return _cacheService.GetAllCacheTasks();
-        }
-
-        [HttpPost]
-        public bool RestartCacheTask(int taskId, int nodeId)
-        {
-            _cacheService.DeleteCacheTask(taskId);
-            _cacheService.AddCacheTask(nodeId);
-            return true;
-        }
-
-        [HttpPost]
-        public bool DeleteCacheTask(int taskId)
-        {
-            _cacheService.DeleteCacheTask(taskId);
             return true;
         }
     }

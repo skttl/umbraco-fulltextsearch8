@@ -17,13 +17,13 @@ namespace Our.Umbraco.FullTextSearch.Services
     public class SearchService : ISearchService
     {
         private readonly IExamineManager _examineManager;
-        private readonly IConfig _fullTextConfig;
+        private readonly FullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private ISearch _search;
         private int _currentPage;
         private List<SearchProperty> _searchProperties;
 
-        public SearchService(IExamineManager examineManager, IConfig fullTextConfig, ILogger logger)
+        public SearchService(IExamineManager examineManager, FullTextSearchConfig fullTextConfig, ILogger logger)
         {
             _examineManager = examineManager;
             _fullTextConfig = fullTextConfig;
@@ -50,19 +50,18 @@ namespace Our.Umbraco.FullTextSearch.Services
 
         private void SetDefaults()
         {
-            if (!_search.BodyProperties.Any()) _search.BodyProperties = new[] { _fullTextConfig.GetFullTextFieldName() };
-            if (!_search.TitleProperties.Any()) _search.TitleProperties = new[] { _fullTextConfig.GetDefaultTitleFieldName() };
+            if (!_search.BodyProperties.Any()) _search.BodyProperties = new[] { _fullTextConfig.FullTextContentField };
+            if (!_search.TitleProperties.Any()) _search.TitleProperties = new[] { _fullTextConfig.DefaultTitleField };
             if (!_search.SummaryProperties.Any()) _search.SummaryProperties = _search.BodyProperties;
         }
 
         private List<SearchProperty> SetSearchProperties()
         {
             _searchProperties = new List<SearchProperty>();
-            var titleBoost = _fullTextConfig.GetSearchTitleBoost();
 
-            var bodyProperties = !_search.BodyProperties.Any() ? new[] { _fullTextConfig.GetFullTextFieldName() } : _search.BodyProperties;
+            var bodyProperties = !_search.BodyProperties.Any() ? new[] { _fullTextConfig.FullTextContentField } : _search.BodyProperties;
 
-            _searchProperties.AddRange(GetProperties(_search.TitleProperties, titleBoost, _search.Fuzzyness, _search.AddWildcard));
+            _searchProperties.AddRange(GetProperties(_search.TitleProperties, _search.TitleBoost, _search.Fuzzyness, _search.AddWildcard));
             _searchProperties.AddRange(GetProperties(bodyProperties, 1.0, _search.Fuzzyness, _search.AddWildcard));
             return _searchProperties;
         }
@@ -116,7 +115,7 @@ namespace Our.Umbraco.FullTextSearch.Services
 
                 if (_search.RootNodeIds.Any())
                 {
-                    var pathName = _fullTextConfig.GetPathFieldName();
+                    var pathName = _fullTextConfig.FullTextPathField;
                     var rootNodeGroup = string.Join(" OR ", _search.RootNodeIds.Select(x =>
                         $"{pathName}:{x}"));
                     query.Append($" AND ({rootNodeGroup})");
@@ -127,10 +126,10 @@ namespace Our.Umbraco.FullTextSearch.Services
                 var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
                 query.Append($" AND (__IndexType:content AND {publishedQuery})");
 
-                var disallowedContentTypes = _fullTextConfig.GetDisallowedContentTypeAliases();
+                var disallowedContentTypes = _fullTextConfig.DisallowedContentTypeAliases;
                 if (disallowedContentTypes.Any()) query.Append($" AND -(__NodeTypeAlias:{string.Join(" ", disallowedContentTypes)})");
 
-                var disallowedPropertyAliases = _fullTextConfig.GetDisallowedPropertyAliases();
+                var disallowedPropertyAliases = _fullTextConfig.DisallowedPropertyAliases;
                 if (disallowedPropertyAliases.Any())
                 {
                     var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"{x}_{_search.Culture}:1 OR {x}:1"));

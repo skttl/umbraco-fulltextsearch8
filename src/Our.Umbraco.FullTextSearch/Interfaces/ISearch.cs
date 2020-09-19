@@ -10,6 +10,7 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         ICollection<string> SearchTermQuoted { get; }
         ICollection<string> SearchTermSplit { get; }
         string[] TitleProperties { get; set; }
+        double TitleBoost { get; set; }
         string[] BodyProperties { get; set; }
         string[] SummaryProperties { get; set; }
         int[] RootNodeIds { get; set; }

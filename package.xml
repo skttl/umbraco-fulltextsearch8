@@ -26,7 +26,7 @@
   </info>
   <files>
     <folder path="src/Our.Umbraco.FullTextSearch/App_Plugins/Our.Umbraco.FullTextSearch" orgPath="App_Plugins/Our.Umbraco.FullTextSearch" />
-    <file path="src/Our.Umbraco.FullTextSearch/bin/release/Our.Umbraco.FullTextSearch.dll" orgPath="bin/Our.Umbraco.FullTextSearch.dll" />
+    <file path="src/Our.Umbraco.FullTextSearch/bin/release/net472/Our.Umbraco.FullTextSearch.dll" orgPath="bin/Our.Umbraco.FullTextSearch.dll" />
   </files>
   <Actions />
   <control />

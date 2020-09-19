@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Our.Umbraco.FullTextSearch.Interfaces;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,7 +8,7 @@ using Umbraco.Core.Logging;
 
 namespace Our.Umbraco.FullTextSearch.Services
 {
-    public class HtmlService
+    public class HtmlService : IHtmlService
     {
         private readonly FullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;

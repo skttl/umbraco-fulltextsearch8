@@ -29,7 +29,6 @@
 	<ItemGroup>
 	  <Compile Include="Components\AddFullTextItemsToIndex.cs" />
 	  <Compile Include="Components\CacheComponent.cs" />
-	  <Compile Include="Components\PerformCacheTasks.cs" />
 	  <Compile Include="Components\UpdateCacheOnPublish.cs" />
 	  <Compile Include="FullTextComposer.cs" />
 	  <Compile Include="Helpers\FullTextSearchHelper.cs" />
@@ -41,12 +40,11 @@
 	  <Compile Include="Interfaces\ISearch.cs" />
 	  <Compile Include="Interfaces\ISearchResultItem.cs" />
 	  <Compile Include="Interfaces\ISearchService.cs" />
-	  <Compile Include="Migrations\CreateCacheTable.cs" />
-	  <Compile Include="Migrations\CreateCacheTaskTable.cs" />
+	  <Compile Include="Migrations\ZeroOneZero\CreateCacheTable.cs" />
+	  <Compile Include="Migrations\ZeroOneZero\CreateCacheTaskTable.cs" />
+	  <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
 	  <Compile Include="Models\CacheItem.cs" />
-	  <Compile Include="Models\CacheTask.cs" />
 	  <Compile Include="Models\FullTextSearchResult.cs" />
-	  <Compile Include="Models\CacheExpiryRule.cs" />
 	  <Compile Include="Models\Search.cs" />
 	  <Compile Include="Models\SearchProperty.cs" />
 	  <Compile Include="Models\SearchResultItem.cs" />

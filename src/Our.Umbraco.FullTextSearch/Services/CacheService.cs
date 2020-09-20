@@ -41,7 +41,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
             {
                 var publishedContent = cref.UmbracoContext.Content.GetById(id);
-                if (publishedContent == null) return;
+                if (publishedContent == null || IsDisallowed(publishedContent)) return;
 
                 foreach (var culture in publishedContent.Cultures)
                 {
@@ -61,6 +61,24 @@ namespace Our.Umbraco.FullTextSearch.Services
                     cref.UmbracoContext.HttpContext.Items.Remove(_fullTextConfig.IndexingActiveKey);
                 }
             }
+        }
+
+        private bool IsDisallowed(IPublishedContent node)
+        {
+            if (_fullTextConfig.DisallowedContentTypeAliases.Any() && _fullTextConfig.DisallowedContentTypeAliases.InvariantContains(node.ContentType.Alias)) return true;
+
+            if (_fullTextConfig.DisallowedPropertyAliases.Any())
+            {
+                foreach (var culture in node.Cultures)
+                {
+                    foreach (var alias in _fullTextConfig.DisallowedPropertyAliases)
+                    {
+                        if (node.Value<bool>(alias, culture.Value.Culture)) return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

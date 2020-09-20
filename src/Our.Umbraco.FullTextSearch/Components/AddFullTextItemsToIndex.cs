@@ -64,10 +64,9 @@ namespace Our.Umbraco.FullTextSearch.Components
             }
 
             // check if contentType is allowed
-            var nodeTypeAlias = e.ValueSet.GetValue("__NodeTypeAlias");
-            if (nodeTypeAlias != null && _fullTextConfig.DisallowedContentTypeAliases.Contains(nodeTypeAlias.ToString()))
+            if (_fullTextConfig.DisallowedContentTypeAliases.InvariantContains(e.ValueSet.ItemType))
             {
-                _logger.Debug<AddFullTextItemsToIndex>("{nodeTypeAlias} is disallowed by DisallowedContentTypeAliases - {disallowedContentTypeAliases}", nodeTypeAlias.ToString(), string.Join(",", _fullTextConfig.DisallowedContentTypeAliases));
+                _logger.Debug<AddFullTextItemsToIndex>("{nodeTypeAlias} is disallowed by DisallowedContentTypeAliases - {disallowedContentTypeAliases}", e.ValueSet.ItemType, string.Join(",", _fullTextConfig.DisallowedContentTypeAliases));
                 return;
             }
 

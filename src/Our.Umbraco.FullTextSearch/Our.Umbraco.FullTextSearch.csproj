@@ -52,6 +52,7 @@
     <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
     <Compile Include="Models\CacheItem.cs" />
     <Compile Include="Models\FullTextSearchResult.cs" />
+    <Compile Include="Models\IndexStatus.cs" />
     <Compile Include="Models\Search.cs" />
     <Compile Include="Models\SearchProperty.cs" />
     <Compile Include="Models\SearchResultItem.cs" />

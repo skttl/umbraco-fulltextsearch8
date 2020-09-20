@@ -36,7 +36,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             _logger = logger;
 
             var appPath = HttpRuntime.AppDomainAppPath;
-            _configFilePath = Path.Combine(appPath, ConfigurationManager.AppSettings["FullTextSearch.ConfigPath"] ?? @"App_Plugins\Our.Umbraco.FullTextSearch\FullTextSearch.config");
+            _configFilePath = Path.Combine(appPath, ConfigurationManager.AppSettings["FullTextSearch.ConfigPath"] ?? @"App_Plugins\FullTextSearch\FullTextSearch.config");
 
             ResetConfigToDefaults();
 

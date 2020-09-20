@@ -41,7 +41,12 @@ namespace Our.Umbraco.FullTextSearch.Services
             using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
             {
                 var publishedContent = cref.UmbracoContext.Content.GetById(id);
-                if (publishedContent == null || IsDisallowed(publishedContent)) return;
+                if (publishedContent == null || IsDisallowed(publishedContent))
+                {
+                    // delete from cache if possible, and return
+                    DeleteFromCache(id);
+                    return;
+                }
 
                 foreach (var culture in publishedContent.Cultures)
                 {

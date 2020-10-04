@@ -183,7 +183,7 @@ On this search, I enable highlighting of text in the output by using `EnableHigh
 Using `Our.Umbraco.FullTextSearch.Helpers` you can search directly from your Razor view. The simplest possible way of doing that, is by simple adding the following to your view:
 
 ```
-@using Our.Umbraco.FullTextSerch.Helpers
+@using Our.Umbraco.FullTextSearch.Helpers
 @{
     var searchResult = FullTextSearchHelper.Search("putYourSearchTermHere");
 }

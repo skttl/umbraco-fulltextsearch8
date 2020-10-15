@@ -1,6 +1,6 @@
 ﻿angular.module("umbraco")
     .controller("Our.Umbraco.FullTextSearch.Dashboard.Controller",
-        function ($scope, $http, $timeout, listViewHelper, localizationService) {
+        function ($scope, $http, $timeout, listViewHelper, localizationService, editorService) {
 
             var vm = this;
 
@@ -119,7 +119,18 @@
                         return listViewHelper.isSelectedAll(vm.listView.items, vm.listView.selection);
                     },
                     clickItem: function (item) {
-                        // Todo: editor service
+                        var editor = {
+                            id: item.id,
+                            submit: function (model) {
+                                editorService.close();
+                            },
+                            close: function (model) {
+                                editorService.close();
+                            },
+                            allowSaveAndClose: true,
+                            allowPublishAndClose: true
+                        };
+                        editorService.contentEditor(editor);
                     },
                     clearSelection: function () {
                         vm.listView.selection = [];
@@ -172,7 +183,7 @@
                 },
                 getData: function (pageNumber) {
                     var endpoint = "";
-                    if (vm.listView.headerKey == "missingModes") {
+                    if (vm.listView.headerKey == "missingNodes") {
                         endpoint = "GetMissingNodes";
                     }
                     else if (vm.listView.headerKey == "incorrectIndexedNodes") {

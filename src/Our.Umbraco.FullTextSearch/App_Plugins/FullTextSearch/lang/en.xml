@@ -2,10 +2,10 @@
 <language alias="en" intName="English (UK)" localName="English (UK)" lcid="" culture="en-GB">
   <area alias="fullTextSearch">
     <key alias="indexStatus">Index Status</key>
-    <key alias="totalIndexableNodes">Total Indexable Nodes</key>
-    <key alias="totalIndexableNodesDescription">The total number of indexable nodes, according to the current Full Text Search config</key>
-    <key alias="totalIndexedNodes">Total Indexed Nodes</key>
-    <key alias="totalIndexedNodesDescription">The total number of indexed nodes searchable by Full Text Search</key>
+    <key alias="indexableNodes">Indexable Nodes</key>
+    <key alias="indexableNodesDescription">The total number of indexable nodes, according to the current Full Text Search config</key>
+    <key alias="indexedNodes">Indexed Nodes</key>
+    <key alias="indexedNodesDescription">The total number of indexed nodes searchable by Full Text Search</key>
     <key alias="missingNodes">Missing Nodes</key>
     <key alias="missingNodesDescription">The total number of missing indexed nodes, according to the current Full Text Search config</key>
     <key alias="incorrectIndexedNodes">Incorrect Indexed Nodes</key>

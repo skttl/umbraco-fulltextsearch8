@@ -171,6 +171,11 @@
                 ],
                 reload: function() {
                 },
+                getIndexedNodes: function () {
+                    vm.listView.show = true;
+                    vm.listView.headerKey = "indexedNodes";
+                    vm.listView.getData(1);
+                },
                 getMissingNodes: function () {
                     vm.listView.show = true;
                     vm.listView.headerKey = "missingNodes";
@@ -188,6 +193,9 @@
                     }
                     else if (vm.listView.headerKey == "incorrectIndexedNodes") {
                         endpoint = "GetIncorrectIndexedNodes";
+                    }
+                    else if (vm.listView.headerKey == "indexedNodes") {
+                        endpoint = "GetIndexedNodes";
                     }
 
                     vm.listView.loading = true;

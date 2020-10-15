@@ -30,10 +30,10 @@
                                     </i>
                                     <div class="umb-node-preview__content">
                                         <div class="umb-node-preview__name">
-                                            <localize key="fullTextSearch_totalIndexableNodes">Total Indexable Nodes</localize>
+                                            <localize key="fullTextSearch_indexableNodes">Indexable Nodes</localize>
                                         </div>
                                         <div class="umb-node-preview__description">
-                                            <localize key="fullTextSearch_totalIndexableNodesDescription">The total number of indexable nodes, according to the current Full Text Search config</localize>
+                                            <localize key="fullTextSearch_indexableNodesDescription">The total number of indexable nodes, according to the current Full Text Search config</localize>
                                         </div>
                                     </div>
                                     <div style="margin-right:auto;">
@@ -52,14 +52,16 @@
                                     </i>
                                     <div class="umb-node-preview__content">
                                         <div class="umb-node-preview__name">
-                                            <localize key="fullTextSearch_totalIndexedNodes">Total Indexed Nodes</localize>
+                                            <localize key="fullTextSearch_indexedNodes">Indexed Nodes</localize>
                                         </div>
                                         <div class="umb-node-preview__description">
-                                            <localize key="fullTextSearch_totalIndexedNodesDescription">The total number of indexed nodes searchable by Full Text Search</localize>
+                                            <localize key="fullTextSearch_indexedNodesDescription">The total number of indexed nodes searchable by Full Text Search</localize>
                                         </div>
                                     </div>
                                     <div style="margin-right:auto;">
-                                        {{ vm.indexStatus.status.TotalIndexedNodes}}
+                                        <button type="button" class="btn-link" style="padding:0;" ng-click="vm.listView.getIndexedNodes()">
+                                            {{ vm.indexStatus.status.TotalIndexedNodes}}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -80,7 +82,7 @@
                                         </div>
                                     </div>
                                     <div style="margin-right:auto;">
-                                        <button type="button" class="btn-link" ng-click="vm.listView.getMissingNodes()">
+                                        <button type="button" class="btn-link" style="padding:0;" ng-click="vm.listView.getMissingNodes()">
                                             {{ vm.indexStatus.status.MissingIndexedNodes}}
                                         </button>
                                     </div>
@@ -107,7 +109,7 @@
                                         </div>
                                     </div>
                                     <div style="margin-right:auto;">
-                                        <button type="button" class="btn-link" ng-click="vm.listView.getIncorrectIndexedNodes()">
+                                        <button type="button" class="btn-link" style="padding:0;" ng-click="vm.listView.getIncorrectIndexedNodes()">
                                             {{ vm.indexStatus.status.IncorrectIndexedNodes}}
                                         </button>
                                     </div>
@@ -228,6 +230,15 @@
                            on-select-all="vm.listView.methods.selectAll($event)"
                            on-selected-all="vm.listView.methods.isSelectedAll()">
                 </umb-table>
+                <div class="flex justify-center">
+                    <umb-pagination ng-show="vm.listView.totalPages"
+                                    page-number="vm.listView.currentPage"
+                                    total-pages="vm.listView.totalPages"
+                                    on-next="vm.listView.getData"
+                                    on-prev="vm.listView.getData"
+                                    on-go-to-page="vm.listView.getData">
+                    </umb-pagination>
+                </div>
             </div>
 
         </umb-editor-container>

@@ -145,6 +145,38 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         }
 
         [HttpGet]
+        public IndexedNodeResult GetIndexedNodes(int pageNumber = 1)
+        {
+            if (!_fullTextConfig.Enabled)
+            {
+                _logger.Debug<IndexController>("FullTextIndexing is not enabled");
+                return null;
+            }
+
+            if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
+            {
+                _logger.Error<IndexController>(new InvalidOperationException("No index found by name ExternalIndex"));
+                return null;
+            }
+
+            var result = new IndexedNodeResult();
+            var searcher = index.GetSearcher();
+
+            var missingNodes = GetIndexedNodes(searcher, pageNumber * 100);
+            result.PageNumber = pageNumber;
+            result.TotalPages = missingNodes.TotalItemCount / 100;
+            result.Items = missingNodes.Skip((pageNumber - 1) * 100).Select(x => new IndexedNode()
+            {
+                Id = x.Id,
+                Icon = x.GetValues("__Icon").FirstOrDefault(),
+                Name = x.GetValues("nodeName").FirstOrDefault(),
+                Description = GetBreadcrumb(x.GetValues("__Path").FirstOrDefault())
+            }).ToList();
+
+            return result;
+        }
+
+        [HttpGet]
         public IndexedNodeResult GetMissingNodes(int pageNumber = 1)
         {
             if (!_fullTextConfig.Enabled)

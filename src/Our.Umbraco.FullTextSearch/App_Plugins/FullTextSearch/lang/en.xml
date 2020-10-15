@@ -13,10 +13,15 @@
     <key alias="reindexNodes">Reindex Nodes</key>
     <key alias="reindexing">Reindexing...</key>
     <key alias="reindex">Reindex</key>
+    <key alias="reindexDescription">Select whether or not to reindex all nodes</key>
     <key alias="reindexWithDescendants">Reindex with descendants</key>
     <key alias="includeDescendants">Include descendants</key>
     <key alias="allNodes">All nodes</key>
+    <key alias="selectNodes">Select nodes</key>
+    <key alias="selectNodesDescription">Select the nodes to reindex</key>
     <key alias="selectedNodes">Selected nodes</key>
     <key alias="description">Description</key>
+    <key alias="developedBy">Developed by</key>
+    <key alias="sponsoredBy">Sponsored by</key>
   </area>
 </language>

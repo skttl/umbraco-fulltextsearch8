@@ -1,247 +1,39 @@
 ﻿<div ng-controller="Our.Umbraco.FullTextSearch.Dashboard.Controller as vm">
 
-    <umb-editor-view footer="false">
-        <umb-editor-header name="'Full Text Search'" name-locked="true" description="'v.1.0.0'" description-locked="true" hide-alias="true" hide-icon="true"></umb-editor-header>
+    <umb-editor-view>
+
+        <umb-editor-header name="'Full Text Search'"
+                           name-locked="true"
+                           description="'v1.0.0'"
+                           description-locked="true"
+                           navigation="vm.content.navigation"
+                           hide-icon="true"
+                           hide-alias="true">
+        </umb-editor-header>
 
         <umb-editor-container>
 
-            <div class="umb-package-details">
-
-                <div class="umb-package-details__main-content">
-
-                    <umb-box>
-                        <umb-box-header title="Index status" title-key="fullTextSearch_indexStatus">
-                            <umb-button action="vm.indexStatus.load()"
-                                        button-style="outline"
-                                        label-key="general_reload"
-                                        type="button"></umb-button>
-                        </umb-box-header>
-                        <umb-box-content>
-
-                            <umb-load-indicator ng-if="vm.indexStatus.loading"></umb-load-indicator>
-
-                            <div class="umb-node-preview" style="max-width:none;">
-                                <div class="flex w-100">
-                                    <i class="umb-node-preview__icon" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:2em;fill:currentColor">
-                                            <path d="M243.47 64.86l-7.335-7.333H36.725V474.23h298.07V156.187l-7.332-7.335L243.47 64.86zm66.287 384.329H61.761V82.566h141.615c37.203 0 19.276 88.18 19.276 88.18s86-20.9 87.104 18.53v259.913zm157.051-330.866l-81.266-81.268H258.938l25.043 25.038h71.481c.063 0 .12.01.185.01-.006.286-.023.547-.023.837 11.174 0 16.69 9.045 19.118 20.95 4.358 22.959-2.312 55.826-2.312 55.826s.137-.031.341-.082c-.114.602-.181.933-.181.933s67.129-16.325 75.793 10.732c.077.294.161.585.225.887.083.302.14.612.207.921.154.928.26 1.889.287 2.904v228.807h-87.998l.002 25.037h113.037V125.66l-7.335-7.337z" />
-                                            <path d="M275.883 369.348l-1.136-1.136h.002l-45.387-45.391a74.244 74.244 0 0010.056-36.918c.264-41.208-32.923-74.823-74.129-75.082l-.493-.001c-40.974.002-74.327 33.093-74.591 74.129-.26 41.205 32.928 74.82 74.129 75.083l.487.002a74.221 74.221 0 0037.571-10.164l45.347 45.353.004-.004 1.134 1.133c3.43 3.43 8.988 3.427 12.417 0l14.589-14.586c3.426-3.427 3.429-8.989 0-12.418zm-111.429-28.341c-30.643-.197-55.416-25.29-55.222-55.936.196-30.449 25.124-55.222 55.565-55.224l.372.001c14.845.093 28.767 5.962 39.197 16.526 10.429 10.564 16.121 24.56 16.025 39.409-.093 14.781-5.921 28.661-16.407 39.075-10.484 10.415-24.392 16.149-39.162 16.149h-.368z" />
-                                        </svg>
-                                    </i>
-                                    <div class="umb-node-preview__content">
-                                        <div class="umb-node-preview__name">
-                                            <localize key="fullTextSearch_indexableNodes">Indexable Nodes</localize>
-                                        </div>
-                                        <div class="umb-node-preview__description">
-                                            <localize key="fullTextSearch_indexableNodesDescription">The total number of indexable nodes, according to the current Full Text Search config</localize>
-                                        </div>
-                                    </div>
-                                    <div style="margin-right:auto;">
-                                        {{ vm.indexStatus.status.TotalIndexableNodes}}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="umb-node-preview" style="max-width:none;">
-                                <div class="flex w-100">
-                                    <i class="umb-node-preview__icon" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:2em;fill:currentColor">
-                                            <path d="M243.47 64.86l-7.335-7.333H36.725V474.23h298.07V156.187l-7.332-7.335L243.47 64.86zm66.287 384.329H61.761V82.566h141.615c37.203 0 19.276 88.18 19.276 88.18s86-20.9 87.104 18.53v259.913zm157.051-330.866l-81.266-81.268H258.938l25.043 25.038h71.481c.063 0 .12.01.185.01-.006.286-.023.547-.023.837 11.174 0 16.69 9.045 19.118 20.95 4.358 22.959-2.312 55.826-2.312 55.826s.137-.031.341-.082c-.114.602-.181.933-.181.933s67.129-16.325 75.793 10.732c.077.294.161.585.225.887.083.302.14.612.207.921.154.928.26 1.889.287 2.904v228.807h-87.998l.002 25.037h113.037V125.66l-7.335-7.337z" />
-                                            <path d="M101.727 206.396h162.68v15.133h-162.68v-15.133zM101.727 245.153h162.68v15.133h-162.68v-15.133zM101.727 283.91h162.68v15.133h-162.68V283.91zM101.727 322.668h162.68v15.133h-162.68v-15.133zM101.727 361.425h162.68v15.133h-162.68v-15.133zM101.727 400.182h162.68v15.133h-162.68v-15.133z" />
-                                        </svg>
-                                    </i>
-                                    <div class="umb-node-preview__content">
-                                        <div class="umb-node-preview__name">
-                                            <localize key="fullTextSearch_indexedNodes">Indexed Nodes</localize>
-                                        </div>
-                                        <div class="umb-node-preview__description">
-                                            <localize key="fullTextSearch_indexedNodesDescription">The total number of indexed nodes searchable by Full Text Search</localize>
-                                        </div>
-                                    </div>
-                                    <div style="margin-right:auto;">
-                                        <button type="button" class="btn-link" style="padding:0;" ng-click="vm.listView.getIndexedNodes()">
-                                            {{ vm.indexStatus.status.TotalIndexedNodes}}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="umb-node-preview" style="max-width:none;">
-                                <div class="flex w-100">
-                                    <i class="umb-node-preview__icon" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:2em;fill:currentColor">
-                                            <path d="M168.454 463.182h46.027v-24.51h-46.027v24.51zM107.973 92.637h24.934V73.555h18.084v-24.9h-43.018v43.982zm24.934 202.718h-24.934v44.309h24.934v-44.309zm0 123.497h-24.934v44.33h43.018v-24.51h-18.084v-19.82zm0-61.741h-24.934v44.293h24.934v-44.293zm0-247.025h-24.934v44.292h24.934v-44.292zm0 123.512h-24.934v44.308h24.934v-44.308zm0-61.757h-24.934v44.31h24.934v-44.31zm246.948 167.823h24.949v-44.309h-24.949v44.309zm0-61.758h24.949v-44.308h-24.949v44.308zm0 123.498h24.949v-44.293h-24.949v44.293zM397.48 139.58l-83.618-83.635-7.308-7.289h-74.608v24.9h41.989c37.049 0 19.179 87.836 19.179 87.836s85.712-20.829 86.741 18.478v36.281h24.949v-69.262l-7.324-7.309zM231.946 463.182h46.043v-24.51h-46.043v24.51zm147.909-24.51h-20.93v24.51h45.879v-44.33h-24.949v19.82zM168.454 73.555h46.027v-24.9h-46.027v24.9zm126.982 389.627h46.03v-24.51h-46.03v24.51z" />
-                                        </svg>
-                                    </i>
-                                    <div class="umb-node-preview__content">
-                                        <div class="umb-node-preview__name">
-                                            <localize key="fullTextSearch_missingNodes">Missing Nodes</localize>
-                                        </div>
-                                        <div class="umb-node-preview__description">
-                                            <localize key="fullTextSearch_missingNodesDescription">The total number of missing indexed nodes, according to the current Full Text Search config</localize>
-                                        </div>
-                                    </div>
-                                    <div style="margin-right:auto;">
-                                        <button type="button" class="btn-link" style="padding:0;" ng-click="vm.listView.getMissingNodes()">
-                                            {{ vm.indexStatus.status.MissingIndexedNodes}}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="umb-node-preview" style="max-width:none;">
-                                <div class="flex w-100">
-                                    <i class="umb-node-preview__icon" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:2em;fill:currentColor">
-                                            <path d="M396.441 138.878l-83.997-83.993-7.331-7.333H105.702v416.701h298.071V146.214l-7.332-7.336zM130.74 439.217V72.591h141.613c37.201 0 19.274 88.18 19.274 88.18s86-20.901 87.104 18.534v259.912H130.74z" />
-                                            <path d="M236.791 247.842c0 21.067-22.807 34.235-41.052 23.701a27.369 27.369 0 01-13.684-23.701c0-21.068 22.807-34.235 41.052-23.702a27.37 27.37 0 0113.684 23.702z" fill-rule="evenodd" />
-                                            <path d="M247.42 246.978c6-7 12-7 18 0" fill="none" />
-                                            <path d="M185.449 329.243c22.182-25.296 47.793-40.524 71.666-40.524 12.127 0 25.882 4.006 37.526 10.8 11.336 6.608 30.658 26.822 30.658 26.822 1.049.763-16.222 21.665-15.84 22.027 0 0-10.615-11.522-15.33-15.65-4.653-4.074-8.713-7.031-13.224-9.662-8.795-5.129-15.479-7.085-23.79-7.085-17.005 0-32.274 8.618-50.968 31.014z" />
-                                            <path d="M332.173 247.842c0 21.067-22.807 34.235-41.052 23.701a27.369 27.369 0 01-13.684-23.701c0-21.068 22.807-34.235 41.052-23.702a27.37 27.37 0 0113.684 23.702z" fill-rule="evenodd" />
-                                        </svg>
-                                    </i>
-                                    <div class="umb-node-preview__content">
-                                        <div class="umb-node-preview__name">
-                                            <localize key="fullTextSearch_incorrectIndexedNodes">Incorrect Indexed Nodes</localize>
-                                        </div>
-                                        <div class="umb-node-preview__description">
-                                            <localize key="fullTextSearch_incorrectIndexedNodesDescription">The total number of indexed nodes that should not be indexed according to the current Full Text Search config</localize>
-                                        </div>
-                                    </div>
-                                    <div style="margin-right:auto;">
-                                        <button type="button" class="btn-link" style="padding:0;" ng-click="vm.listView.getIncorrectIndexedNodes()">
-                                            {{ vm.indexStatus.status.IncorrectIndexedNodes}}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </umb-box-content>
-                    </umb-box>
-
-                </div>
-
-                <div class="umb-package-details__sidebar">
-
-                    <umb-box>
-                        <umb-box-header title-key="fullTextSearch_reindexNodes" title="Reindex Nodes">
-                            <div style="height:32px;"></div> <!-- to align with the left box -->
-                        </umb-box-header>
-                        <umb-box-content>
-                            <form ng-if="vm.reindexNodes.pickNodes" class="mb2">
-                                <div class="mb2">
-                                    <umb-property-editor model="vm.reindexNodes.pickedNodes"></umb-property-editor>
-                                </div>
-                                <umb-toggle checked="vm.reindexNodes.includeDescendants"
-                                            on-click="vm.reindexNodes.toggleIncludeDescendants()"
-                                            show-labels="true"
-                                            label-on="{{ vm.dictionaryKeys.fullTextSearch_includeDescendants }}"
-                                            label-off="{{ vm.dictionaryKeys.fullTextSearch_includeDescendants }}"
-                                            label-position="right"
-                                            hide-icons="true">
-                                </umb-toggle>
-                            </form>
-                            <div class="flex justify-between">
-                                <umb-toggle checked="!vm.reindexNodes.pickNodes"
-                                            on-click="vm.reindexNodes.togglePickNodes()"
-                                            show-labels="true"
-                                            label-on="{{ vm.dictionaryKeys.fullTextSearch_allNodes }}"
-                                            label-off="{{ vm.dictionaryKeys.fullTextSearch_selectedNodes }}"
-                                            label-position="right"
-                                            hide-icons="true"></umb-toggle>
-                                <umb-button action="vm.reindexNodes.reindex()"
-                                            type="button"
-                                            button-style="action"
-                                            label-key="fullTextSearch_reindexNodes"
-                                            label="Reindex Nodes"
-                                            state="vm.reindexNodes.buttonState"></umb-button>
-                            </div>
-                        </umb-box-content>
-                    </umb-box>
-
-                    <umb-box>
-                        <umb-box-header title="Developer" title-key="sections_developer"></umb-box-header>
-                        <umb-box-content>
-                            <div class="umb-package-details__owner-profile">
-                                <div class="umb-package-details__owner-profile-avatar">
-                                    <umb-avatar size="m" img-src="https://our.umbraco.com/media/upload/65cfa307-6f67-47de-a489-fc1bef5d48ad/img_3335.png?width=100&height=100&mode=crop&upscale=true"></umb-avatar>
-                                </div>
-                                <div>
-                                    <div class="umb-package-details__owner-profile-name">Søren Kottal</div>
-                                    <div class="umb-package-details__owner-profile-karma">
-                                        <a href="https://github.com/skttl" target="_blank">github.com/skttl</a><br />
-                                    </div>
-                                </div>
-                                <div style="margin-left:auto;">
-                                    <a href="https://www.ecreo.dk/" target="_blank">
-                                        <svg width="100" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 19">
-                                            <path d="M0 9.95C0 4.439 3.236.074 8.705.074c4.761 0 6.993 3.181 6.993 7.583 0 .961-.111 2.145-.297 3.033H4.985c.297 2.885 1.823 4.143 4.24 4.143 1.489 0 3.386-.26 4.948-.814l1.042 3.144c-2.195.998-4.576 1.516-6.882 1.516C3.348 18.68 0 15.535 0 9.95zm8.407-6.214c-2.046 0-3.087 1.48-3.385 4.032h6.026c.038-.333.038-.74.038-1.036 0-1.85-.856-2.996-2.679-2.996zM17.5 9.95c0 5.548 3.162 8.73 8.37 8.73 2.083 0 4.13-.482 5.915-1.332l-1.005-3.403c-1.488.518-2.938.777-4.092.777-2.752 0-4.166-1.665-4.166-5.29 0-2.071.484-3.736 1.488-4.586.558-.481 1.265-.703 2.232-.703 1.19 0 2.492.37 3.906 1.22l1.86-3.033C30.558.925 28.66.111 26.279.111c-5.431 0-8.78 3.995-8.78 9.839zM33.92.74c.26 4.217.335 5.918.335 7.435v10.098h4.947V6.99c1.154-1.406 2.493-1.887 4.018-1.887.707 0 1.34.037 2.046.222L46.047.85c-.67-.444-1.6-.74-2.604-.74-2.009 0-3.46 1.258-4.613 3.292l-.966-3.18-3.943.518zm13.292 9.21c0-5.511 3.236-9.876 8.705-9.876 4.761 0 6.993 3.181 6.993 7.583 0 .961-.111 2.145-.297 3.033H52.198c.297 2.885 1.823 4.143 4.24 4.143 1.489 0 3.386-.26 4.948-.814l1.042 3.144c-2.195.998-4.576 1.516-6.882 1.516-4.985 0-8.333-3.144-8.333-8.729zm8.407-6.214c-2.046 0-3.087 1.48-3.385 4.032h6.026c.038-.333.038-.74.038-1.036 0-1.85-.856-2.996-2.679-2.996zm9.056 6.14C64.676 4.698 67.912 0 73.64 0c5.17 0 8.184 3.958 8.184 9.062 0 5.216-3.162 9.728-8.928 9.728-5.134 0-8.221-3.772-8.221-8.914zm12.127-.222c0-3.403-1.19-5.844-3.608-5.844-1.116 0-1.86.444-2.27.962-.706.887-1.19 2.44-1.19 4.512 0 3.403 1.228 5.696 3.608 5.696 1.116 0 1.86-.48 2.27-.961.78-.925 1.19-2.441 1.19-4.365z" fill="#EC2E00" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </umb-box-content>
-                    </umb-box>
-
-                </div>
-
-            </div>
-
-            <div ng-if="vm.listView.show">
-
-                <umb-box class="mb0">
-
-                    <umb-box-header title-key="fullTextSearch_{{ vm.listView.headerKey }}">
-                        <div class="flex">
-                            <div style="height:32px;"></div>
-                            <div class="flex justify-between" ng-if="vm.listView.selection.length > 0">
-                                <div>
-                                    <strong ng-show="!vm.listView.actionInProgress">{{ vm.listView.selection.length }} <localize key="general_of">of</localize> {{ vm.listView.items.length }} <localize key="general_selected">selected</localize></strong>
-                                    <umb-button type="button"
-                                                label="Clear selection"
-                                                label-key="buttons_clearSelection"
-                                                button-style="white"
-                                                action="vm.listView.methods.clearSelection()"
-                                                disabled="actionInProgress">
-                                    </umb-button>
-                                    <strong ng-show="vm.listView.actionInProgress"><localize key="fullTextSearch_reindexing">Reindexing...</localize></strong>
-                                </div>
-                                <umb-button-group default-button="vm.listView.defaultButton"
-                                                  sub-buttons="vm.listView.subButtons"
-                                                  direction="down"
-                                                  float="right">
-                                </umb-button-group>
-                            </div>
-                        </div>
-                        <umb-loader position="bottom" ng-show="vm.listView.actionInProgress || vm.listView.loading"></umb-loader>
-                    </umb-box-header>
-                    <umb-box-content ng-if="!vm.listView.loading && vm.listView.items.length == 0">
-                        <umb-empty-state ng-if="!vm.listView.loading && vm.listView.items.length == 0">
-                            <localize key="content_noItemsToShow">There are no items to show</localize>
-                        </umb-empty-state>
-                    </umb-box-content>
-                </umb-box>
-                <umb-table ng-if="vm.listView.items.length > 0"
-                           items="vm.listView.items"
-                           item-properties="vm.listView.options.includeProperties"
-                           allow-select-all="true"
-                           on-select="vm.listView.methods.selectItem(item, $index, $event)"
-                           on-click="vm.listView.methods.clickItem(item)"
-                           on-select-all="vm.listView.methods.selectAll($event)"
-                           on-selected-all="vm.listView.methods.isSelectedAll()">
-                </umb-table>
-                <div class="flex justify-center">
-                    <umb-pagination ng-show="vm.listView.totalPages"
-                                    page-number="vm.listView.currentPage"
-                                    total-pages="vm.listView.totalPages"
-                                    on-next="vm.listView.getData"
-                                    on-prev="vm.listView.getData"
-                                    on-go-to-page="vm.listView.getData">
-                    </umb-pagination>
-                </div>
-            </div>
+            <umb-editor-sub-views sub-views="vm.content.navigation"
+                                  model="vm.content">
+            </umb-editor-sub-views>
 
         </umb-editor-container>
+
+        <umb-editor-footer>
+
+            <umb-editor-footer-content-right>
+                <localize key="fullTextSearch_developedBy">Developed by</localize>
+                <a href="https://github.com/skttl" target="_blank"><b>Søren Kottal</b></a>
+                -
+                <localize key="fullTextSearch_sponsoredBy">sponsored by</localize>
+                <a href="https://www.ecreo.dk" target="_blank">
+                    <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 19" style="height:1ex; margin-left:.5ex;">
+                        <path d="M0 9.95C0 4.439 3.236.074 8.705.074c4.761 0 6.993 3.181 6.993 7.583 0 .961-.111 2.145-.297 3.033H4.985c.297 2.885 1.823 4.143 4.24 4.143 1.489 0 3.386-.26 4.948-.814l1.042 3.144c-2.195.998-4.576 1.516-6.882 1.516C3.348 18.68 0 15.535 0 9.95zm8.407-6.214c-2.046 0-3.087 1.48-3.385 4.032h6.026c.038-.333.038-.74.038-1.036 0-1.85-.856-2.996-2.679-2.996zM17.5 9.95c0 5.548 3.162 8.73 8.37 8.73 2.083 0 4.13-.482 5.915-1.332l-1.005-3.403c-1.488.518-2.938.777-4.092.777-2.752 0-4.166-1.665-4.166-5.29 0-2.071.484-3.736 1.488-4.586.558-.481 1.265-.703 2.232-.703 1.19 0 2.492.37 3.906 1.22l1.86-3.033C30.558.925 28.66.111 26.279.111c-5.431 0-8.78 3.995-8.78 9.839zM33.92.74c.26 4.217.335 5.918.335 7.435v10.098h4.947V6.99c1.154-1.406 2.493-1.887 4.018-1.887.707 0 1.34.037 2.046.222L46.047.85c-.67-.444-1.6-.74-2.604-.74-2.009 0-3.46 1.258-4.613 3.292l-.966-3.18-3.943.518zm13.292 9.21c0-5.511 3.236-9.876 8.705-9.876 4.761 0 6.993 3.181 6.993 7.583 0 .961-.111 2.145-.297 3.033H52.198c.297 2.885 1.823 4.143 4.24 4.143 1.489 0 3.386-.26 4.948-.814l1.042 3.144c-2.195.998-4.576 1.516-6.882 1.516-4.985 0-8.333-3.144-8.333-8.729zm8.407-6.214c-2.046 0-3.087 1.48-3.385 4.032h6.026c.038-.333.038-.74.038-1.036 0-1.85-.856-2.996-2.679-2.996zm9.056 6.14C64.676 4.698 67.912 0 73.64 0c5.17 0 8.184 3.958 8.184 9.062 0 5.216-3.162 9.728-8.928 9.728-5.134 0-8.221-3.772-8.221-8.914zm12.127-.222c0-3.403-1.19-5.844-3.608-5.844-1.116 0-1.86.444-2.27.962-.706.887-1.19 2.44-1.19 4.512 0 3.403 1.228 5.696 3.608 5.696 1.116 0 1.86-.48 2.27-.961.78-.925 1.19-2.441 1.19-4.365z" fill="#EC2E00" />
+                    </svg>
+                </a>
+            </umb-editor-footer-content-right>
+
+        </umb-editor-footer>
 
     </umb-editor-view>
 

@@ -1,6 +1,13 @@
 ﻿{
-  "javascript" : [
-      "/App_Plugins/FullTextSearch/dashboard.controller.js"
+  "javascript": [
+    "/App_Plugins/FullTextSearch/scripts/dashboard.controller.js",
+    "/App_Plugins/FullTextSearch/scripts/reindex.controller.js",
+    "/App_Plugins/FullTextSearch/scripts/search.controller.js",
+    "/App_Plugins/FullTextSearch/scripts/status.controller.js",
+    "/App_Plugins/FullTextSearch/scripts/statusnodes.controller.js",
+    "/App_Plugins/FullTextSearch/scripts/fulltextsearch.resource.js"
+  ],
+  "css": [
+    "/App_Plugins/FullTextSearch/css/fulltextsearch.css"
   ]
-
 }

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (UK)" localName="English (UK)" lcid="" culture="en-GB">
+  <area alias="fullTextSearch">
+    <key alias="indexStatus">Index Status</key>
+    <key alias="totalIndexableNodes">Total Indexable Nodes</key>
+    <key alias="totalIndexableNodesDescription">The total number of indexable nodes, according to the current Full Text Search config</key>
+    <key alias="totalIndexedNodes">Total Indexed Nodes</key>
+    <key alias="totalIndexedNodesDescription">The total number of indexed nodes searchable by Full Text Search</key>
+    <key alias="missingNodes">Missing Nodes</key>
+    <key alias="missingNodesDescription">The total number of missing indexed nodes, according to the current Full Text Search config</key>
+    <key alias="incorrectIndexedNodes">Incorrect Indexed Nodes</key>
+    <key alias="incorrectIndexedNodesDescription">The total number of indexed nodes that should not be indexed according to the current Full Text Search config</key>
+    <key alias="reindexNodes">Reindex Nodes</key>
+    <key alias="reindexing">Reindexing...</key>
+    <key alias="reindex">Reindex</key>
+    <key alias="reindexWithDescendants">Reindex with descendants</key>
+    <key alias="includeDescendants">Include descendants</key>
+    <key alias="allNodes">All nodes</key>
+    <key alias="selectedNodes">Selected nodes</key>
+    <key alias="description">Description</key>
+  </area>
+</language>

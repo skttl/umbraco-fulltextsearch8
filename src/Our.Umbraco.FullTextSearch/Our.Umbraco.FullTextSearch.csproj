@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="App_Plugins\FullTextSearch\lang\en.xml" />
     <None Remove="App_Plugins\Our.Umbraco.FullTextSearch\FullTextSearch.config" />
   </ItemGroup>
 
@@ -52,6 +53,8 @@
     <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
     <Compile Include="Models\CacheItem.cs" />
     <Compile Include="Models\FullTextSearchResult.cs" />
+    <Compile Include="Models\IndexedNode.cs" />
+    <Compile Include="Models\IndexedNodeResult.cs" />
     <Compile Include="Models\IndexStatus.cs" />
     <Compile Include="Models\Search.cs" />
     <Compile Include="Models\SearchProperty.cs" />

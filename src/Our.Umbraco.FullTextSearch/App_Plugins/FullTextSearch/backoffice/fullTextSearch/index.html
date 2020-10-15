@@ -10,10 +10,10 @@
                 <div class="umb-package-details__main-content">
 
                     <umb-box>
-                        <umb-box-header title="Index status">
+                        <umb-box-header title="Index status" title-key="fullTextSearch_indexStatus">
                             <umb-button action="vm.indexStatus.load()"
                                         button-style="outline"
-                                        label="Reload"
+                                        label-key="general_reload"
                                         type="button"></umb-button>
                         </umb-box-header>
                         <umb-box-content>
@@ -30,9 +30,11 @@
                                     </i>
                                     <div class="umb-node-preview__content">
                                         <div class="umb-node-preview__name">
-                                            Total Indexable Nodes
+                                            <localize key="fullTextSearch_totalIndexableNodes">Total Indexable Nodes</localize>
                                         </div>
-                                        <div class="umb-node-preview__description">The total number of indexable nodes, according to the current Full Text Search config</div>
+                                        <div class="umb-node-preview__description">
+                                            <localize key="fullTextSearch_totalIndexableNodesDescription">The total number of indexable nodes, according to the current Full Text Search config</localize>
+                                        </div>
                                     </div>
                                     <div style="margin-right:auto;">
                                         {{ vm.indexStatus.status.TotalIndexableNodes}}
@@ -50,9 +52,11 @@
                                     </i>
                                     <div class="umb-node-preview__content">
                                         <div class="umb-node-preview__name">
-                                            Total Indexed Nodes
+                                            <localize key="fullTextSearch_totalIndexedNodes">Total Indexed Nodes</localize>
                                         </div>
-                                        <div class="umb-node-preview__description">The total number of indexed nodes searchable by Full Text Search</div>
+                                        <div class="umb-node-preview__description">
+                                            <localize key="fullTextSearch_totalIndexedNodesDescription">The total number of indexed nodes searchable by Full Text Search</localize>
+                                        </div>
                                     </div>
                                     <div style="margin-right:auto;">
                                         {{ vm.indexStatus.status.TotalIndexedNodes}}
@@ -69,12 +73,16 @@
                                     </i>
                                     <div class="umb-node-preview__content">
                                         <div class="umb-node-preview__name">
-                                            Missing Nodes
+                                            <localize key="fullTextSearch_missingNodes">Missing Nodes</localize>
                                         </div>
-                                        <div class="umb-node-preview__description">The total number of missing indexed nodes, according to the current Full Text Search config</div>
+                                        <div class="umb-node-preview__description">
+                                            <localize key="fullTextSearch_missingNodesDescription">The total number of missing indexed nodes, according to the current Full Text Search config</localize>
+                                        </div>
                                     </div>
                                     <div style="margin-right:auto;">
-                                        {{ vm.indexStatus.status.MissingIndexedNodes}}
+                                        <button type="button" class="btn-link" ng-click="vm.listView.getMissingNodes()">
+                                            {{ vm.indexStatus.status.MissingIndexedNodes}}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -92,12 +100,16 @@
                                     </i>
                                     <div class="umb-node-preview__content">
                                         <div class="umb-node-preview__name">
-                                            Incorrect Indexed Nodes
+                                            <localize key="fullTextSearch_incorrectIndexedNodes">Incorrect Indexed Nodes</localize>
                                         </div>
-                                        <div class="umb-node-preview__description">The total number of indexed nodes that should not be indexed according to the current Full Text Search config</div>
+                                        <div class="umb-node-preview__description">
+                                            <localize key="fullTextSearch_incorrectIndexedNodesDescription">The total number of indexed nodes that should not be indexed according to the current Full Text Search config</localize>
+                                        </div>
                                     </div>
                                     <div style="margin-right:auto;">
-                                        {{ vm.indexStatus.status.IncorrectIndexedNodes}}
+                                        <button type="button" class="btn-link" ng-click="vm.listView.getIncorrectIndexedNodes()">
+                                            {{ vm.indexStatus.status.IncorrectIndexedNodes}}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -110,42 +122,43 @@
                 <div class="umb-package-details__sidebar">
 
                     <umb-box>
-                        <umb-box-header title="Rebuild Cache">
+                        <umb-box-header title-key="fullTextSearch_reindexNodes" title="Reindex Nodes">
                             <div style="height:32px;"></div> <!-- to align with the left box -->
                         </umb-box-header>
                         <umb-box-content>
-                            <form ng-if="vm.rebuildCache.pickNodes" class="mb2">
+                            <form ng-if="vm.reindexNodes.pickNodes" class="mb2">
                                 <div class="mb2">
-                                    <umb-property-editor model="vm.rebuildCache.pickedNodes"></umb-property-editor>
+                                    <umb-property-editor model="vm.reindexNodes.pickedNodes"></umb-property-editor>
                                 </div>
-                                <umb-toggle checked="vm.rebuildCache.includeDescendants"
-                                            on-click="vm.rebuildCache.toggleIncludeDescendants()"
+                                <umb-toggle checked="vm.reindexNodes.includeDescendants"
+                                            on-click="vm.reindexNodes.toggleIncludeDescendants()"
                                             show-labels="true"
-                                            label-on="Include descendants"
-                                            label-off="Include descendants"
+                                            label-on="{{ vm.dictionaryKeys.fullTextSearch_includeDescendants }}"
+                                            label-off="{{ vm.dictionaryKeys.fullTextSearch_includeDescendants }}"
                                             label-position="right"
                                             hide-icons="true">
                                 </umb-toggle>
                             </form>
                             <div class="flex justify-between">
-                                <umb-toggle checked="!vm.rebuildCache.pickNodes"
-                                            on-click="vm.rebuildCache.togglePickNodes()"
+                                <umb-toggle checked="!vm.reindexNodes.pickNodes"
+                                            on-click="vm.reindexNodes.togglePickNodes()"
                                             show-labels="true"
-                                            label-on="All nodes"
-                                            label-off="Selected nodes"
+                                            label-on="{{ vm.dictionaryKeys.fullTextSearch_allNodes }}"
+                                            label-off="{{ vm.dictionaryKeys.fullTextSearch_selectedNodes }}"
                                             label-position="right"
                                             hide-icons="true"></umb-toggle>
-                                <umb-button action="vm.rebuildCache.rebuild()"
+                                <umb-button action="vm.reindexNodes.reindex()"
                                             type="button"
                                             button-style="action"
-                                            label="Rebuild Cache"
-                                            state="vm.rebuildCache.buttonState"></umb-button>
+                                            label-key="fullTextSearch_reindexNodes"
+                                            label="Reindex Nodes"
+                                            state="vm.reindexNodes.buttonState"></umb-button>
                             </div>
                         </umb-box-content>
                     </umb-box>
 
                     <umb-box>
-                        <umb-box-header title="Developer"></umb-box-header>
+                        <umb-box-header title="Developer" title-key="sections_developer"></umb-box-header>
                         <umb-box-content>
                             <div class="umb-package-details__owner-profile">
                                 <div class="umb-package-details__owner-profile-avatar">
@@ -170,6 +183,51 @@
 
                 </div>
 
+            </div>
+
+            <div ng-if="vm.listView.show">
+
+                <umb-box class="mb0">
+
+                    <umb-box-header title-key="fullTextSearch_{{ vm.listView.headerKey }}">
+                        <div class="flex">
+                            <div style="height:32px;"></div>
+                            <div class="flex justify-between" ng-if="vm.listView.selection.length > 0">
+                                <div>
+                                    <strong ng-show="!vm.listView.actionInProgress">{{ vm.listView.selection.length }} <localize key="general_of">of</localize> {{ vm.listView.items.length }} <localize key="general_selected">selected</localize></strong>
+                                    <umb-button type="button"
+                                                label="Clear selection"
+                                                label-key="buttons_clearSelection"
+                                                button-style="white"
+                                                action="vm.listView.methods.clearSelection()"
+                                                disabled="actionInProgress">
+                                    </umb-button>
+                                    <strong ng-show="vm.listView.actionInProgress"><localize key="fullTextSearch_reindexing">Reindexing...</localize></strong>
+                                </div>
+                                <umb-button-group default-button="vm.listView.defaultButton"
+                                                  sub-buttons="vm.listView.subButtons"
+                                                  direction="down"
+                                                  float="right">
+                                </umb-button-group>
+                            </div>
+                        </div>
+                        <umb-loader position="bottom" ng-show="vm.listView.actionInProgress || vm.listView.loading"></umb-loader>
+                    </umb-box-header>
+                    <umb-box-content ng-if="!vm.listView.loading && vm.listView.items.length == 0">
+                        <umb-empty-state ng-if="!vm.listView.loading && vm.listView.items.length == 0">
+                            <localize key="content_noItemsToShow">There are no items to show</localize>
+                        </umb-empty-state>
+                    </umb-box-content>
+                </umb-box>
+                <umb-table ng-if="vm.listView.items.length > 0"
+                           items="vm.listView.items"
+                           item-properties="vm.listView.options.includeProperties"
+                           allow-select-all="true"
+                           on-select="vm.listView.methods.selectItem(item, $index, $event)"
+                           on-click="vm.listView.methods.clickItem(item)"
+                           on-select-all="vm.listView.methods.selectAll($event)"
+                           on-selected-all="vm.listView.methods.isSelectedAll()">
+                </umb-table>
             </div>
 
         </umb-editor-container>

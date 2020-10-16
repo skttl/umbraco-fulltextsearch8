@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
-namespace Our.Umbraco.FullTextSearch.Models
+namespace Our.Umbraco.FullTextSearch.Services.Models
 {
     [TableName("FullTextCache")]
     [PrimaryKey("Id", AutoIncrement = true)]

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Our.Umbraco.FullTextSearch.Models;
+using Our.Umbraco.FullTextSearch.Services.Models;
 
 namespace Our.Umbraco.FullTextSearch.Interfaces
 {

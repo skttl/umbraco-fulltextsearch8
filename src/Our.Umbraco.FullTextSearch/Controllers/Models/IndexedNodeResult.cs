@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Our.Umbraco.FullTextSearch.Models
+namespace Our.Umbraco.FullTextSearch.Controllers.Models
 {
     public class IndexedNodeResult
     {

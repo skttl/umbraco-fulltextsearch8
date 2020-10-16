@@ -1,5 +1,6 @@
 ﻿using Examine;
 using Microsoft.SqlServer.Server;
+using Our.Umbraco.FullTextSearch.Controllers.Models;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
 using Our.Umbraco.FullTextSearch.Services;
@@ -30,6 +31,8 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         private readonly IExamineManager _examineManager;
         private readonly IContentService _contentService;
         private readonly IndexRebuilder _indexRebuilder;
+        private readonly ILocalizationService _localizationService;
+        private readonly ISearchService _searchService;
 
         private string _allIndexableNodesQuery => "__IndexType:content AND __Published:y AND -(templateID:0)";
         private string _allIndexedNodesQuery => _allIndexableNodesQuery + $" AND {_fullTextConfig.FullTextPathField}:\"-1\"";
@@ -40,7 +43,9 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             IExamineManager examineManager,
             IndexRebuilder indexRebuilder,
             IPublishedContentValueSetBuilder valueSetBuilder,
-            IContentService contentService)
+            IContentService contentService,
+            ILocalizationService localizationService,
+            ISearchService searchService)
         {
             _cacheService = cacheService;
             _fullTextConfig = fullTextConfig;
@@ -49,6 +54,8 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             _examineManager = examineManager;
             _contentService = contentService;
             _indexRebuilder = indexRebuilder;
+            _localizationService = localizationService;
+            _searchService = searchService;
         }
 
         [HttpPost]
@@ -341,6 +348,78 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             _logger.Debug<IndexController>("GetMissingNodes using query {query}", missingQuery.ToString());
 
             return searcher.CreateQuery().NativeQuery(missingQuery.ToString()).Execute(maxResults);
+        }
+
+        [HttpGet]
+        public SearchInfo GetSearchSettings()
+        {
+            var info = new SearchInfo();
+            var defaultSearch = new Search("");
+
+            info.DefaultSettings = new SearchSettings()
+            {
+                TitleProperties = new List<string>() { _fullTextConfig.DefaultTitleField },
+                BodyProperties = new List<string>() { _fullTextConfig.FullTextContentField },
+                SummaryProperties = new List<string>() { _fullTextConfig.FullTextContentField },
+                Culture = _localizationService.GetDefaultLanguageIsoCode(),
+                RootNodeIds = new int[] { },
+                SummaryLength = defaultSearch.SummaryLength,
+                EnableWildcards = defaultSearch.AddWildcard,
+                Fuzzyness = defaultSearch.Fuzzyness,
+                TitleBoost = defaultSearch.TitleBoost,
+                SearchType = defaultSearch.SearchType.ToString()
+            };
+            info.Cultures = _localizationService.GetAllLanguages().Select(x => x.IsoCode).ToList();
+
+            return info;
+        }
+
+        [HttpPost]
+        public IndexedNodeResult GetSearchResult([FromBody]SearchRequest searchRequest)
+        {
+            if (searchRequest.SearchTerms.IsNullOrWhiteSpace()) return null;
+
+            var pageNumber = searchRequest.PageNumber < 1 ? 1 : searchRequest.PageNumber;
+            var search = new Search(searchRequest.SearchTerms)
+                .SetPageLength(20)
+                .EnableHighlighting();
+
+            if (searchRequest.AdvancedSettings != null)
+            {
+                search.AddTitleProperties(searchRequest.AdvancedSettings.TitleProperties.ToArray())
+                    .SetTitleBoost(searchRequest.AdvancedSettings.TitleBoost)
+                    .SetSearchType((SearchType)Enum.Parse(typeof(SearchType), searchRequest.AdvancedSettings.SearchType))
+                    .AddBodyProperties(searchRequest.AdvancedSettings.BodyProperties.ToArray())
+                    .AddSummaryProperties(searchRequest.AdvancedSettings.SummaryProperties.ToArray())
+                    .SetSummaryLength(searchRequest.AdvancedSettings.SummaryLength)
+                    .AddRootNodeIds(searchRequest.AdvancedSettings.RootNodeIds)
+                    .SetCulture(searchRequest.AdvancedSettings.Culture)
+                    .SetFuzzyness(searchRequest.AdvancedSettings.Fuzzyness);
+                if (searchRequest.AdvancedSettings.EnableWildcards)
+                    search.EnableWildcards();
+            }
+            else
+            {
+                search.SetCulture(_localizationService.GetDefaultLanguageIsoCode());
+            }
+
+            var searchResult = _searchService.Search(search, pageNumber);
+
+            var result = new IndexedNodeResult();
+            result.PageNumber = pageNumber;
+            result.TotalPages = searchResult.TotalPages;
+            result.Items = searchResult.Results.Select(x =>
+                new IndexedNode()
+                {
+                    Id = x.Id,
+                    Name = x.Title,
+                    Description = x.Summary.ToString(),
+                    Icon = x.Fields["__Icon"],
+                    AllFields = x.Fields
+                }).ToList();
+
+            return result;
+
         }
     }
 }

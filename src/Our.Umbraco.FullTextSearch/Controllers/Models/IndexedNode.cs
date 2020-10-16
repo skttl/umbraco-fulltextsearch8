@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Our.Umbraco.FullTextSearch.Models
+namespace Our.Umbraco.FullTextSearch.Controllers.Models
 {
     public class IndexedNode
     {
@@ -17,5 +17,7 @@ namespace Our.Umbraco.FullTextSearch.Models
         public string Icon { get; set; }
         [JsonProperty("description")]
         public string Description { get; set; }
+        [JsonProperty("allFields")]
+        public IReadOnlyDictionary<string,string> AllFields { get; set; }
     }
 }

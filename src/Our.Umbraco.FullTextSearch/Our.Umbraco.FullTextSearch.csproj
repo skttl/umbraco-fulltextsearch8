@@ -30,7 +30,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="App_Plugins\FullTextSearch\backoffice\fullTextSearch\index.html" />
+    <None Remove="App_Plugins\FullTextSearch\backoffice\fullTextSearch\reindex.html" />
+    <None Remove="App_Plugins\FullTextSearch\backoffice\fullTextSearch\search.html" />
+    <None Remove="App_Plugins\FullTextSearch\css\fulltextsearch.css" />
+    <None Remove="App_Plugins\FullTextSearch\dashboard.controller.js" />
     <None Remove="App_Plugins\FullTextSearch\lang\en.xml" />
+    <None Remove="App_Plugins\FullTextSearch\reindex.controller.js" />
+    <None Remove="App_Plugins\FullTextSearch\scripts\fulltextsearch.resource.js" />
+    <None Remove="App_Plugins\FullTextSearch\scripts\searchAdvancedSettings.controller.js" />
+    <None Remove="App_Plugins\FullTextSearch\scripts\statusnodes.controller.js" />
+    <None Remove="App_Plugins\FullTextSearch\search.controller.js" />
+    <None Remove="App_Plugins\FullTextSearch\views\search\advancedSettings.html" />
+    <None Remove="App_Plugins\FullTextSearch\views\search\inspectNode.html" />
+    <None Remove="App_Plugins\FullTextSearch\views\statusNodes.html" />
     <None Remove="App_Plugins\Our.Umbraco.FullTextSearch\FullTextSearch.config" />
   </ItemGroup>
 
@@ -51,11 +64,8 @@
     <Compile Include="Migrations\ZeroOneZero\CreateCacheTable.cs" />
     <Compile Include="Migrations\ZeroOneZero\CreateCacheTaskTable.cs" />
     <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
-    <Compile Include="Models\CacheItem.cs" />
+    <Compile Include="Services\Models\CacheItem.cs" />
     <Compile Include="Models\FullTextSearchResult.cs" />
-    <Compile Include="Models\IndexedNode.cs" />
-    <Compile Include="Models\IndexedNodeResult.cs" />
-    <Compile Include="Models\IndexStatus.cs" />
     <Compile Include="Models\Search.cs" />
     <Compile Include="Models\SearchProperty.cs" />
     <Compile Include="Models\SearchResultItem.cs" />

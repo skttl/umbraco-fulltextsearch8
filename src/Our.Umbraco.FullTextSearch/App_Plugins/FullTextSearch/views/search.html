@@ -34,17 +34,19 @@
 
     <umb-box ng-if="!vm.search.loading && vm.search.items.length > 0">
         <umb-box-content>
-                <div class="umb-node-preview" style="max-width:none;" ng-repeat="item in vm.search.items track by item.id">
-                    <i class="umb-node-preview__icon {{ item.icon }}" aria-hidden="true">
-                    </i>
-                    <div class="umb-node-preview__content">
-                        <div class="flex">
-                            <div class="umb-node-preview__name">
-                                <button type="button" class="umb-node-preview__name btn-link btn-reset" ng-bind-html="item.name" ng-click="vm.search.inspect(item)">
-                                </button>
+                <div class="umb-node-preview" style="max-width:none;flex-wrap:nowrap;" ng-repeat="item in vm.search.items track by item.id">
+                    <div class="flex">
+                        <i class="umb-node-preview__icon {{ item.icon }}" aria-hidden="true">
+                        </i>
+                        <div class="umb-node-preview__content">
+                            <div class="flex">
+                                <div class="umb-node-preview__name">
+                                    <button type="button" class="umb-node-preview__name btn-link btn-reset" ng-bind-html="item.name" ng-click="vm.search.inspect(item)">
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="umb-node-preview__description" ng-bind-html="item.description">
+                            <div class="umb-node-preview__description" ng-bind-html="item.description">
+                            </div>
                         </div>
                     </div>
                     <div class="umb-node-preview__actions">

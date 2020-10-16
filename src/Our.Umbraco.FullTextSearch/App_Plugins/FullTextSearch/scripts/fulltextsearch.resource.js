@@ -42,6 +42,20 @@
                     $http.get(url),
                     "Failed getting node data"
                 );
+            },
+            getSearchSettings: function () {
+                var url = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + "/backoffice/FullTextSearch/Index/GetSearchSettings";
+                return umbRequestHelper.resourcePromise(
+                    $http.get(url),
+                    "Failed getting search settings"
+                );
+            },
+            getSearchResult: function (searchTerms, advancedSettings, pageNumber) {
+                var url = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + "/backoffice/FullTextSearch/Index/GetSearchResult";
+                return umbRequestHelper.resourcePromise(
+                    $http.post(url, { searchTerms, advancedSettings, pageNumber }),
+                    "Failed getting search result"
+                );
             }
         };
     });

@@ -15,7 +15,6 @@
                     fullTextSearch_selectedNodes: "Selected nodes",
                 });
 
-
                 /*
                  * Reindex
                  */

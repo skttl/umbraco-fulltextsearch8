@@ -141,7 +141,7 @@
                         vm.listView.methods.clearSelection();
                         var options = {
                             title: vm.dictionaryKeys["fullTextSearch_" + vm.listView.headerKey],
-                            view: "/App_Plugins/FullTextSearch/views/statusNodes.html",
+                            view: "/App_Plugins/FullTextSearch/views/status/nodes.html",
                             listView: vm.listView,
                             submit: function (model) {
                                 vm.listView.methods.clearSelection();

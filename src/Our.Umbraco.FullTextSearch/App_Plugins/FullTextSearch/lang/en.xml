@@ -23,5 +23,30 @@
     <key alias="description">Description</key>
     <key alias="developedBy">Developed by</key>
     <key alias="sponsoredBy">Sponsored by</key>
+    <key alias="status">Status</key>
+    <key alias="search">Search</key>
+    <key alias="enterKeywordsHere">Enter keywords here</key>
+    <key alias="advancedSettings">Advanced settings</key>
+    <key alias="inspect">Inspect</key>
+    <key alias="searchType">Search type</key>
+    <key alias="searchTypeDescription">The type of search to perform.</key>
+    <key alias="titleProperties">Title properties</key>
+    <key alias="titlePropertiesDescription">Adds field names to use for title properties. Note, that this overrides the config setting, so you need to add all wanted fields for titles here.</key>
+    <key alias="titleBoost">Title boost</key>
+    <key alias="titleBoostDescription">Set the boosting value for the title properties, to make titles more important than body text when searching.</key>
+    <key alias="bodyProperties">Body properties</key>
+    <key alias="bodyPropertiesDescription">Adds field names to use for body properties. Note, that this overrides the config setting, so you need to add all wanted fields for bodytext here.</key>
+    <key alias="summaryProperties">Summary properties</key>
+    <key alias="summaryPropertiesDescription">Adds field names to use for summary properties. Note, that if you don't specify any summary properties, the body properties will be used instead.</key>
+    <key alias="summaryLength">Summary length</key>
+    <key alias="summaryLengthDescription">Sets the summary length in the results. The default is 300 characters.</key>
+    <key alias="rootNodes">Root nodes</key>
+    <key alias="rootNodesDescription">With this setting, you can limit search results to be descendants of the selected nodes.</key>
+    <key alias="culture">Culture</key>
+    <key alias="cultureDescription">This is used to define which culture to search in. You should probably always set this, but it might work without it, in invariant sites.</key>
+    <key alias="enableWildcards">Enable wildcards</key>
+    <key alias="enableWildcardsDescription">These enables or disables use of wildcards in the search terms. Wildcard characters are added automatically to each of the terms.</key>
+    <key alias="fuzzyness">Fuzzyness</key>
+    <key alias="fuzzynessDescription">Fuzzyness is used to match your search term with similar words. This method sets the fuzzyness parameter of the search. The default is 0.8. If wildcards is enabled, fuzzyness will not be used.</key>
   </area>
 </language>

@@ -11,9 +11,9 @@
     <key alias="missingNodesDescription">The total number of missing indexed nodes, according to the current Full Text Search config</key>
     <key alias="couldntGetMissingNodes">Couldn't get missing nodes</key>
     <key alias="nodesAreMissingInIndex">{0} node(s) are missing full text content in index</key>
-    <key alias="incorrectIndexedNodes">Incorrect Indexed Nodes</key>
+    <key alias="incorrectIndexedNodes">Incorrectly Indexed Nodes</key>
     <key alias="incorrectIndexedNodesDescription">The total number of indexed nodes that should not be indexed according to the current Full Text Search config</key>
-    <key alias="couldntGetIncorrectIndexedNodes">Couldn't get incorrect indexed nodes</key>
+    <key alias="couldntGetIncorrectIndexedNodes">Couldn't get incorrectly indexed nodes</key>
     <key alias="nodesAreIncorrectlyIndexed">{0} node(s) are incorrectly indexed with full text content</key>
     <key alias="reindexNodes">Reindex Nodes</key>
     <key alias="reindexedNodes">Reindexed {0} node(s)</key>

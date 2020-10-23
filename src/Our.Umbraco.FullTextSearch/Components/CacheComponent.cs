@@ -1,5 +1,4 @@
-﻿using Our.Umbraco.FullTextSearch;
-using Umbraco.Core;
+﻿using Umbraco.Core;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Migrations;

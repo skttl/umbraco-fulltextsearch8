@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Umbraco.Core.Logging;
 using Umbraco.Core.Migrations;
-using Umbraco.Core.Logging;
-using NPoco;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
 
 namespace Our.Umbraco.FullTextSearch.Migrations.ZeroThreeZero
 {

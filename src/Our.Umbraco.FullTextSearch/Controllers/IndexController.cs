@@ -1,18 +1,13 @@
 ﻿using Examine;
-using Microsoft.SqlServer.Server;
 using Our.Umbraco.FullTextSearch.Controllers.Models;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
-using Our.Umbraco.FullTextSearch.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
 using Umbraco.Examine;
 using Umbraco.Web;
@@ -33,9 +28,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         private readonly IndexRebuilder _indexRebuilder;
         private readonly ILocalizationService _localizationService;
         private readonly ISearchService _searchService;
-
-        private string _allIndexableNodesQuery => "__IndexType:content AND __Published:y AND -(templateID:0)";
-        private string _allIndexedNodesQuery => _allIndexableNodesQuery + $" AND {_fullTextConfig.FullTextPathField}:\"-1\"";
+        private readonly IStatusService _statusService;
 
         public IndexController(ICacheService cacheService,
             ILogger logger,
@@ -45,7 +38,8 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             IPublishedContentValueSetBuilder valueSetBuilder,
             IContentService contentService,
             ILocalizationService localizationService,
-            ISearchService searchService)
+            ISearchService searchService,
+            IStatusService statusService)
         {
             _cacheService = cacheService;
             _fullTextConfig = fullTextConfig;
@@ -56,6 +50,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             _indexRebuilder = indexRebuilder;
             _localizationService = localizationService;
             _searchService = searchService;
+            _statusService = statusService;
         }
 
         [HttpPost]
@@ -130,49 +125,35 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                 return null;
             }
 
-            var status = new IndexStatus();
+            if (_statusService.TryGetIndexableNodes(out ISearchResults indexableNodes)
+                && _statusService.TryGetIndexedNodes(out ISearchResults indexedNodes)
+                && _statusService.TryGetIncorrectIndexedNodes(out ISearchResults incorrectIndexedNodes)
+                && _statusService.TryGetMissingNodes(out ISearchResults missingNodes))
+                {
 
-            var searcher = index.GetSearcher();
+                return new IndexStatus()
+                {
+                    TotalIndexableNodes = (indexableNodes?.TotalItemCount).GetValueOrDefault(),
+                    TotalIndexedNodes = (indexedNodes?.TotalItemCount).GetValueOrDefault(),
+                    IncorrectIndexedNodes = (incorrectIndexedNodes?.TotalItemCount).GetValueOrDefault(),
+                    MissingIndexedNodes = (missingNodes?.TotalItemCount).GetValueOrDefault()
+                };
+            }
 
-            // get all indexable nodes
-            status.TotalIndexableNodes = GetIndexableNodes(searcher).TotalItemCount;
-
-            // get all indexed nodes
-            status.TotalIndexedNodes = GetIndexedNodes(searcher).TotalItemCount;
-
-            // incorrect indexed nodes
-            if (GetIncorrectIndexedNodes(searcher) is ISearchResults incorrectIndexedNodesResult && incorrectIndexedNodesResult != null)
-                status.IncorrectIndexedNodes = incorrectIndexedNodesResult.TotalItemCount;
-
-            // missing indexed nodes
-            status.MissingIndexedNodes = GetMissingNodes(searcher).TotalItemCount;
-
-
-            return status;
+            return null;
         }
 
         [HttpGet]
         public IndexedNodeResult GetIndexedNodes(int pageNumber = 1)
         {
-            if (!_fullTextConfig.Enabled)
+            if (!_statusService.TryGetIndexedNodes(out ISearchResults indexedNodes, pageNumber * 100))
             {
-                _logger.Debug<IndexController>("FullTextIndexing is not enabled");
                 return null;
             }
-
-            if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
-            {
-                _logger.Error<IndexController>(new InvalidOperationException("No index found by name ExternalIndex"));
-                return null;
-            }
-
             var result = new IndexedNodeResult();
-            var searcher = index.GetSearcher();
-
-            var missingNodes = GetIndexedNodes(searcher, pageNumber * 100);
             result.PageNumber = pageNumber;
-            result.TotalPages = missingNodes.TotalItemCount / 100;
-            result.Items = missingNodes.Skip((pageNumber - 1) * 100).Select(x => new IndexedNode()
+            result.TotalPages = indexedNodes.TotalItemCount / 100;
+            result.Items = indexedNodes.Skip((pageNumber - 1) * 100).Select(x => new IndexedNode()
             {
                 Id = x.Id,
                 Icon = x.GetValues("__Icon").FirstOrDefault(),
@@ -186,22 +167,11 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         [HttpGet]
         public IndexedNodeResult GetMissingNodes(int pageNumber = 1)
         {
-            if (!_fullTextConfig.Enabled)
+            if (!_statusService.TryGetMissingNodes(out ISearchResults missingNodes, pageNumber * 100))
             {
-                _logger.Debug<IndexController>("FullTextIndexing is not enabled");
                 return null;
             }
-
-            if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
-            {
-                _logger.Error<IndexController>(new InvalidOperationException("No index found by name ExternalIndex"));
-                return null;
-            }
-
             var result = new IndexedNodeResult();
-            var searcher = index.GetSearcher();
-
-            var missingNodes = GetMissingNodes(searcher, pageNumber * 100);
             result.PageNumber = pageNumber;
             result.TotalPages = missingNodes.TotalItemCount / 100;
             result.Items = missingNodes.Skip((pageNumber - 1) * 100).Select(x => new IndexedNode()
@@ -218,25 +188,14 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         [HttpGet]
         public IndexedNodeResult GetIncorrectIndexedNodes(int pageNumber = 1)
         {
-            if (!_fullTextConfig.Enabled)
+            if (!_statusService.TryGetIncorrectIndexedNodes(out ISearchResults incorrectIndexedNodes, pageNumber * 100))
             {
-                _logger.Debug<IndexController>("FullTextIndexing is not enabled");
                 return null;
             }
-
-            if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
-            {
-                _logger.Error<IndexController>(new InvalidOperationException("No index found by name ExternalIndex"));
-                return null;
-            }
-
             var result = new IndexedNodeResult();
-            var searcher = index.GetSearcher();
-
-            var missingNodes = GetIncorrectIndexedNodes(searcher, pageNumber * 100);
             result.PageNumber = pageNumber;
-            result.TotalPages = missingNodes.TotalItemCount / 100;
-            result.Items = missingNodes.Skip((pageNumber - 1) * 100).Select(x => new IndexedNode()
+            result.TotalPages = incorrectIndexedNodes.TotalItemCount / 100;
+            result.Items = incorrectIndexedNodes.Skip((pageNumber - 1) * 100).Select(x => new IndexedNode()
             {
                 Id = x.Id,
                 Icon = x.GetValues("__Icon").FirstOrDefault(),
@@ -245,109 +204,6 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             }).ToList();
 
             return result;
-        }
-
-        private string GetReasonForBeingIncorrect(ISearchResult searchResult)
-        {
-            var reasons = new List<string>();
-
-            if (_fullTextConfig.DisallowedContentTypeAliases.Contains(searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()))
-            {
-                reasons.Add(string.Format("content Type ({0}) is disallowed", searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()));
-            }
-
-            foreach (var disallowedPropertyAlias in _fullTextConfig.DisallowedPropertyAliases)
-            {
-                if (searchResult.GetValues(disallowedPropertyAlias)?.FirstOrDefault() == "1")
-                {
-                    reasons.Add(string.Format("disallowed property ({0}) is checked", disallowedPropertyAlias));
-                }
-            }
-
-            return string.Join(", ", reasons).ToFirstUpper();
-        }
-
-        private string GetBreadcrumb(string path)
-        {
-            var pathParts = path.Split(',').Select(int.Parse).Skip(1);
-            var pathNames = pathParts.Select(x => Umbraco.Content(x)?.Name).Where(x => x != null);
-            return string.Join(" / ", pathNames);
-        }
-
-        private ISearchResults GetIndexableNodes(ISearcher searcher, int maxResults = int.MaxValue)
-        {
-            var indexableQuery = new StringBuilder(_allIndexableNodesQuery);
-            if (_fullTextConfig.DisallowedContentTypeAliases.Any())
-            {
-                var disallowedContentTypeAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:{x}"));
-                indexableQuery.Append($" AND -({disallowedContentTypeAliasGroup})");
-            }
-
-            if (_fullTextConfig.DisallowedPropertyAliases.Any())
-            {
-                var disallowedPropertyAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-                indexableQuery.Append($" AND -({disallowedPropertyAliasGroup})");
-            }
-
-
-            _logger.Debug<IndexController>("GetIndexableNodes using query {query}", indexableQuery.ToString());
-
-            return searcher.CreateQuery().NativeQuery(indexableQuery.ToString()).Execute(maxResults);
-        }
-
-        private ISearchResults GetIndexedNodes(ISearcher searcher, int maxResults = int.MaxValue)
-        {
-            var indexedQuery = new StringBuilder(_allIndexedNodesQuery);
-
-            _logger.Debug<IndexController>("GetIndexedNodes using query {query}", indexedQuery.ToString());
-
-            return searcher.CreateQuery().NativeQuery(indexedQuery.ToString()).Execute(maxResults);
-        }
-
-        private ISearchResults GetIncorrectIndexedNodes(ISearcher searcher, int maxResults = int.MaxValue)
-        {
-            if (!_fullTextConfig.DisallowedContentTypeAliases.Any() && !_fullTextConfig.DisallowedPropertyAliases.Any()) return null;
-
-            var incorrectQuery = new StringBuilder(_allIndexedNodesQuery);
-            if (_fullTextConfig.DisallowedContentTypeAliases.Any())
-            {
-                var disallowedContentTypeAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:{x}"));
-                incorrectQuery.Append($" AND ({disallowedContentTypeAliasGroup})");
-            }
-
-            if (_fullTextConfig.DisallowedPropertyAliases.Any())
-            {
-                var disallowedPropertyAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-                incorrectQuery.Append($" AND ({disallowedPropertyAliasGroup})");
-            }
-
-            _logger.Debug<IndexController>("GetIncorrectIndexedNodes using query {query}", incorrectQuery.ToString());
-
-            return searcher.CreateQuery().NativeQuery(incorrectQuery.ToString()).Execute(maxResults);
-        }
-
-        private ISearchResults GetMissingNodes(ISearcher searcher, int maxResults = int.MaxValue)
-        {
-            var missingQuery = new StringBuilder(_allIndexableNodesQuery);
-            missingQuery.Append($" AND -({_fullTextConfig.FullTextPathField}:\"-1\")");
-            if (_fullTextConfig.DisallowedContentTypeAliases.Any() || _fullTextConfig.DisallowedPropertyAliases.Any())
-            {
-                if (_fullTextConfig.DisallowedContentTypeAliases.Any())
-                {
-                    var disallowedContentTypeAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:{x}"));
-                    missingQuery.Append($" AND -({disallowedContentTypeAliasGroup})");
-                }
-
-                if (_fullTextConfig.DisallowedPropertyAliases.Any())
-                {
-                    var disallowedPropertyAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-                    missingQuery.Append($" AND -({disallowedPropertyAliasGroup})");
-                }
-            }
-
-            _logger.Debug<IndexController>("GetMissingNodes using query {query}", missingQuery.ToString());
-
-            return searcher.CreateQuery().NativeQuery(missingQuery.ToString()).Execute(maxResults);
         }
 
         [HttpGet]
@@ -420,6 +276,33 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
             return result;
 
+        }
+
+        private string GetBreadcrumb(string path)
+        {
+            var pathParts = path.Split(',').Select(int.Parse).Skip(1);
+            var pathNames = pathParts.Select(x => Umbraco.Content(x)?.Name).Where(x => x != null);
+            return string.Join(" / ", pathNames);
+        }
+
+        private string GetReasonForBeingIncorrect(ISearchResult searchResult)
+        {
+            var reasons = new List<string>();
+
+            if (_fullTextConfig.DisallowedContentTypeAliases.Contains(searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()))
+            {
+                reasons.Add(string.Format("content Type ({0}) is disallowed", searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()));
+            }
+
+            foreach (var disallowedPropertyAlias in _fullTextConfig.DisallowedPropertyAliases)
+            {
+                if (searchResult.GetValues(disallowedPropertyAlias)?.FirstOrDefault() == "1")
+                {
+                    reasons.Add(string.Format("disallowed property ({0}) is checked", disallowedPropertyAlias));
+                }
+            }
+
+            return string.Join(", ", reasons).ToFirstUpper();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Our.Umbraco.FullTextSearch
         public void Compose(Composition composition)
         {
             composition.Register<IFullTextSearchConfig, FullTextSearchConfig>(Lifetime.Singleton);
+            composition.Register<IStatusService, StatusService>(Lifetime.Singleton);
             composition.Register<ISearchService, SearchService>(Lifetime.Request);
             composition.Register<IHtmlService, HtmlService>(Lifetime.Singleton);
             composition.Register<ICacheService, CacheService>(Lifetime.Singleton);

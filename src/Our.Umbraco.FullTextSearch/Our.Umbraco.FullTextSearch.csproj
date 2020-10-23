@@ -64,6 +64,7 @@
     <Compile Include="Migrations\ZeroOneZero\CreateCacheTable.cs" />
     <Compile Include="Migrations\ZeroOneZero\CreateCacheTaskTable.cs" />
     <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
+    <Compile Include="Interfaces\IStatusService.cs" />
     <Compile Include="Interfaces\IFullTextSearchConfig.cs" />
     <Compile Include="Services\Models\CacheItem.cs" />
     <Compile Include="Models\FullTextSearchResult.cs" />
@@ -75,5 +76,6 @@
     <Compile Include="Services\FullTextSearchConfig.cs" />
     <Compile Include="Services\HtmlService.cs" />
     <Compile Include="Services\SearchService.cs" />
+    <Compile Include="Services\StatusService.cs" />
   </ItemGroup>
 </Project>

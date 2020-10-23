@@ -52,6 +52,7 @@
     <Compile Include="Components\CacheComponent.cs" />
     <Compile Include="Components\UpdateCacheOnPublish.cs" />
     <Compile Include="FullTextComposer.cs" />
+    <Compile Include="HealthChecks\FullTextSearchHealthCheck.cs" />
     <Compile Include="Helpers\FullTextSearchHelper.cs" />
     <Compile Include="Helpers\SearchResultItemExtensions.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />

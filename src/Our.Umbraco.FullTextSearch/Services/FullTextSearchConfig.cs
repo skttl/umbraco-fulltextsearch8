@@ -13,7 +13,7 @@ using Umbraco.Core.Logging;
 
 namespace Our.Umbraco.FullTextSearch.Services
 {
-    public class FullTextSearchConfig
+    public class FullTextSearchConfig : IFullTextSearchConfig
     {
         private readonly ILogger _logger;
         private readonly string _configFilePath;

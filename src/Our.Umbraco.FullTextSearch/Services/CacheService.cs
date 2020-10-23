@@ -1,5 +1,4 @@
 ﻿using Our.Umbraco.FullTextSearch.Interfaces;
-using Our.Umbraco.FullTextSearch.Models;
 using Our.Umbraco.FullTextSearch.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -20,10 +19,16 @@ namespace Our.Umbraco.FullTextSearch.Services
         private readonly ILogger _logger;
         private readonly IUmbracoContextFactory _umbracoContextFactory;
         private readonly IHtmlService _htmlService;
-        private readonly FullTextSearchConfig _fullTextConfig;
+        private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly IUmbracoComponentRenderer _umbracoComponentRenderer;
 
-        public CacheService(IScopeProvider scopeProvider, ILogger logger, IUmbracoContextFactory umbracoContextFactory, IHtmlService htmlService, IUmbracoComponentRenderer umbracoComponentRenderer, FullTextSearchConfig config)
+        public CacheService(
+            IScopeProvider scopeProvider,
+            ILogger logger,
+            IUmbracoContextFactory umbracoContextFactory,
+            IHtmlService htmlService,
+            IUmbracoComponentRenderer umbracoComponentRenderer,
+            IFullTextSearchConfig config)
         {
             _scopeProvider = scopeProvider;
             _logger = logger;

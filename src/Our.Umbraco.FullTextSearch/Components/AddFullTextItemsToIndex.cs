@@ -1,7 +1,6 @@
 ﻿using Examine;
 using Examine.Providers;
 using Our.Umbraco.FullTextSearch.Interfaces;
-using Our.Umbraco.FullTextSearch.Services;
 using System;
 using System.Linq;
 using Umbraco.Core;
@@ -18,13 +17,13 @@ namespace Our.Umbraco.FullTextSearch.Components
     public class AddFullTextItemsToIndex : IComponent
     {
         private readonly IExamineManager _examineManager;
-        private readonly FullTextSearchConfig _fullTextConfig;
+        private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private readonly IProfilingLogger _profilingLogger;
         private readonly ICacheService _cacheService;
 
         public AddFullTextItemsToIndex(IExamineManager examineManager,
-            FullTextSearchConfig fullTextConfig,
+            IFullTextSearchConfig fullTextConfig,
             ILogger logger,
             IProfilingLogger profilingLogger,
             ICacheService cacheService)

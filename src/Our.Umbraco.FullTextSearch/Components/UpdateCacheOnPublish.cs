@@ -1,6 +1,5 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
-using Our.Umbraco.FullTextSearch.Services;
 using System;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
@@ -21,14 +20,14 @@ namespace Our.Umbraco.FullTextSearch.Components
     public class UpdateCacheOnPublish : IComponent
     {
         private readonly ICacheService _cacheService;
-        private readonly FullTextSearchConfig _fullTextConfig;
+        private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private readonly IExamineManager _examineManager;
         private readonly IContentService _contentService;
 
         public UpdateCacheOnPublish(ICacheService cacheService,
             ILogger logger,
-            FullTextSearchConfig fullTextConfig,
+            IFullTextSearchConfig fullTextConfig,
             IExamineManager examineManager,
             IContentService contentService)
         {

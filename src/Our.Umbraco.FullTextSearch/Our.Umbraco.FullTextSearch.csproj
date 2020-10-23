@@ -64,6 +64,7 @@
     <Compile Include="Migrations\ZeroOneZero\CreateCacheTable.cs" />
     <Compile Include="Migrations\ZeroOneZero\CreateCacheTaskTable.cs" />
     <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
+    <Compile Include="Interfaces\IFullTextSearchConfig.cs" />
     <Compile Include="Services\Models\CacheItem.cs" />
     <Compile Include="Models\FullTextSearchResult.cs" />
     <Compile Include="Models\Search.cs" />

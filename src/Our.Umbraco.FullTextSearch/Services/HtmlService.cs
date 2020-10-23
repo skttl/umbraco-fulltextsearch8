@@ -10,11 +10,14 @@ namespace Our.Umbraco.FullTextSearch.Services
 {
     public class HtmlService : IHtmlService
     {
-        private readonly FullTextSearchConfig _fullTextConfig;
+        private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private readonly IProfilingLogger _profilingLogger;
 
-        public HtmlService(FullTextSearchConfig fullTextConfig, ILogger logger, IProfilingLogger profilingLogger)
+        public HtmlService(
+            IFullTextSearchConfig fullTextConfig,
+            ILogger logger,
+            IProfilingLogger profilingLogger)
         {
             _fullTextConfig = fullTextConfig;
             _logger = logger;

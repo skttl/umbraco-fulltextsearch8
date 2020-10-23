@@ -25,7 +25,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
     public class IndexController : UmbracoAuthorizedApiController
     {
         private readonly ICacheService _cacheService;
-        private readonly FullTextSearchConfig _fullTextConfig;
+        private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private readonly IPublishedContentValueSetBuilder _valueSetBuilder;
         private readonly IExamineManager _examineManager;
@@ -39,7 +39,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
         public IndexController(ICacheService cacheService,
             ILogger logger,
-            FullTextSearchConfig fullTextConfig,
+            IFullTextSearchConfig fullTextConfig,
             IExamineManager examineManager,
             IndexRebuilder indexRebuilder,
             IPublishedContentValueSetBuilder valueSetBuilder,

@@ -17,13 +17,16 @@ namespace Our.Umbraco.FullTextSearch.Services
     public class SearchService : ISearchService
     {
         private readonly IExamineManager _examineManager;
-        private readonly FullTextSearchConfig _fullTextConfig;
+        private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly ILogger _logger;
         private ISearch _search;
         private int _currentPage;
         private List<SearchProperty> _searchProperties;
 
-        public SearchService(IExamineManager examineManager, FullTextSearchConfig fullTextConfig, ILogger logger)
+        public SearchService(
+            IExamineManager examineManager,
+            IFullTextSearchConfig fullTextConfig,
+            ILogger logger)
         {
             _examineManager = examineManager;
             _fullTextConfig = fullTextConfig;

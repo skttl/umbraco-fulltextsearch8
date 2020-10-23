@@ -1,10 +1,8 @@
 ﻿using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Models;
 using System.Web;
-using System.Collections.Generic;
 using Umbraco.Core;
 using Umbraco.Web.Composing;
-using Our.Umbraco.FullTextSearch.Services;
-using Our.Umbraco.FullTextSearch.Models;
 
 namespace Our.Umbraco.FullTextSearch.Helpers
 {
@@ -16,7 +14,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <returns>true if being indexed</returns>
         public static bool IsIndexingActive(this HttpRequestBase request)
         {
-            if (!(Current.Factory.TryGetInstance(typeof(FullTextSearchConfig)) is FullTextSearchConfig config)) return false;
+            if (!(Current.Factory.TryGetInstance(typeof(IFullTextSearchConfig)) is IFullTextSearchConfig config)) return false;
 
             var searchActiveStringName = config.IndexingActiveKey;
 

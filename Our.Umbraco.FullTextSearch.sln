@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CONTRIBUTING.md = CONTRIBUTING.md
 		gulpfile.js = gulpfile.js
 		LICENSE.md = LICENSE.md
+		package.json = package.json
 		package.xml = package.xml
 		paths.json = paths.json
 		README.md = README.md

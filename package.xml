@@ -25,7 +25,7 @@
   - Extends the default ExternalIndex]]></readme>
   </info>
   <files>
-    <folder path="src/Our.Umbraco.FullTextSearch/App_Plugins/Our.Umbraco.FullTextSearch" orgPath="App_Plugins/Our.Umbraco.FullTextSearch" />
+    <folder path="src/Our.Umbraco.FullTextSearch/App_Plugins/FullTextSearch" orgPath="App_Plugins/FullTextSearch" />
     <file path="src/Our.Umbraco.FullTextSearch/bin/release/net472/Our.Umbraco.FullTextSearch.dll" orgPath="bin/Our.Umbraco.FullTextSearch.dll" />
   </files>
   <Actions />

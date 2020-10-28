@@ -44,32 +44,35 @@ namespace Our.Umbraco.FullTextSearch.Services
         /// <param name="id"></param>
         public void AddToCache(int id)
         {
-            using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
+            using(var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
-                var publishedContent = cref.UmbracoContext.Content.GetById(id);
-                if (publishedContent == null || IsDisallowed(publishedContent))
+                using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
                 {
-                    // delete from cache if possible, and return
-                    DeleteFromCache(id);
-                    return;
-                }
+                    var publishedContent = cref.UmbracoContext.Content.GetById(id);
+                    if (publishedContent == null || IsDisallowed(publishedContent))
+                    {
+                        // delete from cache if possible, and return
+                        DeleteFromCache(id);
+                        return;
+                    }
 
-                foreach (var culture in publishedContent.Cultures)
-                {
-                    // get content of page, and manipulate for indexing
-                    //var url = publishedContent.Url(culture.Value.Culture, UrlMode.Absolute);
-                    //_htmlService.GetHtmlByUrl(url, out string fullHtml);
-                    if (culture.Value.Culture.IsNullOrWhiteSpace())
-                        CultureInfo.CurrentUICulture = new CultureInfo(culture.Value.Culture);
+                    foreach (var culture in publishedContent.Cultures)
+                    {
+                        // get content of page, and manipulate for indexing
+                        //var url = publishedContent.Url(culture.Value.Culture, UrlMode.Absolute);
+                        //_htmlService.GetHtmlByUrl(url, out string fullHtml);
+                        if (culture.Value.Culture.IsNullOrWhiteSpace())
+                            CultureInfo.CurrentUICulture = new CultureInfo(culture.Value.Culture);
 
-                    cref.UmbracoContext.HttpContext.Items.Add(_fullTextConfig.IndexingActiveKey, "1");
+                        cref.UmbracoContext.HttpContext.Items.Add(_fullTextConfig.IndexingActiveKey, "1");
 
-                    var fullHtml = _umbracoComponentRenderer.RenderTemplate(id).ToString();
-                    var fullText = _htmlService.GetTextFromHtml(fullHtml);
-                    _logger.Info<CacheService>("Updating {nodeId} {culture} {fullText}", id, culture.Value.Culture, fullText);
-                    AddToCache(id, culture.Value.Culture, fullText);
+                        var fullHtml = _umbracoComponentRenderer.RenderTemplate(id).ToString();
+                        var fullText = _htmlService.GetTextFromHtml(fullHtml);
+                        _logger.Info<CacheService>("Updating {nodeId} {culture} {fullText}", id, culture.Value.Culture, fullText);
+                        AddToCache(id, culture.Value.Culture, fullText);
 
-                    cref.UmbracoContext.HttpContext.Items.Remove(_fullTextConfig.IndexingActiveKey);
+                        cref.UmbracoContext.HttpContext.Items.Remove(_fullTextConfig.IndexingActiveKey);
+                    }
                 }
             }
         }

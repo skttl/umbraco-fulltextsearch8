@@ -35,6 +35,7 @@
     <None Remove="App_Plugins\FullTextSearch\backoffice\fullTextSearch\search.html" />
     <None Remove="App_Plugins\FullTextSearch\css\fulltextsearch.css" />
     <None Remove="App_Plugins\FullTextSearch\dashboard.controller.js" />
+    <None Remove="App_Plugins\FullTextSearch\lang\da.xml" />
     <None Remove="App_Plugins\FullTextSearch\lang\en.xml" />
     <None Remove="App_Plugins\FullTextSearch\reindex.controller.js" />
     <None Remove="App_Plugins\FullTextSearch\scripts\fulltextsearch.resource.js" />

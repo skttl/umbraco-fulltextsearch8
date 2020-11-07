@@ -1,6 +1,7 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System;
+using System.Threading.Tasks;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
@@ -61,38 +62,40 @@ namespace Our.Umbraco.FullTextSearch.Components
 
             foreach (var payload in (ContentCacheRefresher.JsonPayload[])args.MessageObject)
             {
-
-                if (payload.ChangeTypes.HasType(TreeChangeTypes.Remove))
+                Task.Run(() =>
                 {
-                    _cacheService.DeleteFromCache(payload.Id);
-                }
-                else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll))
-                {
-                    // just ignore that payload (Umbracos examine implementation does the same)
-                }
-                else // RefreshNode or RefreshBranch (maybe trashed)
-                {
-                    _cacheService.AddToCache(payload.Id);
-
-                    // branch
-                    if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
+                    if (payload.ChangeTypes.HasType(TreeChangeTypes.Remove))
                     {
-                        const int pageSize = 500;
-                        var page = 0;
-                        var total = long.MaxValue;
-                        while (page * pageSize < total)
-                        {
-                            var descendants = _contentService.GetPagedDescendants(payload.Id, page++, pageSize, out total,
-                                //order by shallowest to deepest, this allows us to check it's published state without checking every item
-                                ordering: Ordering.By("Path", Direction.Ascending));
-
-                            foreach (var descendant in descendants)
-                            {
-                                _cacheService.AddToCache(descendant.Id);
-                            }
-                        }
+                        _cacheService.DeleteFromCache(payload.Id);
                     }
-                }
+                    else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll))
+                    {
+                        // just ignore that payload (Umbracos examine implementation does the same)
+                    }
+                    else // RefreshNode or RefreshBranch (maybe trashed)
+                    {
+                            _cacheService.AddToCache(payload.Id);
+
+                            // branch
+                            if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
+                            {
+                                const int pageSize = 500;
+                                var page = 0;
+                                var total = long.MaxValue;
+                                while (page * pageSize < total)
+                                {
+                                    var descendants = _contentService.GetPagedDescendants(payload.Id, page++, pageSize, out total,
+                                        //order by shallowest to deepest, this allows us to check it's published state without checking every item
+                                        ordering: Ordering.By("Path", Direction.Ascending));
+
+                                    foreach (var descendant in descendants)
+                                    {
+                                        _cacheService.AddToCache(descendant.Id);
+                                    }
+                                }
+                            }
+                    }
+                });
             }
         }
 

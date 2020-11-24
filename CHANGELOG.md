@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## Unreleased
 
-## [1.0.0]
+## 1.0.1 - 2020-11-24
+- Fixes bug where publishing in Umbraco breaks, if a nodes view throws exceptions.
+
+## 1.0.0 - 2020-11-01
 
 - Changed the config format #35 **BREAKING**
 - Switch to using RenderTemplate() for getting the content #36 **BREAKING**
@@ -21,13 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - added new dashboard in Settings section to see index status, reindex and test search.
 - added health checks to see index status
 
-## [0.2.0] - 2020-04-02
+## 0.2.0 - 2020-04-02
 Lot's of improvements and fixes, for example v8.6 upgrade problems fixed and non-variant websites support.
 
-## [0.1.0] - 2019-10-01
+## 0.1.0 - 2019-10-01
 Initial release
-
-[unreleased]: https://github.com/skttl/umbraco-fulltextsearch8/compare/release/1.0.0...HEAD
-[1.0.0]: https://github.com/skttl/umbraco-fulltextsearch8/compare/v0.2.0...release/1.0.0
-[0.2.0]: https://github.com/skttl/umbraco-fulltextsearch8/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/skttl/umbraco-fulltextsearch8/releases/tag/v0.1.0

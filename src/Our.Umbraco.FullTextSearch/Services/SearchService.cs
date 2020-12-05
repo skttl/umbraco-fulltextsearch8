@@ -139,6 +139,8 @@ namespace Our.Umbraco.FullTextSearch.Services
                     query.Append($" AND -({disallowedPropertyAliasGroup})");
                 }
 
+                query.Append($" AND -(templateID:0)");
+
                 var searcher = index.GetSearcher();
                 _logger.Debug<SearchService>("Trying to search for {query}", query.ToString());
                 return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(_search.PageLength * _currentPage);

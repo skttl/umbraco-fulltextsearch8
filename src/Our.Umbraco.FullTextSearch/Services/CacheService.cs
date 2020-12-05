@@ -56,6 +56,8 @@ namespace Our.Umbraco.FullTextSearch.Services
                         return;
                     }
 
+                    CleanupCultureCache(id, publishedContent.Cultures.Select(x => x.Value.Culture));
+
                     foreach (var culture in publishedContent.Cultures)
                     {
                         // get content of page, and manipulate for indexing
@@ -142,6 +144,19 @@ namespace Our.Umbraco.FullTextSearch.Services
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql().Delete().From<CacheItem>().Where<CacheItem>(x => x.NodeId == id);
+                scope.Database.Execute(sql);
+            }
+        }
+
+        /// <summary>
+        /// Deletes the content of the specified node id, in other cultures than specified.
+        /// </summary>
+        /// <param name="id"></param>
+        public void CleanupCultureCache(int id, IEnumerable<string> cultures)
+        {
+            using (var scope = _scopeProvider.CreateScope(autoComplete: true))
+            {
+                var sql = scope.SqlContext.Sql().Delete().From<CacheItem>().Where<CacheItem>(x => x.NodeId == id && !cultures.Contains(x.Culture));
                 scope.Database.Execute(sql);
             }
         }

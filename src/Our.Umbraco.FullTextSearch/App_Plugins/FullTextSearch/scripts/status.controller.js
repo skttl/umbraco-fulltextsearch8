@@ -44,6 +44,39 @@
                 }
                 vm.indexStatus.load();
 
+                /*
+                 * Configuration
+                 */
+
+                vm.configuration = {
+                    buttonState: "init",
+                    loading: true,
+                    config: null,
+                    load: function () {
+                        vm.configuration.loading = true;
+                        vm.configuration.buttonState = "busy";
+                        fullTextSearchResource.getConfig().then(
+                            function (data) {
+                                vm.configuration.config = data;
+                                vm.configuration.loading = false;
+                                vm.configuration.buttonState = "success";
+                            }
+                        );
+                    },
+                    reload: function () {
+                        vm.configuration.loading = true;
+                        vm.configuration.buttonState = "busy";
+                        fullTextSearchResource.reloadConfig().then(
+                            function (data) {
+                                vm.configuration.config = data;
+                                vm.configuration.loading = false;
+                                vm.configuration.buttonState = "success";
+                                vm.indexStatus.load();
+                            }
+                        );
+                    }
+                }
+                vm.configuration.load();
 
                 /*
                  * List view

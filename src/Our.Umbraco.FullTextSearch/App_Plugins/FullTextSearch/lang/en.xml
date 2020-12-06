@@ -55,6 +55,15 @@
     <key alias="fuzzyness">Fuzzyness</key>
     <key alias="fuzzynessDescription">Fuzzyness is used to match your search term with similar words. This method sets the fuzzyness parameter of the search. The default is 0.8. If wildcards is enabled, fuzzyness will not be used.</key>
     <key alias="fullTextSearchIsDisabled">FullTextSearch is disabled</key>
+    <key alias="fullTextSearchIsEnabled">FullTextSearch is enabled</key>
     <key alias="externalIndexNotFound">ExternalIndex not found</key>
+    <key alias="enabled">Enabled</key>
+    <key alias="defaultTitleField">Default Title field</key>
+    <key alias="indexingActiveKey">"Indexing Active" key</key>
+    <key alias="disallowedContentTypeAliases">Disallowed Content Type aliases</key>
+    <key alias="disallowedPropertyAliases">Disallowed property aliases</key>
+    <key alias="xPathsToRemove">XPaths to remove from content</key>
+    <key alias="fullTextContentField">Full Text Content field</key>
+    <key alias="fullTextPathField">Full Text Path field</key>
   </area>
 </language>

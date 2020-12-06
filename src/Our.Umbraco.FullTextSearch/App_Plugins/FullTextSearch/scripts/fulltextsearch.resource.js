@@ -56,6 +56,20 @@
                     $http.post(url, { searchTerms, advancedSettings, pageNumber }),
                     "Failed getting search result"
                 );
+            },
+            getConfig: function () {
+                var url = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + "/backoffice/FullTextSearch/Config/Get";
+                return umbRequestHelper.resourcePromise(
+                    $http.get(url),
+                    "Failed getting configuration"
+                );
+            },
+            reloadConfig: function () {
+                var url = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + "/backoffice/FullTextSearch/Config/Reload";
+                return umbRequestHelper.resourcePromise(
+                    $http.post(url),
+                    "Failed getting configuration"
+                );
             }
         };
     });

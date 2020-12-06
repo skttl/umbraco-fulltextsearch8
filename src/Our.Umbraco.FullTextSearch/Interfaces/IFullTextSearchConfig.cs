@@ -13,6 +13,7 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         string IndexingActiveKey { get; }
         List<string> XPathsToRemove { get; }
 
+        void LoadAndParseConfig();
         void LoadConfig();
         void ResetConfigToDefaults();
     }

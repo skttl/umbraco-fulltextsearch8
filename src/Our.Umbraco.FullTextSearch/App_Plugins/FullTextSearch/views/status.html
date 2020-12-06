@@ -110,4 +110,68 @@
         </umb-box-content>
     </umb-box>
 
+    <umb-box>
+        <umb-box-header title="Configuration" title-key="fullTextSearch_configuration">
+            <umb-button action="vm.configuration.reload()"
+                        button-style="outline"
+                        label-key="general_reload"
+                        type="button"></umb-button>
+        </umb-box-header>
+        <umb-box-content ng-if="vm.configuration.config">
+            <table class="table table-bordered table-condensed">
+                <caption>&nbsp;</caption>
+                <tbody>
+                    <tr>
+                        <th class="w5"><localize key="fullTextSearch_enabled">Enabled</localize></th>
+                        <td>
+                            <localize key="fullTextSearch_fullTextSearchIsDisabled" ng-if="vm.configuration.config.Enabled"></localize>
+                            <localize key="fullTextSearch_fullTextSearchIsDisabled" ng-if="!vm.configuration.config.Enabled"></localize>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><localize key="fullTextSearch_defaultTitleField">Default Title Field</localize></th>
+                        <td>
+                            <code ng-bind="vm.configuration.config.DefaultTitleField"></code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><localize key="fullTextSearch_indexingActiveKey">Indexing Active Key</localize></th>
+                        <td>
+                            <code ng-bind="vm.configuration.config.IndexingActiveKey"></code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><localize key="fullTextSearch_disallowedContentTypeAliases">Disallowed Content Type Aliases</localize></th>
+                        <td>
+                            <code ng-repeat="alias in vm.configuration.config.DisallowedContentTypeAliases track by $index" ng-bind="alias" class="mr1"></code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><localize key="fullTextSearch_disallowedPropertyAliases">Disallowed Property Aliases</localize></th>
+                        <td>
+                            <code ng-repeat="alias in vm.configuration.config.DisallowedPropertyAliases track by $index" ng-bind="alias" class="mr1"></code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><localize key="fullTextSearch_xPathsToRemove">XPaths to remove</localize></th>
+                        <td>
+                            <code ng-repeat="xpath in vm.configuration.config.XPathsToRemove track by $index" ng-bind="xpath" class="mr1"></code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><localize key="fullTextSearch_fullTextContentField">Full Text Content Field</localize></th>
+                        <td>
+                            <code ng-bind="vm.configuration.config.FullTextContentField"></code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><localize key="fullTextSearch_fullTextPathField">Full Text Path Field</localize></th>
+                        <td>
+                            <code ng-bind="vm.configuration.config.FullTextPathField"></code>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </umb-box-content>
+    </umb-box>
 </div>

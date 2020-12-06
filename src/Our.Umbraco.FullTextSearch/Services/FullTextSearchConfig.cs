@@ -17,6 +17,7 @@ namespace Our.Umbraco.FullTextSearch.Services
     {
         private readonly ILogger _logger;
         private readonly string _configFilePath;
+        private FileSystemWatcher _watcher;
 
         private XmlDocument XmlDocument { get; set; }
         private XmlNode FullTextSearchNode { get; set; }
@@ -38,10 +39,14 @@ namespace Our.Umbraco.FullTextSearch.Services
             var appPath = HttpRuntime.AppDomainAppPath;
             _configFilePath = Path.Combine(appPath, ConfigurationManager.AppSettings["FullTextSearch.ConfigPath"] ?? @"App_Plugins\FullTextSearch\FullTextSearch.config");
 
-            ResetConfigToDefaults();
+            LoadAndParseConfig();
+        }
 
+        public void LoadAndParseConfig()
+        {
             try
             {
+                ResetConfigToDefaults();
                 LoadXmlConfig();
                 LoadConfig();
             }

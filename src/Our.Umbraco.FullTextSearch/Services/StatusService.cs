@@ -1,6 +1,7 @@
 ﻿using Examine;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Umbraco.Core.Logging;
@@ -65,18 +66,11 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
 
             var indexableQuery = new StringBuilder(_allIndexableNodesQuery);
-            if (_fullTextConfig.DisallowedContentTypeAliases.Any())
-            {
-                var disallowedContentTypeAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:{x}"));
-                indexableQuery.Append($" AND -({disallowedContentTypeAliasGroup})");
-            }
+            var disallowed = new List<string>();
+            disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
+            disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
 
-            if (_fullTextConfig.DisallowedPropertyAliases.Any())
-            {
-                var disallowedPropertyAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-                indexableQuery.Append($" AND -({disallowedPropertyAliasGroup})");
-            }
-
+            indexableQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
 
             _logger.Debug<StatusService>("GetIndexableNodes using query {query}", indexableQuery.ToString());
 
@@ -113,17 +107,10 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
 
             var incorrectQuery = new StringBuilder(_allIndexedNodesQuery);
-            if (_fullTextConfig.DisallowedContentTypeAliases.Any())
-            {
-                var disallowedContentTypeAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:{x}"));
-                incorrectQuery.Append($" AND ({disallowedContentTypeAliasGroup})");
-            }
-
-            if (_fullTextConfig.DisallowedPropertyAliases.Any())
-            {
-                var disallowedPropertyAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-                incorrectQuery.Append($" AND ({disallowedPropertyAliasGroup})");
-            }
+            var disallowed = new List<string>();
+            disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
+            disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
+            incorrectQuery.Append($" AND ({string.Join(" OR ", disallowed)})");
 
             _logger.Debug<StatusService>("GetIncorrectIndexedNodes using query {query}", incorrectQuery.ToString());
 
@@ -143,17 +130,10 @@ namespace Our.Umbraco.FullTextSearch.Services
             missingQuery.Append($" AND -({_fullTextConfig.FullTextPathField}:\"-1\")");
             if (_fullTextConfig.DisallowedContentTypeAliases.Any() || _fullTextConfig.DisallowedPropertyAliases.Any())
             {
-                if (_fullTextConfig.DisallowedContentTypeAliases.Any())
-                {
-                    var disallowedContentTypeAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:{x}"));
-                    missingQuery.Append($" AND -({disallowedContentTypeAliasGroup})");
-                }
-
-                if (_fullTextConfig.DisallowedPropertyAliases.Any())
-                {
-                    var disallowedPropertyAliasGroup = string.Join(" OR ", _fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-                    missingQuery.Append($" AND -({disallowedPropertyAliasGroup})");
-                }
+                var disallowed = new List<string>();
+                disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
+                disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
+                missingQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
             }
 
             _logger.Debug<StatusService>("GetMissingNodes using query {query}", missingQuery.ToString());

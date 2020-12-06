@@ -289,7 +289,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         {
             var reasons = new List<string>();
 
-            if (_fullTextConfig.DisallowedContentTypeAliases.Contains(searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()))
+            if (_fullTextConfig.DisallowedContentTypeAliases.InvariantContains(searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()))
             {
                 reasons.Add(string.Format("content Type ({0}) is disallowed", searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()));
             }

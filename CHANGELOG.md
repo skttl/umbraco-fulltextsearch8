@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 1.1.0 - 2020-12-07
+- Fix: Excludes nodes without a template when searching
+- Fix: Removes cached culture content, when culture is no longer available in the cached node
+- Fix: Fixes wrong count of incorrectly indexed, and missing nodes in the status dashboard
+- Fix: Fixes wrong version number in dashboard
+- Feature: Adds configuration summary view to status dashboard
+- Feature: Adds option to reload configuration without restarting site
 
 ## 1.0.1 - 2020-11-24
 

@@ -70,7 +70,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
             disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
 
-            indexableQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
+            if (disallowed.Any()) indexableQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
 
             _logger.Debug<StatusService>("GetIndexableNodes using query {query}", indexableQuery.ToString());
 
@@ -110,7 +110,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             var disallowed = new List<string>();
             disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
             disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-            incorrectQuery.Append($" AND ({string.Join(" OR ", disallowed)})");
+            if (disallowed.Any()) incorrectQuery.Append($" AND ({string.Join(" OR ", disallowed)})");
 
             _logger.Debug<StatusService>("GetIncorrectIndexedNodes using query {query}", incorrectQuery.ToString());
 
@@ -128,13 +128,11 @@ namespace Our.Umbraco.FullTextSearch.Services
 
             var missingQuery = new StringBuilder(_allIndexableNodesQuery);
             missingQuery.Append($" AND -({_fullTextConfig.FullTextPathField}:\"-1\")");
-            if (_fullTextConfig.DisallowedContentTypeAliases.Any() || _fullTextConfig.DisallowedPropertyAliases.Any())
-            {
-                var disallowed = new List<string>();
-                disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
-                disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-                missingQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
-            }
+
+            var disallowed = new List<string>();
+            disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
+            disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
+            if (disallowed.Any()) missingQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
 
             _logger.Debug<StatusService>("GetMissingNodes using query {query}", missingQuery.ToString());
 

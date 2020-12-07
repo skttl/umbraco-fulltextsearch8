@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.1 - 2020-12-07
+- Fix: Fix status queries when no disallowed types are added
+- Fix: Wrong dictionary key for enabled/disabled
+
 ## 1.1.0 - 2020-12-07
+
 - Fix: Excludes nodes without a template when searching
 - Fix: Removes cached culture content, when culture is no longer available in the cached node
 - Fix: Fixes wrong count of incorrectly indexed, and missing nodes in the status dashboard

@@ -135,9 +135,9 @@ namespace MyProject.Controllers
     public class SearchController : RenderMvcController
     {
         private readonly ISearchService _searchService;
-        private readonly IConfig _config;
+        private readonly IFullTextSearchConfig _config;
 
-        public SearchController(ISearchService searchService, IConfig config)
+        public SearchController(ISearchService searchService, IFullTextSearchConfig config)
         {
             _searchService = searchService;
             _config = config;
@@ -157,7 +157,7 @@ namespace MyProject.Controllers
                     .AddTitleProperty("metaTitle")
                     .AddTitleProperty("nodeName")
                     .AddSummaryProperty("metaDescription")
-                    .AddSummaryProperty(_config.GetFullTextFieldName())
+                    .AddSummaryProperty(_config.FullTextContentField)
                     .SetSummaryLength(160)
                     .SetPageLength(10)
                     .SetCulture(searchModel.GetCultureFromDomains().ToLower());

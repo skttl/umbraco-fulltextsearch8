@@ -62,40 +62,37 @@ namespace Our.Umbraco.FullTextSearch.Components
 
             foreach (var payload in (ContentCacheRefresher.JsonPayload[])args.MessageObject)
             {
-                Task.Run(() =>
+                if (payload.ChangeTypes.HasType(TreeChangeTypes.Remove))
                 {
-                    if (payload.ChangeTypes.HasType(TreeChangeTypes.Remove))
-                    {
-                        _cacheService.DeleteFromCache(payload.Id);
-                    }
-                    else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll))
-                    {
-                        // just ignore that payload (Umbracos examine implementation does the same)
-                    }
-                    else // RefreshNode or RefreshBranch (maybe trashed)
-                    {
-                            _cacheService.AddToCache(payload.Id);
+                    _cacheService.DeleteFromCache(payload.Id);
+                }
+                else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll))
+                {
+                    // just ignore that payload (Umbracos examine implementation does the same)
+                }
+                else // RefreshNode or RefreshBranch (maybe trashed)
+                {
+                        _cacheService.AddToCache(payload.Id);
 
-                            // branch
-                            if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
+                        // branch
+                        if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
+                        {
+                            const int pageSize = 500;
+                            var page = 0;
+                            var total = long.MaxValue;
+                            while (page * pageSize < total)
                             {
-                                const int pageSize = 500;
-                                var page = 0;
-                                var total = long.MaxValue;
-                                while (page * pageSize < total)
-                                {
-                                    var descendants = _contentService.GetPagedDescendants(payload.Id, page++, pageSize, out total,
-                                        //order by shallowest to deepest, this allows us to check it's published state without checking every item
-                                        ordering: Ordering.By("Path", Direction.Ascending));
+                                var descendants = _contentService.GetPagedDescendants(payload.Id, page++, pageSize, out total,
+                                    //order by shallowest to deepest, this allows us to check it's published state without checking every item
+                                    ordering: Ordering.By("Path", Direction.Ascending));
 
-                                    foreach (var descendant in descendants)
-                                    {
-                                        _cacheService.AddToCache(descendant.Id);
-                                    }
+                                foreach (var descendant in descendants)
+                                {
+                                    _cacheService.AddToCache(descendant.Id);
                                 }
                             }
-                    }
-                });
+                        }
+                }
             }
         }
 

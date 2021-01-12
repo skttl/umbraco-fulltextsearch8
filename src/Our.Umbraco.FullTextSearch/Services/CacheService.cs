@@ -70,7 +70,7 @@ namespace Our.Umbraco.FullTextSearch.Services
 
                         var fullHtml = _umbracoComponentRenderer.RenderTemplate(id).ToString();
                         var fullText = _htmlService.GetTextFromHtml(fullHtml);
-                        _logger.Info<CacheService>("Updating {nodeId} {culture} {fullText}", id, culture.Value.Culture, fullText);
+                        _logger.Debug<CacheService>("Updating {nodeId} {culture} {fullText}", id, culture.Value.Culture, fullText);
                         AddToCache(id, culture.Value.Culture, fullText);
 
                         cref.UmbracoContext.HttpContext.Items.Remove(_fullTextConfig.IndexingActiveKey);

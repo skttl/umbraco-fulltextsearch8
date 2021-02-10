@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+- Fix bug when caching cultured content, cached the default culture for all cultures instead
+- Changed some info-logging to debug
+- Removed task.run stuff when caching
+
 ## 1.1.1 - 2020-12-07
 - Fix: Fix status queries when no disallowed types are added
 - Fix: Wrong dictionary key for enabled/disabled

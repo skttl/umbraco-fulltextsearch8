@@ -21,6 +21,7 @@ namespace Our.Umbraco.FullTextSearch.Services
         private readonly IHtmlService _htmlService;
         private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly IUmbracoComponentRenderer _umbracoComponentRenderer;
+        private readonly IVariationContextAccessor _variationContextAccessor;
 
         public CacheService(
             IScopeProvider scopeProvider,
@@ -28,7 +29,8 @@ namespace Our.Umbraco.FullTextSearch.Services
             IUmbracoContextFactory umbracoContextFactory,
             IHtmlService htmlService,
             IUmbracoComponentRenderer umbracoComponentRenderer,
-            IFullTextSearchConfig config)
+            IFullTextSearchConfig config,
+            IVariationContextAccessor variationContextAccessor)
         {
             _scopeProvider = scopeProvider;
             _logger = logger;
@@ -36,6 +38,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             _htmlService = htmlService;
             _umbracoComponentRenderer = umbracoComponentRenderer;
             _fullTextConfig = config;
+            _variationContextAccessor = variationContextAccessor;
         }
 
         /// <summary>
@@ -63,8 +66,8 @@ namespace Our.Umbraco.FullTextSearch.Services
                         // get content of page, and manipulate for indexing
                         //var url = publishedContent.Url(culture.Value.Culture, UrlMode.Absolute);
                         //_htmlService.GetHtmlByUrl(url, out string fullHtml);
-                        if (culture.Value.Culture.IsNullOrWhiteSpace())
-                            CultureInfo.CurrentUICulture = new CultureInfo(culture.Value.Culture);
+                        if (!culture.Value.Culture.IsNullOrWhiteSpace())
+                            _variationContextAccessor.VariationContext = new VariationContext(culture.Value.Culture);
 
                         cref.UmbracoContext.HttpContext.Items.Add(_fullTextConfig.IndexingActiveKey, "1");
 

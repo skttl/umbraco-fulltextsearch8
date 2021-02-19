@@ -17,7 +17,6 @@ namespace Our.Umbraco.FullTextSearch.Services
     {
         private readonly ILogger _logger;
         private readonly string _configFilePath;
-        private FileSystemWatcher _watcher;
 
         private XmlDocument XmlDocument { get; set; }
         private XmlNode FullTextSearchNode { get; set; }

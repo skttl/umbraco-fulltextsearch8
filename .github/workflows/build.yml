@@ -59,7 +59,8 @@ jobs:
           path: ${{ env.OUTPUT }}/**/*
           
       - name: Push to NuGet
-        run: nuget push ${{ env.OUTPUT }}/*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -NoSymbols
+        run: dotnet nuget push ${{ env.OUTPUT }}/*.nupkg -k ${{ secrets.NUGET_API_KEY } -s https://api.nuget.org/v3/index.json
 
       - name: Push to Our
+        if: steps.get_version.outputs.VERSION.indexOf('beta') == -1
         run: UmbPack push ${{ env.OUTPUT }}/*.zip -k ${{ secrets.OUR_API_KEY }} -a *

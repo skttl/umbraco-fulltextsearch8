@@ -54,6 +54,8 @@
     <key alias="enableWildcardsDescription">Dette aktivere wildcards i søgningen, wildcard tegnet tilføjes automatisk til hver søgeterm.</key>
     <key alias="fuzzyness">Fuzzyness</key>
     <key alias="fuzzynessDescription">Fuzzyness bruges til at matche en søgeterm med lignende termer. Standardindstillingen er 0.8. Hvis wildcards er aktiveret, vil fuzzyness ikke blive brugt.</key>
+    <key alias="allowedContentTypes">Tilladte dokumenttyper</key>
+    <key alias="allowedContentTypesDescription">Begrænser søgningen til indhold af de valgte dokumenttypealiaser.</key>
     <key alias="externalIndexNotFound">ExternalIndex blev ikke fundet</key>
     <key alias="fullTextSearchIsDisabled">FullTextSearch er deaktiveret</key>
     <key alias="fullTextSearchIsEnabled">FullTextSearch is aktiveret</key>

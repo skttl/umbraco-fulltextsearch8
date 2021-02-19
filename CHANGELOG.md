@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed task.run stuff when caching
 - Adds version number to Umbraco.Sys.ServerVariables for retrieving in dashboard
 - Adds functionality for generating a wrapping template for use when rendering (https://github.com/skttl/umbraco-fulltextsearch8/issues/47)
+- Adds ability to limit which content types are being searched
 
 ## 1.1.1 - 2020-12-07
 - Fix: Fix status queries when no disallowed types are added

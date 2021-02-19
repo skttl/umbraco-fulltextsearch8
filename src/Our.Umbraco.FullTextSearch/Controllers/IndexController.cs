@@ -223,7 +223,8 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                 EnableWildcards = defaultSearch.AddWildcard,
                 Fuzzyness = defaultSearch.Fuzzyness,
                 TitleBoost = defaultSearch.TitleBoost,
-                SearchType = defaultSearch.SearchType.ToString()
+                SearchType = defaultSearch.SearchType.ToString(),
+                AllowedContentTypes = new List<string>()
             };
             info.Cultures = _localizationService.GetAllLanguages().Select(x => x.IsoCode).ToList();
 
@@ -250,7 +251,8 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                     .SetSummaryLength(searchRequest.AdvancedSettings.SummaryLength)
                     .AddRootNodeIds(searchRequest.AdvancedSettings.RootNodeIds)
                     .SetCulture(searchRequest.AdvancedSettings.Culture)
-                    .SetFuzzyness(searchRequest.AdvancedSettings.Fuzzyness);
+                    .SetFuzzyness(searchRequest.AdvancedSettings.Fuzzyness)
+                    .AddAllowedContentTypes(searchRequest.AdvancedSettings.AllowedContentTypes.ToArray());
                 if (searchRequest.AdvancedSettings.EnableWildcards)
                     search.EnableWildcards();
             }

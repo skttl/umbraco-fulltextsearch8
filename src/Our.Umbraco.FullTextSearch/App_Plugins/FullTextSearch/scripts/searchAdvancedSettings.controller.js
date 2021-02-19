@@ -30,7 +30,9 @@
                     fullTextSearch_enableWildcards: "Enable wildcards",
                     fullTextSearch_enableWildcardsDescription: "These enables or disables use of wildcards in the search terms. Wildcard characters are added automatically to each of the terms.",
                     fullTextSearch_fuzzyness: "Fuzzyness",
-                    fullTextSearch_fuzzynessDescription: "Fuzzyness is used to match your search term with similar words. This method sets the fuzzyness parameter of the search. The default is 0.8. If wildcards is enabled, fuzzyness will not be used."
+                    fullTextSearch_fuzzynessDescription: "Fuzzyness is used to match your search term with similar words. This method sets the fuzzyness parameter of the search. The default is 0.8. If wildcards is enabled, fuzzyness will not be used.",
+                    fullTextSearch_allowedContentTypes: "Allowed Content Types",
+                    fullTextSearch_allowedContentTypesDescription: "Limit the search to nodes of the specified Content Type Aliases."
                 });
 
                 var searchTypes = {};
@@ -201,6 +203,20 @@
                         "value": $scope.model.advancedSettings.fuzzyness,
                         "alias": "fuzzyness",
                         "editor": "Umbraco.Decimal",
+                        "validation": validation
+                    },
+                    {
+                        "label": vm.dictionaryKeys.fullTextSearch_allowedContentTypes,
+                        "description": vm.dictionaryKeys.fullTextSearch_allowedContentTypesDescription,
+                        "view": "multipletextbox",
+                        "config": {
+                            "min": 1,
+                            "max": 0
+                        },
+                        "id": 0,
+                        "value": $scope.model.advancedSettings.allowedContentTypes.map(p => { return { value: p } }),
+                        "alias": "allowedContentTypes",
+                        "editor": "Umbraco.MultipleTextstring",
                         "validation": validation
                     },
                 ]

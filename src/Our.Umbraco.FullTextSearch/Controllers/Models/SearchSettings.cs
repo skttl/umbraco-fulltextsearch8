@@ -30,5 +30,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers.Models
         public bool EnableWildcards { get; set; }
         [JsonProperty("fuzzyness")]
         public double Fuzzyness { get; set; }
+        [JsonProperty("allowedContentTypes")]
+        public List<string> AllowedContentTypes { get; set; }
     }
 }

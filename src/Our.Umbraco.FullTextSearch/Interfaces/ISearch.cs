@@ -20,5 +20,6 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         bool AddWildcard { get; set; }
         bool HighlightSearchTerms { get; set; }
         string Culture { get; set; }
+        string[] AllowedContentTypes { get; set; }
     }
 }

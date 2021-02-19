@@ -124,6 +124,13 @@ namespace Our.Umbraco.FullTextSearch.Services
                     query.Append($" AND ({rootNodeGroup})");
                 }
 
+                if (_search.AllowedContentTypes.Any())
+                {
+                    var contentTypeGroup = string.Join(" OR ", _search.AllowedContentTypes.Select(x =>
+                        $"__NodeTypeAlias:{x}"));
+                    query.Append($" AND ({contentTypeGroup})");
+                }
+
 
                 var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture}";
                 var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";

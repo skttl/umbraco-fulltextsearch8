@@ -54,6 +54,8 @@
     <key alias="enableWildcardsDescription">This enables or disables use of wildcards in the search terms. Wildcard characters are added automatically to each of the terms.</key>
     <key alias="fuzzyness">Fuzzyness</key>
     <key alias="fuzzynessDescription">Fuzzyness is used to match your search term with similar words. This method sets the fuzzyness parameter of the search. The default is 0.8. If wildcards is enabled, fuzzyness will not be used.</key>
+    <key alias="allowedContentTypes">Allowed Content Types</key>
+    <key alias="allowedContentTypesDescription">Limit the search to nodes of the specified Content Type Aliases.</key>
     <key alias="fullTextSearchIsDisabled">FullTextSearch is disabled</key>
     <key alias="fullTextSearchIsEnabled">FullTextSearch is enabled</key>
     <key alias="externalIndexNotFound">ExternalIndex not found</key>

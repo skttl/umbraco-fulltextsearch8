@@ -320,5 +320,11 @@ This sets the desired page length of your search results. If you set it to 0, yo
 `SetCulture(string culture)`
 This is used to define which culture to search in. You should probably always set this, but it might work without it, in invariant sites.
 
+`AddAllowedContentTypes(string[] aliases)` or `AddAllowedContentType(string alias)`
+Adds Content Type aliases to the list of allowed Content Types, in order to limit the search to nodes of the specified Content Type Aliases. By default, nodes of all Content Types (except the ones that are disallowed) will be searched.
+
+`RemoveAllowedContentTypes(string[] aliases)` or `RemoveAllowedContentType(string alias)`
+Removes Content Type aliases from the list of allowed Content Types.
+
 ## The dashboard
 A dashboard is added to the Settings section of Umbraco, where you can reindex all nodes at once. I want to revamp this dashboard, and if you have any inputs, feel free to voice your opinion in this [issue](https://github.com/skttl/umbraco-fulltextsearch8/issues/37)

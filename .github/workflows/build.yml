@@ -59,7 +59,7 @@ jobs:
           path: ${{ env.OUTPUT }}/**/*
           
       - name: Push to NuGet
-        run: nuget push ${{ env.OUTPUT }}/**/*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -NoSymbols
+        run: nuget push ${{ env.OUTPUT }}/*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -NoSymbols
 
       - name: Push to Our
-        run: UmbPack push ${{ env.OUTPUT }}/**/*.zip -k ${{ secrets.OUR_API_KEY }} -a *
+        run: UmbPack push ${{ env.OUTPUT }}/*.zip -k ${{ secrets.OUR_API_KEY }} -a *

@@ -12,7 +12,8 @@ env:
   CONFIG: release
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -56,7 +57,21 @@ jobs:
         with:
           name: Build-Results-${{ steps.get_version.outputs.VERSION }}
           path: ${{ env.OUTPUT }}/**/*
-
+          
+      - name: Upload release
+        uses: yakuhzi/action-release@v1
+        with:
+          file: ${{ env.OUTPUT }}/**/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload release
+        uses: yakuhzi/action-release@v1
+        with:
+          file: ${{ env.OUTPUT }}/**/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Push to NuGet
         run: nuget push ${{ env.OUTPUT }}/**/*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -NoSymbols
 

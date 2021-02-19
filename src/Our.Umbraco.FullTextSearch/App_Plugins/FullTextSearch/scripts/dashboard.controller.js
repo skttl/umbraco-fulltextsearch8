@@ -15,6 +15,8 @@
                     fullTextSearch_search: "Search",
                 });
 
+                vm.version = Umbraco.Sys.ServerVariables.FullTextSearch.Version;
+
                 vm.content = {
                     navigation: [
                         {

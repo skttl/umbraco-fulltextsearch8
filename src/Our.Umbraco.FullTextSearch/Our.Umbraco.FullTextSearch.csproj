@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/skttl/umbraco-fulltextsearch8</PackageProjectUrl>
     <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
     <PackageTags>umbraco, umbraco-cms</PackageTags>
+    <Version>1.2.0</Version>
 
   </PropertyGroup>
 
@@ -68,6 +69,7 @@
     <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
     <Compile Include="Interfaces\IStatusService.cs" />
     <Compile Include="Interfaces\IFullTextSearchConfig.cs" />
+    <Compile Include="ServerVariablesComponent.cs" />
     <Compile Include="Services\Models\CacheItem.cs" />
     <Compile Include="Models\FullTextSearchResult.cs" />
     <Compile Include="Models\Search.cs" />

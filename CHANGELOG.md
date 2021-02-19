@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug when caching cultured content, cached the default culture for all cultures instead
 - Changed some info-logging to debug
 - Removed task.run stuff when caching
+- Adds version number to Umbraco.Sys.ServerVariables for retrieving in dashboard
+- Adds functionality for generating a wrapping template for use when rendering (https://github.com/skttl/umbraco-fulltextsearch8/issues/47)
 
 ## 1.1.1 - 2020-12-07
 - Fix: Fix status queries when no disallowed types are added

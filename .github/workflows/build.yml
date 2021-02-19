@@ -59,8 +59,8 @@ jobs:
           path: ${{ env.OUTPUT }}/**/*
           
       - name: Push to NuGet
-        run: dotnet nuget push ${{ env.OUTPUT }}/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ${{ env.OUTPUT }}/Our.Umbraco.FullTextSearch.${{ steps.get_version.outputs.VERSION }}.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
 
       - name: Push to Our
         if: contains(steps.get_version.outputs.VERSION, '-')
-        run: UmbPack push ${{ env.OUTPUT }}/*.zip -k ${{ secrets.OUR_API_KEY }} -a *
+        run: UmbPack push ${{ env.OUTPUT }}/Our.Umbraco.FullTextSearch.${{ steps.get_version.outputs.VERSION }}.zip -k ${{ secrets.OUR_API_KEY }} -a *

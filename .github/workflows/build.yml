@@ -59,7 +59,7 @@ jobs:
           path: ${{ env.OUTPUT }}/**/*
           
       - name: Push to NuGet
-        run: dotnet nuget push ${{ env.OUTPUT }}/*.nupkg -k ${{ secrets.NUGET_API_KEY } -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ${{ env.OUTPUT }}/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
 
       - name: Push to Our
         if: steps.get_version.outputs.VERSION.indexOf('beta') == -1

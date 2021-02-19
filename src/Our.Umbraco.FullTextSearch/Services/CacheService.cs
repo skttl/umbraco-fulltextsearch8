@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Scoping;
+using Umbraco.Core.Services;
 using Umbraco.Web;
 
 namespace Our.Umbraco.FullTextSearch.Services
@@ -18,6 +20,7 @@ namespace Our.Umbraco.FullTextSearch.Services
         private readonly IScopeProvider _scopeProvider;
         private readonly ILogger _logger;
         private readonly IUmbracoContextFactory _umbracoContextFactory;
+        private readonly IFileService _fileService;
         private readonly IHtmlService _htmlService;
         private readonly IFullTextSearchConfig _fullTextConfig;
         private readonly IUmbracoComponentRenderer _umbracoComponentRenderer;
@@ -27,6 +30,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             IScopeProvider scopeProvider,
             ILogger logger,
             IUmbracoContextFactory umbracoContextFactory,
+            IFileService fileService,
             IHtmlService htmlService,
             IUmbracoComponentRenderer umbracoComponentRenderer,
             IFullTextSearchConfig config,
@@ -35,6 +39,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             _scopeProvider = scopeProvider;
             _logger = logger;
             _umbracoContextFactory = umbracoContextFactory;
+            _fileService = fileService;
             _htmlService = htmlService;
             _umbracoComponentRenderer = umbracoComponentRenderer;
             _fullTextConfig = config;
@@ -71,9 +76,10 @@ namespace Our.Umbraco.FullTextSearch.Services
 
                         cref.UmbracoContext.HttpContext.Items.Add(_fullTextConfig.IndexingActiveKey, "1");
 
-                        var fullHtml = _umbracoComponentRenderer.RenderTemplate(id).ToString();
+                        var templateId = GetRenderingTemplateId();
+                        var fullHtml = _umbracoComponentRenderer.RenderTemplate(id, templateId).ToString();
                         var fullText = _htmlService.GetTextFromHtml(fullHtml);
-                        _logger.Debug<CacheService>("Updating {nodeId} {culture} {fullText}", id, culture.Value.Culture, fullText);
+                        _logger.Debug<CacheService>("Updating nodeId: {nodeId} in culture: {culture} using templateId: {templateId} with content: {fullText}", id, culture.Value.Culture, templateId, fullText);
                         AddToCache(id, culture.Value.Culture, fullText);
 
                         cref.UmbracoContext.HttpContext.Items.Remove(_fullTextConfig.IndexingActiveKey);
@@ -81,6 +87,49 @@ namespace Our.Umbraco.FullTextSearch.Services
                 }
             }
         }
+
+        private int? GetRenderingTemplateId()
+        {
+            var template = _fileService.GetTemplate("OurUmbracoFullTextRendering");
+            if (template != null) return template.Id;
+
+            try
+            {
+                template = _fileService.CreateTemplateWithIdentity(
+                    "FullTextSearch Rendering Template",
+                    "OurUmbracoFullTextRendering",
+                    RenderingTemplateContent);
+
+                _fileService.SaveTemplate(template);
+                return template.Id;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error<CacheService>(ex, "Failed creating rendering template");
+            }
+
+            return null;
+        }
+
+        private string RenderingTemplateContent =>
+              "@inherits Umbraco.Web.Mvc.UmbracoViewPage"
+            + Environment.NewLine + "@Umbraco.RenderTemplate(Model.Id)"
+            + Environment.NewLine + "@*"
+            + Environment.NewLine + "This template has been created for the sole purpose of stopping rendering errors"
+            + Environment.NewLine + "from bubbling into the backoffice, when caching content for FullTextSearch."
+            + Environment.NewLine + ""
+            + Environment.NewLine + "For some reason, when doing _umbracoComponentRenderer.RenderTemplate() as a part"
+            + Environment.NewLine + "of an event in Umbraco, YSODs bubble through to the backoffice, with no error"
+            + Environment.NewLine + "message, leaving the user with no clue about what happened. The user can be led"
+            + Environment.NewLine + "believe that the Save&Publish failed - but it didn't. The node just couldn't be"
+            + Environment.NewLine + "rendered for some reason, most likely a bug in the nodes template."
+            + Environment.NewLine + ""
+            + Environment.NewLine + "Please keep this template as it is - if you delete it, it will get re-created the"
+            + Environment.NewLine + "next time something needs to be cached for indexing with Full Text Search."
+            + Environment.NewLine + ""
+            + Environment.NewLine + "Thank you for your understanding. And remember; if you like FullTextSearch,"
+            + Environment.NewLine + "you can always buy me a virtual coffee at https://ko-fi.com/skttl"
+            + Environment.NewLine + "*@";
 
         private bool IsDisallowed(IPublishedContent node)
         {

@@ -8,7 +8,7 @@ Install using the nuget package, or from the package repository.
 This package requires Umbraco 8.1 as a minimum version.
 
 ## Configuration
-FullTextSearch comes with its own configuration file, located in App_Plugins/Our.Umbraco.FullTextSearch/FullTextSearch.config.
+FullTextSearch comes with its own configuration file, located in App_Plugins/FullTextSearch/FullTextSearch.config.
 
 Here is an overview of the different config settings you can add.
 

@@ -1,11 +1,9 @@
-﻿using Our.Umbraco.FullTextSearch.Interfaces;
-using Our.Umbraco.FullTextSearch.Services.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Services.Models;
 using Umbraco.Core;
-using Umbraco.Core.Composing;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Persistence;
@@ -52,7 +50,7 @@ namespace Our.Umbraco.FullTextSearch.Services
         /// <param name="id"></param>
         public void AddToCache(int id)
         {
-            using(var scope = _scopeProvider.CreateScope(autoComplete: true))
+            using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
                 {
@@ -133,6 +131,8 @@ namespace Our.Umbraco.FullTextSearch.Services
 
         private bool IsDisallowed(IPublishedContent node)
         {
+            if (!node.TemplateId.HasValue || node.TemplateId.Value <= 0) return true;
+
             if (_fullTextConfig.DisallowedContentTypeAliases.Any() && _fullTextConfig.DisallowedContentTypeAliases.InvariantContains(node.ContentType.Alias)) return true;
 
             if (_fullTextConfig.DisallowedPropertyAliases.Any())

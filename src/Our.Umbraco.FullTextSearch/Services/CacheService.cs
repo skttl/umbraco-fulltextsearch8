@@ -111,6 +111,7 @@ namespace Our.Umbraco.FullTextSearch.Services
 
         private string RenderingTemplateContent =>
               "@inherits Umbraco.Web.Mvc.UmbracoViewPage"
+            + Environment.NewLine + "@{ Layout = null; }"
             + Environment.NewLine + "@Umbraco.RenderTemplate(Model.Id)"
             + Environment.NewLine + "@*"
             + Environment.NewLine + "This template has been created for the sole purpose of stopping rendering errors"
@@ -126,7 +127,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             + Environment.NewLine + "next time something needs to be cached for indexing with Full Text Search."
             + Environment.NewLine + ""
             + Environment.NewLine + "Thank you for your understanding. And remember; if you like FullTextSearch,"
-            + Environment.NewLine + "you can always buy me a virtual coffee at https://ko-fi.com/skttl"
+            + Environment.NewLine + "you can always buy me a virtual coffee at https://github.com/sponsors/skttl"
             + Environment.NewLine + "*@";
 
         private bool IsDisallowed(IPublishedContent node)

@@ -196,10 +196,10 @@ The Search helper method takes either a string searchTerm, and an optional cultu
 When rendering you work with the `IFullTextSearchResult` value, that you either got using a controller or the helper method. The code sample below shows how to use it from the ModelsBuilder extension, but `Model.FullTextSearchResult` could also have been `ViewBag.FullTextSearchResult` or simply `searchResult` following the examples above.
 
 ```
-@if (Model.FullTextSearchResult != null)
+@if (Model.SearchResult != null)
 {
     <ul>
-        @foreach (var result in Model.FullTextSearchResult.Results)
+        @foreach (var result in Model.SearchResult.Results)
         {
             <li>
                 <a href="@result.Url()">@result.Title</a>

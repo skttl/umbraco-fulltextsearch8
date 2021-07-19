@@ -1,25 +1,32 @@
 ﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Options;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using Umbraco.Core.Logging;
+using Umbraco.Cms.Core.Logging;
 
 namespace Our.Umbraco.FullTextSearch.Services
 {
     public class HtmlService : IHtmlService
     {
-        private readonly IFullTextSearchConfig _fullTextConfig;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly FullTextSearchOptions _options;
         private readonly ILogger _logger;
         private readonly IProfilingLogger _profilingLogger;
 
         public HtmlService(
-            IFullTextSearchConfig fullTextConfig,
-            ILogger logger,
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<FullTextSearchOptions> options,
+            ILogger<IHtmlService> logger,
             IProfilingLogger profilingLogger)
         {
-            _fullTextConfig = fullTextConfig;
+            _httpContextAccessor = httpContextAccessor;
+            _options = options.Value;
             _logger = logger;
             _profilingLogger = profilingLogger;
         }
@@ -58,22 +65,22 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
             catch (Exception ex)
             {
-                if (HttpContext.Current != null) HttpContext.Current.Trace.Warn("Search", "There was an exception cleaning HTML: " + ex);
-
-                _logger.Error<HtmlService>(ex, "RemoveByXpaths exception.");
+                _logger.LogError(ex, "RemoveByXpaths exception.");
                 // swallow the exception and run the regex based tag stripper on it anyway. Won't be perfect but better than nothing.
                 return fullHtml;
             }
 
-            var xPathsToRemove = _fullTextConfig.XPathsToRemove;
-            foreach (var xPath in xPathsToRemove)
+            if (_options.XPathsToRemove != null)
             {
-                var nodes = doc.DocumentNode.SelectNodes(xPath);
-                if (nodes != null)
+                foreach (var xPath in _options.XPathsToRemove)
                 {
-                    foreach (var h in nodes)
+                    var nodes = doc.DocumentNode.SelectNodes(xPath);
+                    if (nodes != null)
                     {
-                        h.ParentNode.RemoveChild(h, false);
+                        foreach (var h in nodes)
+                        {
+                            h.ParentNode.RemoveChild(h, false);
+                        }
                     }
                 }
             }

@@ -1,87 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <Product>Our.Umbraco.FullTextSearch</Product>
+        <PackageId>Our.Umbraco.FullTextSearch</PackageId>
+        <Title>Our.Umbraco.FullTextSearch</Title>
+        <Description>...</Description>
+        <Product>...</Product>
+        <PackageTags>umbraco plugin package</PackageTags>
+        <Version>2.0.0-beta1</Version>
+        <AssemblyVersion>2.0.0.1</AssemblyVersion>
+        <FileVersion>2.0.0.1</FileVersion>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <RootNamespace>Our.Umbraco.FullTextSearch</RootNamespace>
+    <ItemGroup>
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0-rc001" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-rc001" />
+    </ItemGroup>
 
-    <IncludeContentInPack>true</IncludeContentInPack>
-    <ContentTargetFolders>content</ContentTargetFolders>
-    <Product>Full Text Search for Umbraco</Product>
-    <Authors>Søren Kottal</Authors>
-    <Description>Full Text Search is a fast, powerful and easy to setup search solution for Umbraco sites. Searches the whole page content (also generated content) Simple and easy setup for multiple search types (quoted, fuzzy matching, wildcards etc.) Extends the default ExternalIndex</Description>
-    <Copyright>Copyright 2020</Copyright>
-    <PackageProjectUrl>https://github.com/skttl/umbraco-fulltextsearch8</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
-    <PackageTags>umbraco, umbraco-cms</PackageTags>
-    <Version>1.2.1-beta2</Version>
-    <AssemblyVersion>1.2.1.2</AssemblyVersion>
-    <FileVersion>1.2.1.2</FileVersion>
-
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="UmbracoCms.Web" Version="8.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="App_Plugins\**\*" />
-    <Compile Remove="**\*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Controllers\**\*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="App_Plugins\FullTextSearch\backoffice\fullTextSearch\index.html" />
-    <None Remove="App_Plugins\FullTextSearch\backoffice\fullTextSearch\reindex.html" />
-    <None Remove="App_Plugins\FullTextSearch\backoffice\fullTextSearch\search.html" />
-    <None Remove="App_Plugins\FullTextSearch\css\fulltextsearch.css" />
-    <None Remove="App_Plugins\FullTextSearch\dashboard.controller.js" />
-    <None Remove="App_Plugins\FullTextSearch\lang\da.xml" />
-    <None Remove="App_Plugins\FullTextSearch\lang\en.xml" />
-    <None Remove="App_Plugins\FullTextSearch\reindex.controller.js" />
-    <None Remove="App_Plugins\FullTextSearch\scripts\fulltextsearch.resource.js" />
-    <None Remove="App_Plugins\FullTextSearch\scripts\searchAdvancedSettings.controller.js" />
-    <None Remove="App_Plugins\FullTextSearch\scripts\statusnodes.controller.js" />
-    <None Remove="App_Plugins\FullTextSearch\search.controller.js" />
-    <None Remove="App_Plugins\FullTextSearch\views\search\advancedSettings.html" />
-    <None Remove="App_Plugins\FullTextSearch\views\search\inspectNode.html" />
-    <None Remove="App_Plugins\FullTextSearch\views\statusNodes.html" />
-    <None Remove="App_Plugins\Our.Umbraco.FullTextSearch\FullTextSearch.config" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Components\AddFullTextItemsToIndex.cs" />
-    <Compile Include="Components\CacheComponent.cs" />
-    <Compile Include="Components\UpdateCacheOnPublish.cs" />
-    <Compile Include="FullTextComposer.cs" />
-    <Compile Include="HealthChecks\FullTextSearchHealthCheck.cs" />
-    <Compile Include="Helpers\FullTextSearchHelper.cs" />
-    <Compile Include="Helpers\SearchResultItemExtensions.cs" />
-    <Compile Include="Helpers\StringExtensions.cs" />
-    <Compile Include="Interfaces\ICacheService.cs" />
-    <Compile Include="Interfaces\IFullTextSearchResult.cs" />
-    <Compile Include="Interfaces\IHtmlService.cs" />
-    <Compile Include="Interfaces\ISearch.cs" />
-    <Compile Include="Interfaces\ISearchResultItem.cs" />
-    <Compile Include="Interfaces\ISearchService.cs" />
-    <Compile Include="Migrations\ZeroOneZero\CreateCacheTable.cs" />
-    <Compile Include="Migrations\ZeroOneZero\CreateCacheTaskTable.cs" />
-    <Compile Include="Migrations\ZeroThreeZero\RemoveCacheTaskTable.cs" />
-    <Compile Include="Interfaces\IStatusService.cs" />
-    <Compile Include="Interfaces\IFullTextSearchConfig.cs" />
-    <Compile Include="ServerVariablesComponent.cs" />
-    <Compile Include="Services\Models\CacheItem.cs" />
-    <Compile Include="Models\FullTextSearchResult.cs" />
-    <Compile Include="Models\Search.cs" />
-    <Compile Include="Models\SearchProperty.cs" />
-    <Compile Include="Models\SearchResultItem.cs" />
-    <Compile Include="Models\SearchType.cs" />
-    <Compile Include="Services\CacheService.cs" />
-    <Compile Include="Services\FullTextSearchConfig.cs" />
-    <Compile Include="Services\HtmlService.cs" />
-    <Compile Include="Services\SearchService.cs" />
-    <Compile Include="Services\StatusService.cs" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="build\**\*.*">
+            <Pack>True</Pack>
+            <PackagePath>buildTransitive</PackagePath>
+        </None>
+    </ItemGroup>
 </Project>

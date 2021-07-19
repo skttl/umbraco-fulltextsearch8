@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <OurUmbracoFullTextSearchContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\FullTextSearch\**\*.*</OurUmbracoFullTextSearchContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyOurUmbracoFullTextSearchAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <OurUmbracoFullTextSearchContentFiles Include="$(OurUmbracoFullTextSearchContentFilesPath)" />
+        </ItemGroup>
+        <Message Text="Copying OurUmbracoFullTextSearch files: $(OurUmbracoFullTextSearchContentFilesPath) - #@(OurUmbracoFullTextSearchContentFiles->Count()) files"  Importance="high" />
+        <Copy
+            SourceFiles="@(OurUmbracoFullTextSearchContentFiles)"
+            DestinationFiles="@(OurUmbracoFullTextSearchContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\FullTextSearch\%(RecursiveDir)%(Filename)%(Extension)')"
+            SkipUnchangedFiles="true" />
+
+    </Target>
+
+    <Target Name="ClearOurUmbracoFullTextSearchAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <OurUmbracoFullTextSearchDir Include="$(MSBuildProjectDirectory)\App_Plugins\FullTextSearch\" />
+        </ItemGroup>
+        <Message Text="Clear old OurUmbracoFullTextSearch data"  Importance="high" />
+        <RemoveDir Directories="@(OurUmbracoFullTextSearchDir)"  />
+    </Target>
+
+</Project>

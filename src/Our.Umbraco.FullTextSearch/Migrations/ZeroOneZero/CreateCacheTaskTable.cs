@@ -1,8 +1,6 @@
-﻿using System;
-using Umbraco.Core.Migrations;
-using Umbraco.Core.Logging;
-using NPoco;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
+﻿using NPoco;
+using Umbraco.Cms.Infrastructure.Migrations;
+using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 namespace Our.Umbraco.FullTextSearch.Migrations.ZeroOneZero
 {
@@ -12,18 +10,11 @@ namespace Our.Umbraco.FullTextSearch.Migrations.ZeroOneZero
         {
         }
 
-        public override void Migrate()
+        protected override void Migrate()
         {
-            Logger.Debug<CreateCacheTaskTable>("Running migration {MigrationStep}", "CreateCacheTable");
-
-            // Lots of methods available in the MigrationBase class - discover with this.
             if (TableExists("FullTextCacheTasks") == false)
             {
                 Create.Table<CacheTaskTableSchema>().Do();
-            }
-            else
-            {
-                Logger.Debug<CreateCacheTaskTable>("The database table {DbTable} already exists, skipping", "FullTextCacheTasks");
             }
         }
 

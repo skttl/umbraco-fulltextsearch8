@@ -1,41 +1,28 @@
-﻿using Our.Umbraco.FullTextSearch.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using Umbraco.Core.Logging;
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Our.Umbraco.FullTextSearch.Options;
+using Umbraco.Cms.Web.BackOffice.Controllers;
+using Umbraco.Cms.Web.Common.Attributes;
 
 namespace Our.Umbraco.FullTextSearch.Controllers
 {
     [PluginController("FullTextSearch")]
     public class ConfigController : UmbracoAuthorizedApiController
     {
-        private readonly IFullTextSearchConfig _fullTextConfig;
-        private readonly ILogger _logger;
+        private readonly FullTextSearchOptions _options;
 
         public ConfigController(
-            IFullTextSearchConfig fullTextSearchConfig,
-            ILogger logger)
+            IOptions<FullTextSearchOptions> options
+            )
         {
-            _fullTextConfig = fullTextSearchConfig;
-            _logger = logger;
-        }
-
-        [HttpPost]
-        public IFullTextSearchConfig Reload()
-        {
-            _fullTextConfig.LoadAndParseConfig();
-            return _fullTextConfig;
+            _options = options.Value;
         }
 
         [HttpGet]
-        public IFullTextSearchConfig Get()
+        public FullTextSearchOptions Get()
         {
-            return _fullTextConfig;
+            return _options;
         }
     }
 }

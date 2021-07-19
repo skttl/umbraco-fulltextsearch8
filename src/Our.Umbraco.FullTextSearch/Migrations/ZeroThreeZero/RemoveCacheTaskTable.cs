@@ -1,5 +1,4 @@
-﻿using Umbraco.Core.Logging;
-using Umbraco.Core.Migrations;
+﻿using Umbraco.Cms.Infrastructure.Migrations;
 
 namespace Our.Umbraco.FullTextSearch.Migrations.ZeroThreeZero
 {
@@ -9,18 +8,11 @@ namespace Our.Umbraco.FullTextSearch.Migrations.ZeroThreeZero
         {
         }
 
-        public override void Migrate()
+        protected override void Migrate()
         {
-            Logger.Debug<RemoveCacheTaskTable>("Running migration {MigrationStep}", "RemoveCacheTable");
-
-            // Lots of methods available in the MigrationBase class - discover with this.
             if (TableExists("FullTextCacheTasks"))
             {
                 Delete.Table("FullTextCacheTasks").Do();
-            }
-            else
-            {
-                Logger.Debug<RemoveCacheTaskTable>("The database table {DbTable} doesn't exist, skipping", "FullTextCacheTasks");
             }
         }
     }

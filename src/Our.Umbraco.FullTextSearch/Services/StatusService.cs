@@ -1,37 +1,34 @@
 ﻿using Examine;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Scoping;
-using Umbraco.Web;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Scoping;
+using Umbraco.Cms.Core.Web;
 
 namespace Our.Umbraco.FullTextSearch.Services
 {
     public class StatusService : IStatusService
     {
-        private readonly IFullTextSearchConfig _fullTextConfig;
-        private readonly IScopeProvider _scopeProvider;
-        private readonly IUmbracoContextFactory _umbracoContextFactory;
-        private readonly ILogger _logger;
+        private readonly FullTextSearchOptions _options;
+        private readonly ILogger<IStatusService> _logger;
         private readonly IExamineManager _examineManager;
 
         private string _allIndexableNodesQuery => "__IndexType:content AND __Published:y AND -(templateID:0)";
-        private string _allIndexedNodesQuery => _allIndexableNodesQuery + $" AND {_fullTextConfig.FullTextPathField}:\"-1\"";
+        private string _allIndexedNodesQuery => _allIndexableNodesQuery + $" AND {_options.FullTextPathField}:\"-1\"";
 
 
         public StatusService(
-            IFullTextSearchConfig fullTextConfig,
-            IScopeProvider scopeProvider,
-            IUmbracoContextFactory umbracoContextFactory,
-            ILogger logger,
+            IOptions<FullTextSearchOptions> options,
+            ILogger<IStatusService> logger,
             IExamineManager examineManager)
         {
-            _fullTextConfig = fullTextConfig;
-            _scopeProvider = scopeProvider;
-            _umbracoContextFactory = umbracoContextFactory;
+            _options = options.Value;
             _logger = logger;
             _examineManager = examineManager;
         }
@@ -39,20 +36,20 @@ namespace Our.Umbraco.FullTextSearch.Services
         private bool TryGetSearcher(out ISearcher searcher)
         {
             searcher = null;
-            if (!_fullTextConfig.Enabled)
+            if (!_options.Enabled)
             {
-                _logger.Debug<StatusService>("FullTextIndexing is not enabled");
+                _logger.LogDebug("FullTextIndexing is not enabled");
                 return false;
             }
 
-            if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
+            if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
             {
-                _logger.Error<StatusService>(new InvalidOperationException("No index found by name ExternalIndex"));
+                _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
                 return false;
             }
             else
             {
-                searcher = index.GetSearcher();
+                searcher = index.Searcher;
                 return true;
             }
         }
@@ -67,14 +64,14 @@ namespace Our.Umbraco.FullTextSearch.Services
 
             var indexableQuery = new StringBuilder(_allIndexableNodesQuery);
             var disallowed = new List<string>();
-            disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
-            disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
+            disallowed.AddRange(_options.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
+            disallowed.AddRange(_options.DisallowedPropertyAliases.Select(x => $"{x}:1"));
 
             if (disallowed.Any()) indexableQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
 
-            _logger.Debug<StatusService>("GetIndexableNodes using query {query}", indexableQuery.ToString());
+            _logger.LogDebug("GetIndexableNodes using query {query}", indexableQuery.ToString());
 
-            results = searcher.CreateQuery().NativeQuery(indexableQuery.ToString()).Execute(maxResults);
+            results = searcher.CreateQuery().NativeQuery(indexableQuery.ToString()).Execute(new Examine.Search.QueryOptions(0, maxResults));
             return true;
         }
 
@@ -87,9 +84,9 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
             var indexedQuery = new StringBuilder(_allIndexedNodesQuery);
 
-            _logger.Debug<StatusService>("GetIndexedNodes using query {query}", indexedQuery.ToString());
+            _logger.LogDebug("GetIndexedNodes using query {query}", indexedQuery.ToString());
 
-            results = searcher.CreateQuery().NativeQuery(indexedQuery.ToString()).Execute(maxResults);
+            results = searcher.CreateQuery().NativeQuery(indexedQuery.ToString()).Execute(new Examine.Search.QueryOptions(0, maxResults));
             return true;
         }
 
@@ -100,7 +97,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 results = null;
                 return false;
             }
-            if (!_fullTextConfig.DisallowedContentTypeAliases.Any() && !_fullTextConfig.DisallowedPropertyAliases.Any())
+            if (!_options.DisallowedContentTypeAliases.Any() && !_options.DisallowedPropertyAliases.Any())
             {
                 results = null;
                 return true;
@@ -108,13 +105,13 @@ namespace Our.Umbraco.FullTextSearch.Services
 
             var incorrectQuery = new StringBuilder(_allIndexedNodesQuery);
             var disallowed = new List<string>();
-            disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
-            disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
+            disallowed.AddRange(_options.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
+            disallowed.AddRange(_options.DisallowedPropertyAliases.Select(x => $"{x}:1"));
             if (disallowed.Any()) incorrectQuery.Append($" AND ({string.Join(" OR ", disallowed)})");
 
-            _logger.Debug<StatusService>("GetIncorrectIndexedNodes using query {query}", incorrectQuery.ToString());
+            _logger.LogDebug("GetIncorrectIndexedNodes using query {query}", incorrectQuery.ToString());
 
-            results = searcher.CreateQuery().NativeQuery(incorrectQuery.ToString()).Execute(maxResults);
+            results = searcher.CreateQuery().NativeQuery(incorrectQuery.ToString()).Execute(new Examine.Search.QueryOptions(0, maxResults));
             return true;
         }
 
@@ -127,16 +124,16 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
 
             var missingQuery = new StringBuilder(_allIndexableNodesQuery);
-            missingQuery.Append($" AND -({_fullTextConfig.FullTextPathField}:\"-1\")");
+            missingQuery.Append($" AND -({_options.FullTextPathField}:\"-1\")");
 
             var disallowed = new List<string>();
-            disallowed.AddRange(_fullTextConfig.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
-            disallowed.AddRange(_fullTextConfig.DisallowedPropertyAliases.Select(x => $"{x}:1"));
+            disallowed.AddRange(_options.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
+            disallowed.AddRange(_options.DisallowedPropertyAliases.Select(x => $"{x}:1"));
             if (disallowed.Any()) missingQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
 
-            _logger.Debug<StatusService>("GetMissingNodes using query {query}", missingQuery.ToString());
+            _logger.LogDebug("GetMissingNodes using query {query}", missingQuery.ToString());
 
-            results = searcher.CreateQuery().NativeQuery(missingQuery.ToString()).Execute(maxResults);
+            results = searcher.CreateQuery().NativeQuery(missingQuery.ToString()).Execute(new Examine.Search.QueryOptions(0, maxResults));
             return true;
         }
     }

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbraco.Web.Trees;
-using Umbraco.Core;
-using Umbraco.Web.Models.Trees;
-using System.Web.Http.ModelBinding;
-using Umbraco.Web.WebApi.Filters;
-using System.Net.Http.Formatting;
-using Umbraco.Web.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Events;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Trees;
+using Umbraco.Cms.Web.BackOffice.Trees;
+using Umbraco.Cms.Web.Common.Attributes;
+using Umbraco.Cms.Web.Common.ModelBinders;
 
 namespace Our.Umbraco.FullTextSearch.Controllers
 {
@@ -23,23 +20,28 @@ namespace Our.Umbraco.FullTextSearch.Controllers
     [PluginController("FullTextSearch")]
     public class FullTextSearchTreeController : TreeController
     {
-        protected override TreeNode CreateRootNode(FormDataCollection queryStrings)
+        public FullTextSearchTreeController(ILocalizedTextService localizedTextService, UmbracoApiControllerTypeCollection types, IEventAggregator eventAggregator) : base(localizedTextService, types, eventAggregator)
+        {
+
+        }
+        protected override ActionResult<TreeNode> CreateRootNode(FormCollection queryStrings)
         {
             var root = base.CreateRootNode(queryStrings);
 
-            root.Icon = "icon-search";
-            root.HasChildren = false;
-            root.RoutePath = $"{SectionAlias}/{TreeAlias}/index";
-            root.MenuUrl = null;
+            root.Value.Icon = "icon-search";
+            root.Value.HasChildren = false;
+            root.Value.RoutePath = $"{SectionAlias}/{TreeAlias}/index";
+            root.Value.MenuUrl = null;
 
             return root;
         }
-        protected override MenuItemCollection GetMenuForNode(string id, [ModelBinder(typeof(HttpQueryStringModelBinder))] FormDataCollection queryStrings)
+
+        protected override ActionResult<MenuItemCollection> GetMenuForNode(string id, [Microsoft.AspNetCore.Mvc.ModelBinder(typeof(HttpQueryStringModelBinder))] FormCollection queryStrings)
         {
             return null;
         }
 
-        protected override TreeNodeCollection GetTreeNodes(string id, [ModelBinder(typeof(HttpQueryStringModelBinder))] FormDataCollection queryStrings)
+        protected override ActionResult<TreeNodeCollection> GetTreeNodes(string id, [Microsoft.AspNetCore.Mvc.ModelBinder(typeof(HttpQueryStringModelBinder))] FormCollection queryStrings)
         {
             return null;
         }

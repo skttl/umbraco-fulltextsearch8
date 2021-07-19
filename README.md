@@ -1,6 +1,5 @@
 # Full Text Search
 
-[![Build status](https://img.shields.io/appveyor/ci/skttl/our-umbraco-fulltextsearch.svg)](https://ci.appveyor.com/project/skttl/our-umbraco-fulltextsearch)
 [![NuGet release](https://img.shields.io/nuget/v/Our.Umbraco.FullTextSearch.svg)](https://www.nuget.org/packages/Our.Umbraco.FullTextSearch)
 [![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.com/packages/website-utilities/full-text-search-8/)
 
@@ -13,15 +12,7 @@ Full Text Search is a fast, powerful and easy to setup search solution for Umbra
 ## Getting started
 
 ### Installation
-> *Note:* Full Text Search has been developed against **Umbraco v8.1.0** and will support that version and above.
-
-Full Text Search can be installed from either Our Umbraco package repository, or NuGet. See developers guide for more information.
-
-#### Our Umbraco package repository
-
-To install from Our Umbraco, please download the package from:
-
-> [https://our.umbraco.com/packages/website-utilities/full-text-search-8/](https://our.umbraco.com/packages/website-utilities/full-text-search-8/)
+Full Text Search can be installed via NuGet in both Umbraco 8.1+ and Umbraco 9+. For Umbraco 8.1+, install FullTextSearch 1.x, for Umbraco 9 install FullTextSearch 2.x
 
 #### NuGet package repository
 
@@ -29,7 +20,7 @@ To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.FullTextSearc
 
 	PM> Install-Package Our.Umbraco.FullTextSearch
 
-We also have a [MyGet package repository](https://www.myget.org/gallery/umbraco-packages) - for bleeding-edge / development releases.
+Note, v2 is still in beta, so remember to add -Pre when installing for Umbraco 9.
 
 
 ## Developers Guide

@@ -1,18 +1,21 @@
 ﻿using Examine;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Controllers.Models;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
+using Our.Umbraco.FullTextSearch.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
-using Umbraco.Core;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Services;
-using Umbraco.Examine;
-using Umbraco.Web;
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Infrastructure.Examine;
+using Umbraco.Cms.Web.BackOffice.Controllers;
+using Umbraco.Cms.Web.Common;
+using Umbraco.Cms.Web.Common.Attributes;
+using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch.Controllers
 {
@@ -20,29 +23,31 @@ namespace Our.Umbraco.FullTextSearch.Controllers
     public class IndexController : UmbracoAuthorizedApiController
     {
         private readonly ICacheService _cacheService;
-        private readonly IFullTextSearchConfig _fullTextConfig;
-        private readonly ILogger _logger;
+        private readonly FullTextSearchOptions _options;
+        private readonly ILogger<IndexController> _logger;
         private readonly IPublishedContentValueSetBuilder _valueSetBuilder;
         private readonly IExamineManager _examineManager;
         private readonly IContentService _contentService;
-        private readonly IndexRebuilder _indexRebuilder;
+        private readonly IIndexRebuilder _indexRebuilder;
         private readonly ILocalizationService _localizationService;
         private readonly ISearchService _searchService;
         private readonly IStatusService _statusService;
+        private readonly UmbracoHelper _umbracoHelper;
 
         public IndexController(ICacheService cacheService,
-            ILogger logger,
-            IFullTextSearchConfig fullTextConfig,
+            ILogger<IndexController> logger,
+            IOptions<FullTextSearchOptions> options,
             IExamineManager examineManager,
-            IndexRebuilder indexRebuilder,
+            IIndexRebuilder indexRebuilder,
             IPublishedContentValueSetBuilder valueSetBuilder,
             IContentService contentService,
             ILocalizationService localizationService,
             ISearchService searchService,
-            IStatusService statusService)
+            IStatusService statusService,
+            UmbracoHelper umbracoHelper)
         {
             _cacheService = cacheService;
-            _fullTextConfig = fullTextConfig;
+            _options = options.Value;
             _logger = logger;
             _valueSetBuilder = valueSetBuilder;
             _examineManager = examineManager;
@@ -51,59 +56,40 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             _localizationService = localizationService;
             _searchService = searchService;
             _statusService = statusService;
+            _umbracoHelper = umbracoHelper;
         }
+
+
 
         [HttpPost]
         public bool ReIndexNodes(string nodeIds, bool includeDescendants = false)
         {
-            if (!_fullTextConfig.Enabled)
+            if (!_options.Enabled)
             {
-                _logger.Debug<IndexController>("FullTextIndexing is not enabled");
+                _logger.LogDebug("FullTextIndexing is not enabled");
                 return false;
             }
 
-            if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
+            if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
             {
-                _logger.Error<IndexController>(new InvalidOperationException("No index found by name ExternalIndex"));
+                _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
                 return false;
             }
             if (nodeIds == "*")
             {
-                var contentAtRoot = Umbraco.ContentAtRoot().ToList();
-                foreach (var content in contentAtRoot)
-                {
-                    _cacheService.AddToCache(content.Id);
-
-                    var descendants = content.Descendants().ToList();
-                    foreach (var descendant in descendants)
-                    {
-                        _cacheService.AddToCache(descendant.Id);
-                    }
-                }
+                _umbracoHelper.ContentAtRoot().ToList().ForEach(node => _cacheService.AddTreeToCache(node));
                 index.CreateIndex();
-                _indexRebuilder.RebuildIndex("ExternalIndex");
+                _indexRebuilder.RebuildIndex(Constants.UmbracoIndexes.ExternalIndexName);
             }
             else
             {
                 var ids = nodeIds.Split(',').Select(x => int.Parse(x));
-
-                foreach (var id in ids)
+                _umbracoHelper.Content(ids).ToList().ForEach(node =>
                 {
-                    var node = Umbraco.Content(id);
-                    if (node != null)
-                    {
-                        _cacheService.AddToCache(id);
+                    if (includeDescendants) _cacheService.AddTreeToCache(node);
+                    else _cacheService.AddToCache(node);
+                });
 
-                        if (includeDescendants)
-                        {
-                            var descendants = node.Descendants().ToList();
-                            foreach (var descendant in descendants)
-                            {
-                                _cacheService.AddToCache(descendant.Id);
-                            }
-                        }
-                    }
-                }
                 index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(ids).ToArray()));
             }
 
@@ -113,15 +99,15 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         [HttpGet]
         public IndexStatus GetIndexStatus()
         {
-            if (!_fullTextConfig.Enabled)
+            if (!_options.Enabled)
             {
-                _logger.Debug<IndexController>("FullTextIndexing is not enabled");
+                _logger.LogDebug("FullTextIndexing is not enabled");
                 return null;
             }
 
-            if (!_examineManager.TryGetIndex("ExternalIndex", out IIndex index))
+            if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
             {
-                _logger.Error<IndexController>(new InvalidOperationException("No index found by name ExternalIndex"));
+                _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
                 return null;
             }
 
@@ -129,7 +115,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                 && _statusService.TryGetIndexedNodes(out ISearchResults indexedNodes)
                 && _statusService.TryGetIncorrectIndexedNodes(out ISearchResults incorrectIndexedNodes)
                 && _statusService.TryGetMissingNodes(out ISearchResults missingNodes))
-                {
+            {
 
                 return new IndexStatus()
                 {
@@ -214,9 +200,9 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
             info.DefaultSettings = new SearchSettings()
             {
-                TitleProperties = new List<string>() { _fullTextConfig.DefaultTitleField },
-                BodyProperties = new List<string>() { _fullTextConfig.FullTextContentField },
-                SummaryProperties = new List<string>() { _fullTextConfig.FullTextContentField },
+                TitleProperties = new List<string>() { _options.DefaultTitleField },
+                BodyProperties = new List<string>() { _options.FullTextContentField },
+                SummaryProperties = new List<string>() { _options.FullTextContentField },
                 Culture = _localizationService.GetDefaultLanguageIsoCode(),
                 RootNodeIds = new int[] { },
                 SummaryLength = defaultSearch.SummaryLength,
@@ -232,7 +218,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         }
 
         [HttpPost]
-        public IndexedNodeResult GetSearchResult([FromBody]SearchRequest searchRequest)
+        public IndexedNodeResult GetSearchResult([FromBody] SearchRequest searchRequest)
         {
             if (searchRequest.SearchTerms.IsNullOrWhiteSpace()) return null;
 
@@ -283,7 +269,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         private string GetBreadcrumb(string path)
         {
             var pathParts = path.Split(',').Select(int.Parse).Skip(1);
-            var pathNames = pathParts.Select(x => Umbraco.Content(x)?.Name).Where(x => x != null);
+            var pathNames = pathParts.Select(x => _umbracoHelper.Content(x)?.Name).Where(x => x != null);
             return string.Join(" / ", pathNames);
         }
 
@@ -291,12 +277,12 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         {
             var reasons = new List<string>();
 
-            if (_fullTextConfig.DisallowedContentTypeAliases.InvariantContains(searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()))
+            if (_options.DisallowedContentTypeAliases.InvariantContains(searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()))
             {
                 reasons.Add(string.Format("content Type ({0}) is disallowed", searchResult.GetValues("__NodeTypeAlias").FirstOrDefault()));
             }
 
-            foreach (var disallowedPropertyAlias in _fullTextConfig.DisallowedPropertyAliases)
+            foreach (var disallowedPropertyAlias in _options.DisallowedPropertyAliases)
             {
                 if (searchResult.GetValues(disallowedPropertyAlias)?.FirstOrDefault() == "1")
                 {

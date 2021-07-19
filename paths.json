@@ -1,5 +1,0 @@
-{
-  "library": "src/Our.Umbraco.FullTextSearch",
-  "pluginFolder": "FullTextSearch",
-  "site": ".website"
-}

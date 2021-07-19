@@ -1,4 +1,5 @@
 ﻿using Lucene.Net.QueryParsers;
+using Lucene.Net.QueryParsers.Classic;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System.Collections.Generic;
 using System.Linq;

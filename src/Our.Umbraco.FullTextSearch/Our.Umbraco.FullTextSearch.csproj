@@ -1,27 +1,42 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <ContentTargetFolders>.</ContentTargetFolders>
-        <Product>Our.Umbraco.FullTextSearch</Product>
-        <PackageId>Our.Umbraco.FullTextSearch</PackageId>
-        <Title>Our.Umbraco.FullTextSearch</Title>
-        <Description>...</Description>
-        <Product>...</Product>
-        <PackageTags>umbraco plugin package</PackageTags>
-        <Version>2.0.0-beta1</Version>
-        <AssemblyVersion>2.0.0.1</AssemblyVersion>
-        <FileVersion>2.0.0.1</FileVersion>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <ContentTargetFolders>.</ContentTargetFolders>
+    <PackageId>Our.Umbraco.FullTextSearch</PackageId>
+    <Title>Our.Umbraco.FullTextSearch</Title>
+    <Description>Full Text Search is a fast, powerful and easy to setup search solution for Umbraco sites. Searches the whole page content (also generated content) Simple and easy setup for multiple search types (quoted, fuzzy matching, wildcards etc.) Extends the default ExternalIndex</Description>
+    <Product>FullTextSearch</Product>
+    <PackageTags>umbraco plugin package</PackageTags>
+    <Version>2.0.0-beta1</Version>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>Ecreo</Company>
+    <Authors>Søren Kottal</Authors>
+    <Copyright>Søren Kottal</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/skttl/umbraco-fulltextsearch8</PackageProjectUrl>
+    <PackageIcon>search.png</PackageIcon>
+    <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0-rc001" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-rc001" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0-rc001" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-rc001" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <None Include="build\**\*.*">
-            <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
-        </None>
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\docs\search.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <Content Include="App_Plugins\**\*.*">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <None Include="build\**\*.*">
+      <Pack>True</Pack>
+      <PackagePath>buildTransitive</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>

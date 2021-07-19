@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 2.0.0 - 2021-07-19
 - Ported the package to net core and Umbraco 9
 - Removed the wrapping template for use when rendering - because Umbraco 9 doesn't break the same way.
-- Moved configuration to IOptions specified in 
+- Moved configuration to IOptions specified in Startup.cs
+- Changed FullTextHelper to a regular class, that can be injected into views.
 
 ## 1.2.0 - 2021-07-19
 - Fix bug when caching cultured content, cached the default culture for all cultures instead

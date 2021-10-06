@@ -13,9 +13,9 @@
     <PackageProjectUrl>https://github.com/skttl/umbraco-fulltextsearch8</PackageProjectUrl>
     <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
     <PackageTags>umbraco, umbraco-cms</PackageTags>
-    <Version>1.2.1-beta2</Version>
-    <AssemblyVersion>1.2.1.2</AssemblyVersion>
-    <FileVersion>1.2.1.2</FileVersion>
+    <Version>1.3.0-beta</Version>
+    <AssemblyVersion>1.3.0.0</AssemblyVersion>
+    <FileVersion>1.3.0.0</FileVersion>
 
   </PropertyGroup>
 

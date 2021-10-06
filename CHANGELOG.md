@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+- New highlighting engine for summaries, as the old one was too slow.
+
+## 1.2.0
 - Fix bug when caching cultured content, cached the default culture for all cultures instead
 - Changed some info-logging to debug
 - Removed task.run stuff when caching

@@ -58,6 +58,7 @@
     <Compile Include="FullTextComposer.cs" />
     <Compile Include="HealthChecks\FullTextSearchHealthCheck.cs" />
     <Compile Include="Helpers\FullTextSearchHelper.cs" />
+    <Compile Include="Helpers\Highlighter.cs" />
     <Compile Include="Helpers\SearchResultItemExtensions.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Interfaces\ICacheService.cs" />

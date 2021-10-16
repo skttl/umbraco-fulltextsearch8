@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 2.0.0 - 2021-07-19
+## 2.0.0
 - Ported the package to net core and Umbraco 9
 - Removed the wrapping template for use when rendering - because Umbraco 9 doesn't break the same way.
 - Moved configuration to IOptions specified in Startup.cs
 - Changed FullTextHelper to a regular class, that can be injected into views.
+- Merged changes from 1.3.0
+
+## 1.3.0
+- New highlighting engine for summaries, as the old one was too slow.
+- #54 Enumerating search results
+- #65 Disallowed content type aliases was also disallowed in content
 
 ## 1.2.0 - 2021-07-19
 - Fix bug when caching cultured content, cached the default culture for all cultures instead

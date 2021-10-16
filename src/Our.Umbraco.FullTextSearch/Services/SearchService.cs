@@ -359,44 +359,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             string summary;
             if (!input.IsNullOrWhiteSpace() && (input.Length > _search.SummaryLength || _search.HighlightSearchTerms))
             {
-                //(\\S*.{0,10})?("+ queryString +")(.{0,10}\\S*)?
-                string searchTerm;
-                if (_search.SearchTerm.Contains('"'))
-                {
-                    searchTerm = string.Join("|", _search.SearchTermSplit);
-                }
-                else if (!_search.SearchTerm.Contains('"') && !_search.SearchTerm.Contains(' '))
-                {
-                    searchTerm = string.Join("|", _search.SearchTermSplit);
-                }
-                else
-                {
-                    searchTerm = $"{_search.SearchTerm}|{string.Join("|", _search.SearchTermSplit)}";
-                }
-                var matches = Regex.Matches(input, @"(\S*.{0,20})(" + searchTerm + @")(.{0,20}\S*)?", RegexOptions.IgnoreCase);
-
-                if (matches.Count == 0)
-                {
-                    summaryBuilder.Append(input);
-                }
-                else
-                {
-                    foreach (Match match in matches)
-                    {
-                        if (match.Groups.Count > 3)
-                        {
-                            if (match.Index > 0 && !match.Groups[1].Value.IsNullOrWhiteSpace()) summaryBuilder.Append($" &hellip;{match.Groups[1].Value}");
-
-                            summaryBuilder.Append(_search.HighlightSearchTerms
-                                ? $"<b>{match.Groups[2].Value}</b>"
-                                : match.Groups[2].Value);
-
-                            if (!match.Groups[3].Value.IsNullOrWhiteSpace()) summaryBuilder.Append($"{match.Groups[3].Value}&hellip; ");
-                        }
-                    }
-                }
-
-                summary = summaryBuilder.ToString().TruncateHtml(_search.SummaryLength, "&hellip;");
+                summary = Highlighter.FindSnippet(input, string.Join(" ", _search.SearchTermSplit), _search.SummaryLength, _search.HighlightSearchTerms ? "<b>" : "", _search.HighlightSearchTerms ? "</b>" : "");
             }
             else
             {

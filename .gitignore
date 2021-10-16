@@ -316,3 +316,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+/src/Our.Umbraco.FullTextSearch.Testsite

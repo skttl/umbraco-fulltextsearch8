@@ -146,7 +146,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                 query.Append($" AND (__IndexType:content AND {publishedQuery})");
 
                 var disallowedContentTypes = _options.DisallowedContentTypeAliases;
-                if (disallowedContentTypes.Any()) query.Append($" AND -(__NodeTypeAlias:{string.Join(" ", disallowedContentTypes)})");
+                if (disallowedContentTypes.Any()) query.Append($" AND -({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
 
                 var disallowedPropertyAliases = _options.DisallowedPropertyAliases;
                 if (disallowedPropertyAliases.Any())

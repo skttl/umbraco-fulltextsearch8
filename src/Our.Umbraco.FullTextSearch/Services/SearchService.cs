@@ -46,7 +46,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             result.CurrentPage = currentPage;
             result.TotalPages = search.PageLength > 0 && results.TotalItemCount > 0 ? (int)Math.Ceiling(results.TotalItemCount / (decimal)search.PageLength) : 1;
             result.TotalResults = results.TotalItemCount;
-            result.Results = (search.PageLength > 0 ? results.Skip(search.PageLength * (currentPage - 1)) : results).Select(GetFullTextSearchResultItem);
+            result.Results = (search.PageLength > 0 ? results.Skip(search.PageLength * (currentPage - 1)) : results).Select(GetFullTextSearchResultItem).ToList();
 
             return result;
         }

@@ -5,8 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 1.3.0
 - New highlighting engine for summaries, as the old one was too slow.
+- #54 Enumerating search results
+- #65 Disallowed content type aliases was also disallowed in content
 
 ## 1.2.0
 - Fix bug when caching cultured content, cached the default culture for all cultures instead

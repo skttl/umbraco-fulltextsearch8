@@ -7,9 +7,9 @@
     <Description>Full Text Search is a fast, powerful and easy to setup search solution for Umbraco sites. Searches the whole page content (also generated content) Simple and easy setup for multiple search types (quoted, fuzzy matching, wildcards etc.) Extends the default ExternalIndex</Description>
     <Product>FullTextSearch</Product>
     <PackageTags>umbraco plugin package</PackageTags>
-    <Version>2.0.0-beta1</Version>
-    <AssemblyVersion>2.0.0.1</AssemblyVersion>
-    <FileVersion>2.0.0.1</FileVersion>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Ecreo</Company>
     <Authors>Søren Kottal</Authors>
@@ -21,8 +21,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0-rc001" />
-    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-rc001" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

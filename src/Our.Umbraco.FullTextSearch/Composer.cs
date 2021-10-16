@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 
 namespace Our.Umbraco.FullTextSearch
 {
-    public class Composer : IUserComposer
+    public class Composer : IComposer
     {
         public void Compose(IUmbracoBuilder builder)
         {

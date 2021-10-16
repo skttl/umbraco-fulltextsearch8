@@ -9,7 +9,7 @@ namespace Our.Umbraco.FullTextSearch.Models
     public class SearchResultItem : ISearchResultItem
     {
         private UmbracoHelper _umbracoHelper;
-        private IPublishedContent? _content;
+        private IPublishedContent _content;
 
         public SearchResultItem(UmbracoHelper umbracoHelper)
         {

@@ -20,7 +20,7 @@
                 }
 
                 if (nodeIds != "*" && includeDescendants) {
-                    nodeIds + "&includeDescendants=true";
+                    nodeIds += "&includeDescendants=true";
                 }
 
                 var url = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + "/backoffice/FullTextSearch/Index/ReindexNodes?nodeIds=" + nodeIds;

@@ -13,6 +13,7 @@ using Umbraco.Examine;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
+using UPC = Umbraco.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.FullTextSearch.Controllers
 {
@@ -73,12 +74,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                 foreach (var content in contentAtRoot)
                 {
                     _cacheService.AddToCache(content.Id);
-
-                    var descendants = content.Descendants().ToList();
-                    foreach (var descendant in descendants)
-                    {
-                        _cacheService.AddToCache(descendant.Id);
-                    }
+                    AddToCacheDescendants(content);
                 }
                 index.CreateIndex();
                 _indexRebuilder.RebuildIndex("ExternalIndex");
@@ -86,6 +82,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             else
             {
                 var ids = nodeIds.Split(',').Select(x => int.Parse(x));
+                var idsToReindex = new List<int>(); // ids of requested nodes and their descendant nodes
 
                 foreach (var id in ids)
                 {
@@ -93,21 +90,34 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                     if (node != null)
                     {
                         _cacheService.AddToCache(id);
+                        idsToReindex.Add(id);
 
                         if (includeDescendants)
                         {
-                            var descendants = node.Descendants().ToList();
-                            foreach (var descendant in descendants)
-                            {
-                                _cacheService.AddToCache(descendant.Id);
-                            }
+                            var idsOfDescendants = AddToCacheDescendants(node);
+                            idsToReindex.AddRange(idsOfDescendants);
                         }
                     }
                 }
-                index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(ids).ToArray()));
+                index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(idsToReindex).ToArray()));
             }
 
             return true;
+        }
+
+        List<int> AddToCacheDescendants(UPC.IPublishedContent node)
+        {
+            var descendantIds = new List<int>(); 
+            foreach (var culture in node.Cultures) // iterate by culture, otherwise .Descendants() returns nodes of one (random?) culture
+            {
+                var descendantsByCulture = node.Descendants(culture.Value.Culture).ToList();
+                foreach (var descendant in descendantsByCulture.Where(x => !descendantIds.Contains(x.Id))) // ignore already processed nodes
+                {
+                    _cacheService.AddToCache(descendant.Id);
+                    descendantIds.Add(descendant.Id);
+                }
+            }
+            return descendantIds;
         }
 
         [HttpGet]

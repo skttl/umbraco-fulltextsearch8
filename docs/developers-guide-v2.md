@@ -27,7 +27,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-FullTextSearch config comes with a [default config, you can see it here](src/Our.Umbraco.FullTextSearch/Options/FullTextSearchOptions.cs)
+FullTextSearch config comes with a [default config, you can see it here](/src/Our.Umbraco.FullTextSearch/Options/FullTextSearchOptions.cs)
 
 Here is an overview of the different config settings you can add.
 

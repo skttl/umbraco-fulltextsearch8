@@ -62,38 +62,55 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
 
         [HttpPost]
-        public bool ReIndexNodes(string nodeIds, bool includeDescendants = false)
+        public IActionResult ReIndexNodes(string nodeIds, bool includeDescendants = false)
         {
             if (!_options.Enabled)
             {
                 _logger.LogDebug("FullTextIndexing is not enabled");
-                return false;
+                return Problem("FullTextIndexing is not enabled");
             }
 
             if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
             {
                 _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
-                return false;
+
+                return Problem($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
             }
             if (nodeIds == "*")
             {
-                _umbracoHelper.ContentAtRoot().ToList().ForEach(node => _cacheService.AddTreeToCache(node));
-                index.CreateIndex();
-                _indexRebuilder.RebuildIndex(Constants.UmbracoIndexes.ExternalIndexName);
+                try
+                {
+                    _umbracoHelper.ContentAtRoot().ToList().ForEach(node => _cacheService.AddTreeToCache(node));
+                    index.CreateIndex();
+                    _indexRebuilder.RebuildIndex(Constants.UmbracoIndexes.ExternalIndexName);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    return Problem(ex.Message);
+                }
             }
             else
             {
-                var ids = nodeIds.Split(',').Select(x => int.Parse(x));
-                _umbracoHelper.Content(ids).ToList().ForEach(node =>
+                try
                 {
-                    if (includeDescendants) _cacheService.AddTreeToCache(node);
-                    else _cacheService.AddToCache(node);
-                });
+                    var ids = nodeIds.Split(',').Select(x => int.Parse(x));
+                    _umbracoHelper.Content(ids).ToList().ForEach(node =>
+                    {
+                        if (includeDescendants) _cacheService.AddTreeToCache(node);
+                        else _cacheService.AddToCache(node);
+                    });
 
-                index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(ids).ToArray()));
+                    index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(ids).ToArray()));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    return Problem(ex.Message);
+                }
             }
 
-            return true;
+            return Ok(true);
         }
 
         [HttpGet]

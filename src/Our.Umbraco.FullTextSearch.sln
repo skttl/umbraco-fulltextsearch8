@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31229.75
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch", "Our.Umbraco.FullTextSearch\Our.Umbraco.FullTextSearch.csproj", "{FCE7B11D-5C95-4496-A6E5-C0D3B2DCF5B0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.Testsite", "Our.Umbraco.FullTextSearch.Testsite\Our.Umbraco.FullTextSearch.Testsite.csproj", "{03C8A691-B795-43BF-AF91-F6E0B98E956F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4FC195FF-E4FF-45FE-905E-0EA0D56948FB}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.FullTextSearch.Testsite", "Our.Umbraco.FullTextSearch.Testsite\Our.Umbraco.FullTextSearch.Testsite.csproj", "{FD95D644-6C96-4731-A940-17AE8B784EBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,10 +30,10 @@ Global
 		{FCE7B11D-5C95-4496-A6E5-C0D3B2DCF5B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCE7B11D-5C95-4496-A6E5-C0D3B2DCF5B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCE7B11D-5C95-4496-A6E5-C0D3B2DCF5B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03C8A691-B795-43BF-AF91-F6E0B98E956F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03C8A691-B795-43BF-AF91-F6E0B98E956F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03C8A691-B795-43BF-AF91-F6E0B98E956F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03C8A691-B795-43BF-AF91-F6E0B98E956F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD95D644-6C96-4731-A940-17AE8B784EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD95D644-6C96-4731-A940-17AE8B784EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD95D644-6C96-4731-A940-17AE8B784EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD95D644-6C96-4731-A940-17AE8B784EBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

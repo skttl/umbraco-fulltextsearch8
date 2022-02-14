@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.1.0
+- Fixes JSON serializing of models, to make the dashboard actually work
+- Fixes indexing including descendants
+- Fixes bug where indexing everything, or including descendants returned 406 and no result
+- Adds a default pagelength of 10 items, when searching
+
 ## 2.0.0
 - Ported the package to net core and Umbraco 9
 - Removed the wrapping template for use when rendering - because Umbraco 9 doesn't break the same way.

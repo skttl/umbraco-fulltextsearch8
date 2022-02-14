@@ -15,17 +15,12 @@
                 return objKeys;
             },
             reindexNodes: function (nodeIds, includeDescendants) {
-                if (!nodeIds) {
-                    nodeIds = "*"
-                }
-
-                if (nodeIds != "*" && includeDescendants) {
-                    nodeIds + "&includeDescendants=true";
-                }
-
-                var url = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + "/backoffice/FullTextSearch/Index/ReindexNodes?nodeIds=" + nodeIds;
+                var url = Umbraco.Sys.ServerVariables.umbracoSettings.umbracoPath + "/backoffice/FullTextSearch/Index/ReindexNodes";
                 return umbRequestHelper.resourcePromise(
-                    $http.post(url),
+                    $http.post(url, {
+                        nodeIds: nodeIds !== '*' ? nodeIds.split(',').map(n => parseInt(n)) : [],
+                        includeDescendants: includeDescendants
+                    }),
                     "Failed to reindex nodes"
                 );
             },

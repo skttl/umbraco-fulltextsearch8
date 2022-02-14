@@ -62,21 +62,22 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
 
         [HttpPost]
-        public IActionResult ReIndexNodes(string nodeIds, bool includeDescendants = false)
+        [Produces("application/json")]
+        public ReIndexResult ReIndexNodes([FromBody] ReIndexRequest request)
         {
             if (!_options.Enabled)
             {
                 _logger.LogDebug("FullTextIndexing is not enabled");
-                return Problem("FullTextIndexing is not enabled");
+                return new ReIndexResult(false, "FullTextIndexing is not enabled");
             }
 
             if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
             {
                 _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
 
-                return Problem($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
+                return new ReIndexResult(false, $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
             }
-            if (nodeIds == "*")
+            if (request.NodeIds == null || !request.NodeIds.Any())
             {
                 try
                 {
@@ -87,30 +88,29 @@ namespace Our.Umbraco.FullTextSearch.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
-                    return Problem(ex.Message);
+                    return new ReIndexResult(false, ex.Message);
                 }
             }
             else
             {
                 try
                 {
-                    var ids = nodeIds.Split(',').Select(x => int.Parse(x));
-                    _umbracoHelper.Content(ids).ToList().ForEach(node =>
+                    _umbracoHelper.Content(request.NodeIds).ToList().ForEach(node =>
                     {
-                        if (includeDescendants) _cacheService.AddTreeToCache(node);
+                        if (request.IncludeDescendants) _cacheService.AddTreeToCache(node);
                         else _cacheService.AddToCache(node);
                     });
 
-                    index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(ids).ToArray()));
+                    index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(request.NodeIds).ToArray()));
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
-                    return Problem(ex.Message);
+                    return new ReIndexResult(false, ex.Message);
                 }
             }
 
-            return Ok(true);
+            return new ReIndexResult(true);
         }
 
         [HttpGet]

@@ -1,5 +1,4 @@
-﻿using Lucene.Net.QueryParsers;
-using Lucene.Net.QueryParsers.Classic;
+﻿using Lucene.Net.QueryParsers.Classic;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +17,7 @@ namespace Our.Umbraco.FullTextSearch.Models
             SummaryProperties = new string[] { };
             RootNodeIds = new int[] { };
             SummaryLength = 300;
-            PageLength = 0;
+            PageLength = 10;
             Fuzzyness = 0.8;
             AddWildcard = false;
             AllowedContentTypes = new string[] { };

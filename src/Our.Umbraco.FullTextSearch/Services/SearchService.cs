@@ -11,11 +11,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Web.Common;
-using Umbraco.Core;
 using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch.Services
@@ -159,7 +156,7 @@ namespace Our.Umbraco.FullTextSearch.Services
 
                 var searcher = index.Searcher;
                 _logger.LogDebug("Trying to search for {query}", query.ToString());
-                return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(new Examine.Search.QueryOptions(_search.PageLength * (_currentPage-1), _search.PageLength));
+                return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(new Examine.Search.QueryOptions(_search.PageLength * (_currentPage - 1), _search.PageLength));
             }
 
             return null;

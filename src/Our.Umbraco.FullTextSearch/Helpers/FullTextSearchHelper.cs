@@ -3,8 +3,6 @@ using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
 using Our.Umbraco.FullTextSearch.Options;
-using System.Web;
-using Umbraco.Core;
 using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch.Helpers

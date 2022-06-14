@@ -6,15 +6,10 @@ using Our.Umbraco.FullTextSearch.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.Notifications;
-using Umbraco.Cms.Core;
-using nots = Umbraco.Cms.Core.Notifications;
-using umb = Umbraco;
 using Umbraco.Cms.Infrastructure.Examine;
 using Umbraco.Extensions;
 
@@ -100,14 +95,14 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
                 return;
             }
 
-            // todo path stuff from callum
+            var updatedValues = e.ValueSet.Values.ToDictionary(x => x.Key, x => (IEnumerable<object>)x.Value);
 
             // set path value
             var currentPath = e.ValueSet.GetValue("path");
             if (currentPath != null)
             {
                 var pathFieldName = _options.FullTextPathField;
-                e.ValueSet.TryAdd(pathFieldName, currentPath.ToString().Replace(",", " "));
+                updatedValues[pathFieldName] = new List<object> { currentPath.ToString().Replace(",", " ") };
             }
 
             // convert id to int, so we can get it from the content cache
@@ -123,9 +118,11 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
                     var fieldName = _options.FullTextContentField;
                     if (item.Culture != "") fieldName += "_" + item.Culture;
 
-                    e.ValueSet.TryAdd(fieldName, item.Text);
+                    updatedValues[fieldName] = new List<object> { item.Text };
                 }
             }
+
+            e.SetValues(updatedValues);
         }
     }
 }

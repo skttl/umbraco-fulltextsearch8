@@ -1,6 +1,4 @@
-﻿using Umbraco.Core;
-
-namespace Our.Umbraco.FullTextSearch.Models
+﻿namespace Our.Umbraco.FullTextSearch.Models
 {
     /// <summary>
     /// Some data indicating how to process a given document property from umbraco in search

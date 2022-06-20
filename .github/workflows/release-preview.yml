@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src
+        working-directory: ./src/Our.Umbraco.FullTextSearch
     timeout-minutes: 15
     env:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}

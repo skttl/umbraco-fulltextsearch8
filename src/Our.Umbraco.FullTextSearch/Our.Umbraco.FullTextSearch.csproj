@@ -2,23 +2,20 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ContentTargetFolders>.</ContentTargetFolders>
+	  <StaticWebAssetBasePath>App_Plugins/FullTextSearch</StaticWebAssetBasePath>
+
     <PackageId>Our.Umbraco.FullTextSearch</PackageId>
+    <Product>FullTextSearch</Product>
     <Title>Our.Umbraco.FullTextSearch</Title>
     <Description>Full Text Search is a fast, powerful and easy to setup search solution for Umbraco sites. Searches the whole page content (also generated content) Simple and easy setup for multiple search types (quoted, fuzzy matching, wildcards etc.) Extends the default ExternalIndex</Description>
-    <Product>FullTextSearch</Product>
-    <PackageTags>umbraco plugin package</PackageTags>
-    <Version>3.0.0-alpha001</Version>
-    <AssemblyVersion>3.0.0</AssemblyVersion>
-    <FileVersion>3.0.0</FileVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Company>Ecreo</Company>
     <Authors>Søren Kottal</Authors>
     <Copyright>Søren Kottal</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/skttl/umbraco-fulltextsearch8</PackageProjectUrl>
-    <PackageIcon>search.png</PackageIcon>
     <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
-	  <StaticWebAssetBasePath>App_Plugins/FullTextSearch</StaticWebAssetBasePath>
+    <PackageIcon>search.png</PackageIcon>
+
+    <PackageTags>umbraco plugin package umbraco-marketplace</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

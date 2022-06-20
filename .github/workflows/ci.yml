@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src
+        working-directory: ./src/Our.Umbraco.FullTextSearch
     timeout-minutes: 5
     steps:
       - name: Checkout

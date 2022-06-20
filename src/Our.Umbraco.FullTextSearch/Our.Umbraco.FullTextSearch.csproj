@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ContentTargetFolders>.</ContentTargetFolders>
@@ -18,25 +18,18 @@
     <PackageProjectUrl>https://github.com/skttl/umbraco-fulltextsearch8</PackageProjectUrl>
     <PackageIcon>search.png</PackageIcon>
     <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
+	  <StaticWebAssetBasePath>App_Plugins/FullTextSearch</StaticWebAssetBasePath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.0.0-rc5" />
-    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.0.0-rc5" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.0.0" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\docs\search.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
-    </None>
-    <Content Include="App_Plugins\**\*.*">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-    <None Include="build\**\*.*">
-      <Pack>True</Pack>
-      <PackagePath>buildTransitive</PackagePath>
     </None>
   </ItemGroup>
 </Project>

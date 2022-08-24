@@ -16,7 +16,7 @@ namespace Our.Umbraco.FullTextSearch
                     "/App_Plugins/FullTextSearch/scripts/dashboard.controller.js",
                     "/App_Plugins/FullTextSearch/scripts/reindex.controller.js",
                     "/App_Plugins/FullTextSearch/scripts/search.controller.js",
-                    "/App_Plugins/FullTextSearch/scripts/searchadvancedsettings.controller.js",
+                    "/App_Plugins/FullTextSearch/scripts/searchAdvancedSettings.controller.js",
                     "/App_Plugins/FullTextSearch/scripts/status.controller.js",
                     "/App_Plugins/FullTextSearch/scripts/statusnodes.controller.js",
                     "/App_Plugins/FullTextSearch/scripts/fulltextsearch.resource.js"

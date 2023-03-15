@@ -70,8 +70,8 @@ namespace Our.Umbraco.FullTextSearch.Services
                 // todo do we need the wrapping template?
                 // var templateId = GetRenderingTemplateId();
                 //var fullHtml = _umbracoComponentRenderer.RenderTemplateAsync(id, templateId).Result.ToString();
-                var templateId = 0;
-                var fullHtml = _umbracoComponentRenderer.RenderTemplateAsync(publishedContent.Id).Result.ToString();
+                var templateId = publishedContent.TemplateId;
+                var fullHtml = _umbracoComponentRenderer.RenderTemplateAsync(publishedContent.Id, publishedContent.TemplateId).Result.ToString();
                 var fullText = _htmlService.GetTextFromHtml(fullHtml);
                 _logger.LogDebug("Updating nodeId: {nodeId} in culture: {culture} using templateId: {templateId} with content: {fullText}", publishedContent.Id, culture.Value.Culture, templateId, fullText);
                 AddToCache(publishedContent.Id, culture.Value.Culture, fullText);

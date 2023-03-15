@@ -21,5 +21,10 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         bool HighlightSearchTerms { get; set; }
         string Culture { get; set; }
         string[] AllowedContentTypes { get; set; }
+        string Searcher { get; set; }
+        string Index { get; set; }
+
+        Search SetIndex(string index);
+        Search SetSearcher(string searcher);
     }
 }

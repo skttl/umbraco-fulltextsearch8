@@ -77,84 +77,92 @@ namespace Our.Umbraco.FullTextSearch.Services
 
         private ISearchResults GetResults()
         {
+            var query = new StringBuilder();
 
-            if (_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out var index))
+            query.Append("(");
+
+            switch (_search.SearchType)
             {
-                var query = new StringBuilder();
+                case SearchType.MultiRelevance:
+                case SearchType.MultiAnd:
 
-                query.Append("(");
+                    // We formulate the query differently depending on the input.
+                    if (_search.SearchTerm.Contains('"'))
+                    {
+                        // If the user has entered double quotes we don't bother
+                        // searching for the full string
+                        query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
+                    }
+                    else if (!_search.SearchTerm.Contains('"') && !_search.SearchTerm.Contains(' '))
+                    {
+                        // if there's no spaces or quotes we don't need to get the quoted term and boost it
+                        query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
+                    }
+                    else
+                    {
+                        // otherwise we search first for the entire query in quotes,
+                        // then for each term in the query OR'd together.
+                        query.Append($"({QueryAllPropertiesOr(_search.SearchTermQuoted, 2)} OR {QueryAllPropertiesOr(_search.SearchTermSplit, 1)})");
+                    }
 
-                switch (_search.SearchType)
+                    break;
+
+                case SearchType.SimpleOr:
+
+                    query.Append(QueryAllProperties(_search.SearchTermSplit, 1.0, "OR", true));
+                    break;
+
+                case SearchType.AsEntered:
+
+                    query.Append(QueryAllPropertiesAnd(_search.SearchTermSplit, 1.0));
+                    break;
+            }
+            query.Append(")");
+
+            if (_search.RootNodeIds.Any())
+            {
+                var rootNodeGroup = string.Join(" OR ", _search.RootNodeIds.Select(x =>
+                    $"{_options.FullTextPathField}:{x}"));
+                query.Append($" AND ({rootNodeGroup})");
+            }
+
+            var allowedContentTypes = _search.AllowedContentTypes.Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
+            if (allowedContentTypes.Any())
+            {
+                var contentTypeGroup = string.Join(" OR ", allowedContentTypes.Select(x =>
+                    $"__NodeTypeAlias:{x}"));
+                query.Append($" AND ({contentTypeGroup})");
+            }
+
+
+            var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture}";
+            var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
+            query.Append($" AND (__IndexType:content AND {publishedQuery})");
+
+            var disallowedContentTypes = _options.DisallowedContentTypeAliases;
+            if (disallowedContentTypes.Any()) query.Append($" AND -({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
+
+            var disallowedPropertyAliases = _options.DisallowedPropertyAliases;
+            if (disallowedPropertyAliases.Any())
+            {
+                var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"{x}_{_search.Culture}:1 OR {x}:1"));
+                query.Append($" AND -({disallowedPropertyAliasGroup})");
+            }
+
+            query.Append($" AND -(templateID:0)");
+
+            ISearcher searcher = null;
+
+            if (string.IsNullOrWhiteSpace(_search.Searcher) || !_examineManager.TryGetSearcher(_search.Searcher, out searcher))
+            {
+                if (_examineManager.TryGetIndex(_search.Index, out IIndex index))
                 {
-                    case SearchType.MultiRelevance:
-                    case SearchType.MultiAnd:
-
-                        // We formulate the query differently depending on the input.
-                        if (_search.SearchTerm.Contains('"'))
-                        {
-                            // If the user has entered double quotes we don't bother
-                            // searching for the full string
-                            query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
-                        }
-                        else if (!_search.SearchTerm.Contains('"') && !_search.SearchTerm.Contains(' '))
-                        {
-                            // if there's no spaces or quotes we don't need to get the quoted term and boost it
-                            query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
-                        }
-                        else
-                        {
-                            // otherwise we search first for the entire query in quotes,
-                            // then for each term in the query OR'd together.
-                            query.Append($"({QueryAllPropertiesOr(_search.SearchTermQuoted, 2)} OR {QueryAllPropertiesOr(_search.SearchTermSplit, 1)})");
-                        }
-
-                        break;
-
-                    case SearchType.SimpleOr:
-
-                        query.Append(QueryAllProperties(_search.SearchTermSplit, 1.0, "OR", true));
-                        break;
-
-                    case SearchType.AsEntered:
-
-                        query.Append(QueryAllPropertiesAnd(_search.SearchTermSplit, 1.0));
-                        break;
+                    searcher = index.Searcher;
                 }
-                query.Append(")");
+            }
 
-                if (_search.RootNodeIds.Any())
-                {
-                    var rootNodeGroup = string.Join(" OR ", _search.RootNodeIds.Select(x =>
-                        $"{_options.FullTextPathField}:{x}"));
-                    query.Append($" AND ({rootNodeGroup})");
-                }
-
-                var allowedContentTypes = _search.AllowedContentTypes.Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
-                if (allowedContentTypes.Any())
-                {
-                    var contentTypeGroup = string.Join(" OR ", allowedContentTypes.Select(x =>
-                        $"__NodeTypeAlias:{x}"));
-                    query.Append($" AND ({contentTypeGroup})");
-                }
-
-
-                var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture}";
-                var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
-                query.Append($" AND (__IndexType:content AND {publishedQuery})");
-
-                var disallowedContentTypes = _options.DisallowedContentTypeAliases;
-                if (disallowedContentTypes.Any()) query.Append($" AND -({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
-
-                var disallowedPropertyAliases = _options.DisallowedPropertyAliases;
-                if (disallowedPropertyAliases.Any())
-                {
-                    var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"{x}_{_search.Culture}:1 OR {x}:1"));
-                    query.Append($" AND -({disallowedPropertyAliasGroup})");
-                }
-
-                query.Append($" AND -(templateID:0)");
-
-                var searcher = index.Searcher;
+            if (searcher != null)
+            {
                 _logger.LogDebug("Trying to search for {query}", query.ToString());
                 return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(new Examine.Search.QueryOptions(_search.PageLength * (_currentPage - 1), _search.PageLength));
             }

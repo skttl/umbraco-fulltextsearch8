@@ -2,6 +2,7 @@
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core;
 
 namespace Our.Umbraco.FullTextSearch.Models
 {
@@ -9,6 +10,7 @@ namespace Our.Umbraco.FullTextSearch.Models
     {
         public Search(string searchTerm)
         {
+            Index = Constants.UmbracoIndexes.ExternalIndexName;
             SearchType = SearchType.MultiRelevance;
             SearchTerm = searchTerm;
             TitleProperties = new string[] { };
@@ -37,6 +39,8 @@ namespace Our.Umbraco.FullTextSearch.Models
         public bool AddWildcard { get; set; }
         public bool HighlightSearchTerms { get; set; }
         public string[] AllowedContentTypes { get; set; }
+        public string Index { get; set; }
+        public string Searcher { get; set; }
 
         public ICollection<string> SearchTermQuoted => new List<string> { '"' + QueryParser.Escape(SearchTerm) + '"' };
 
@@ -267,6 +271,18 @@ namespace Our.Umbraco.FullTextSearch.Models
         public Search RemoveAllowedContentType(string alias)
         {
             if (!AllowedContentTypes.Contains(alias)) AllowedContentTypes = AllowedContentTypes.Where(x => x != alias).ToArray();
+            return this;
+        }
+
+        public Search SetIndex(string index)
+        {
+            Index = index;
+            return this;
+        }
+
+        public Search SetSearcher(string searcher)
+        {
+            Searcher = searcher;
             return this;
         }
     }

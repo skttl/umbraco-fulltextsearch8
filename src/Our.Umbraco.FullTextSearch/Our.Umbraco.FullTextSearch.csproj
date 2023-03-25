@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/skttl/umbraco-fulltextsearch8</RepositoryUrl>
     <PackageIcon>search.png</PackageIcon>
     <PackageTags>umbraco plugin package umbraco-marketplace</PackageTags>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 

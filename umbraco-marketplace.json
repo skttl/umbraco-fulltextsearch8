@@ -1,5 +1,23 @@
 {
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json", 
+  "AlternatePackageNames": ["Full Text Search"],
+  "AuthorDetails": {
+    "Name": "Søren Kottal",
+    "Description": "4x Umbraco MVP working as Tech Lead and full stack developer at Ecreo, the Umbraco Gold Partner agency in Odense, Denmark.",
+    "ImageUrl": "https://24days.in/media/cr3nhed0/1644397043794.jpg"
+  },
+  "DocumentationUrl": "https://github.com/skttl/umbraco-fulltextsearch8/blob/master/docs/developers-guide-v2.md",
+  "DiscussionForumUrl": "https://github.com/skttl/umbraco-fulltextsearch8/discussions",
+  "IssueTrackerUrl": "https://github.com/skttl/umbraco-fulltextsearch8/issues",
+  "Screenshots": [
+    {
+      "ImageUrl": "https://our.umbraco.com/media/wiki/279435/637398594674775124_1l9q1vcvkkgif.gif",
+      "Caption": "Full Text Search comes with a backoffice section for controlling the searching and indexing of content in your Umbraco site."
+    }
+  ],
   "Category": "Search",
   "LicenseTypes": [ "Free" ],
-  "PackageType": "Package"
+  "PackageType": "Package",
+  "Tags": ["search", "examine", "indexing"],
+  "Title": "Full Text Search"
 }

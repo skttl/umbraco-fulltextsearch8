@@ -314,3 +314,9 @@ Adds Content Type aliases to the list of allowed Content Types, in order to limi
 
 `RemoveAllowedContentTypes(string[] aliases)` or `RemoveAllowedContentType(string alias)`
 Removes Content Type aliases from the list of allowed Content Types.
+
+`SetIndex(string index)`
+Set which index to search. By default, Full Text Search will search in the built in External Index, but if you have content in another index you want to search - you can configure this here. Note, this only controls which index you are searching. Indexing is still only happening in the external index.
+
+`SetSearcher(string searcher)`
+Set which searcher to use for searching. By default, Full Text Search will use the searcher from the selected index (default: the built in External Index).

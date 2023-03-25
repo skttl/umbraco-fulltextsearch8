@@ -1,7 +1,6 @@
 # Full Text Search
 
 [![NuGet release](https://img.shields.io/nuget/v/Our.Umbraco.FullTextSearch.svg)](https://www.nuget.org/packages/Our.Umbraco.FullTextSearch)
-[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.com/packages/website-utilities/full-text-search-8/)
 
 Full Text Search is a fast, powerful and easy to setup search solution for Umbraco sites.
 
@@ -19,7 +18,7 @@ Full Text Search can be installed via NuGet
 
 - 1.x.x: Umbraco 8.1+
 - 2.x.x: Umbraco 9
-- 3.x.x: Umbraco 10
+- 3.x.x: Umbraco 10/11
 
 #### NuGet package repository
 
@@ -31,10 +30,10 @@ To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.FullTextSearc
 
 For details on how to use the Full Text Search package, please refer to our documentation.
 
-[v1.x Developers Guide](developers-guide-v1.md)
+[v1.x Developers Guide](docs/developers-guide-v1.md)
 The guide for v1 (the Umbraco 8 version)
 
-[v2.x-v3.x Developers Guide](developers-guide-v2.md)
+[v2.x-v3.x Developers Guide](docs/developers-guide-v2.md)
 The guide for v2 and v3 (the Umbraco 9-10 / net core version)
 
 ---

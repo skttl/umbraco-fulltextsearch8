@@ -17,33 +17,28 @@ namespace Our.Umbraco.FullTextSearch.Services
 {
     public class CacheService : ICacheService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IScopeProvider _scopeProvider;
         private readonly ILogger<ICacheService> _logger;
         private readonly IUmbracoContextFactory _umbracoContextFactory;
         private readonly IHtmlService _htmlService;
         private readonly FullTextSearchOptions _options;
-        private readonly IUmbracoComponentRenderer _umbracoComponentRenderer;
-        private readonly IVariationContextAccessor _variationContextAccessor;
+        private readonly IPageRenderer _pageRenderer;
 
         public CacheService(
-            IHttpContextAccessor httpContextAccessor,
             IScopeProvider scopeProvider,
             ILogger<ICacheService> logger,
             IUmbracoContextFactory umbracoContextFactory,
             IHtmlService htmlService,
-            IUmbracoComponentRenderer umbracoComponentRenderer,
             IOptions<FullTextSearchOptions> options,
-            IVariationContextAccessor variationContextAccessor)
+            IPageRenderer pageRenderer
+            )
         {
-            _httpContextAccessor = httpContextAccessor;
             _scopeProvider = scopeProvider;
             _logger = logger;
             _umbracoContextFactory = umbracoContextFactory;
             _htmlService = htmlService;
-            _umbracoComponentRenderer = umbracoComponentRenderer;
             _options = options.Value;
-            _variationContextAccessor = variationContextAccessor;
+            _pageRenderer = pageRenderer;
         }
 
         public void AddToCache(IPublishedContent publishedContent)
@@ -59,24 +54,14 @@ namespace Our.Umbraco.FullTextSearch.Services
 
             foreach (var culture in publishedContent.Cultures)
             {
-                // get content of page, and manipulate for indexing
-                //var url = publishedContent.Url(culture.Value.Culture, UrlMode.Absolute);
-                //_htmlService.GetHtmlByUrl(url, out string fullHtml);
-                if (!culture.Value.Culture.IsNullOrWhiteSpace())
-                    _variationContextAccessor.VariationContext = new VariationContext(culture.Value.Culture);
+                var fullHtml = _pageRenderer.Render(publishedContent, culture.Value);
 
-                _httpContextAccessor.HttpContext?.Items.Add(_options.IndexingActiveKey, "1");
-
-                // todo do we need the wrapping template?
-                // var templateId = GetRenderingTemplateId();
-                //var fullHtml = _umbracoComponentRenderer.RenderTemplateAsync(id, templateId).Result.ToString();
-                var templateId = publishedContent.TemplateId;
-                var fullHtml = _umbracoComponentRenderer.RenderTemplateAsync(publishedContent.Id, publishedContent.TemplateId).Result.ToString();
                 var fullText = _htmlService.GetTextFromHtml(fullHtml);
-                _logger.LogDebug("Updating nodeId: {nodeId} in culture: {culture} using templateId: {templateId} with content: {fullText}", publishedContent.Id, culture.Value.Culture, templateId, fullText);
+
+                _logger.LogDebug("Updating nodeId: {nodeId} in culture: {culture} using templateId: {templateId} with content: {fullText}", publishedContent.Id, culture.Value.Culture, publishedContent.TemplateId, fullText);
+
                 AddToCache(publishedContent.Id, culture.Value.Culture, fullText);
 
-                _httpContextAccessor.HttpContext?.Items.Remove(_options.IndexingActiveKey);
             }
         }
 

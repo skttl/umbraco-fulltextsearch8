@@ -6,6 +6,7 @@ using Our.Umbraco.FullTextSearch.NotificationHandlers;
 using Our.Umbraco.FullTextSearch.Options;
 using Our.Umbraco.FullTextSearch.Services;
 using System;
+using Our.Umbraco.FullTextSearch.Rendering;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
@@ -19,6 +20,7 @@ namespace Our.Umbraco.FullTextSearch
             builder.Services.AddUnique<ICacheService, CacheService>();
             builder.Services.AddUnique<IHtmlService, HtmlService>();
             builder.Services.AddUnique<IStatusService, StatusService>();
+            builder.Services.AddUnique<IPageRenderer,RazorPageRenderer>();
             builder.Services.AddScoped<ISearchService, SearchService>();
             builder.Services.AddScoped<FullTextSearchHelper>();
 

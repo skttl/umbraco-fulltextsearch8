@@ -360,16 +360,17 @@ namespace Our.Umbraco.FullTextSearch.Services
 
         protected string SummarizeText(string input)
         {
-            var summaryBuilder = new StringBuilder();
             string summary;
             if (!input.IsNullOrWhiteSpace() && (input.Length > _search.SummaryLength || _search.HighlightSearchTerms))
             {
                 summary = Highlighter.FindSnippet(input, string.Join(" ", _search.SearchTermSplit), _search.SummaryLength, _search.HighlightSearchTerms ? "<b>" : "", _search.HighlightSearchTerms ? "</b>" : "");
+
+                if (!string.IsNullOrEmpty(summary))
+                    return summary;
             }
-            else
-            {
-                summary = input.TruncateHtml(_search.SummaryLength, "&hellip;");
-            }
+            
+            summary = input.TruncateHtml(_search.SummaryLength, "&hellip;");
+            
             return summary;
         }
     }

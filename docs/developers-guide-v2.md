@@ -47,7 +47,36 @@ Adding to this config on a site already indexed doesn't clean the index. You hav
 By default, no content types or property aliases is disallowed.
 
 #### Rendering
+By default rendering is performed in memory using the Razor-renderer. This will render the HTML output from the razor view and store that as the full text search content. There is also a HTTP-renderer that will perform actual HTTP-requests to render the page that can be used in scenarios where the razor-renderer won't work for example when you're using hi-jack routes (RenderControllers) and custom view models.
+
+##### Razor
 When rendering, FullTextSearch adds the value of `IndexingActiveKey` as a key in HttpContext.Items[], so you can use that to send different content to the indexer. The default value is FullTextIndexingActive. You can also use the `IsIndexingActive` helper method, in your views, to determine whether or not indexing is active. You can use this to exclude parts of the views from the content being indexed.
+
+##### Http
+To use the `HttpPageRenderer` you need to register the renderer during service registration:
+
+```csharp
+services.AddUnique<IPageRenderer,HttpPageRenderer>();
+```
+
+If you need to customize the HTTP-request by adding headers or cookies you can also override our named HttpClientFactory to set default values:
+
+```csharp
+var cookieContainer = new CookieContainer();
+cookieContainer.Add(new Cookie("custom-cookie", "hallo-world", "/", "localhost"));
+
+services.AddHttpClient(FullTextSearchConstants.HttpClientFactoryNamedClientName, c => {
+
+    c.DefaultRequestHeaders.Add("custom-header","H5YR");
+
+})
+.ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler()
+{
+    AllowAutoRedirect = false, // Important to keep this to avoid indexing pages where HTTP-status is not OK
+    CookieContainer = cookieContainer
+});
+```
+
 
 ##### XPaths to remove
 In addition to the IndexingActiveKey, you can also add specific Xpaths to remove from the indexed content. Using this, you can ie. remove scripts (`//script`) or the head area ('//head') of the page.

@@ -29,9 +29,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
         /// <returns>true if being indexed</returns>
         public bool IsIndexingActive()
         {
-            var searchActiveStringName = _options.IndexingActiveKey;
-
-            return !searchActiveStringName.IsNullOrWhiteSpace() && _httpContextAccessor.GetRequiredHttpContext().Items[searchActiveStringName] != null;
+            return _httpContextAccessor.GetRequiredHttpContext().Request.Headers.UserAgent == FullTextSearchConstants.HttpClientFactoryNamedClientName;
         }
 
         /// <summary>

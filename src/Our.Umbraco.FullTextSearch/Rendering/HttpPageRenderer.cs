@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Our.Umbraco.FullTextSearch.Interfaces;
+using System;
 using System.Net;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Our.Umbraco.FullTextSearch.Interfaces;
+using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
@@ -13,45 +14,51 @@ namespace Our.Umbraco.FullTextSearch.Rendering;
 /// </summary>
 public class HttpPageRenderer : IPageRenderer
 {
+    private readonly IProfilingLogger _profilingLogger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<HttpPageRenderer> _logger;
 
     public HttpPageRenderer(
-        IHttpClientFactory httpClientFactory, 
+        IProfilingLogger profilingLogger,
+        IHttpClientFactory httpClientFactory,
         ILogger<HttpPageRenderer> logger)
     {
+        _profilingLogger = profilingLogger;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
     }
 
     public virtual string Render(IPublishedContent publishedContent, PublishedCultureInfo culture)
     {
-        var publishedPageUrl = publishedContent.Url(mode: UrlMode.Absolute);
-
-        try
+        using (_profilingLogger.DebugDuration<HttpPageRenderer>($"Rendering {publishedContent.Id} {culture.Culture} {publishedContent.Name}", $"Completed rendering {publishedContent.Id} {culture.Culture} {publishedContent.Name}"))
         {
-            // Using a named client to allow for configuration of default headers, cookies and more during service registration
-            // if the named client is not registered during startup it will fallback so we never need to register if inside the package.
+            var publishedPageUrl = publishedContent.Url(culture.Culture, mode: UrlMode.Absolute);
 
-            var httpClient = _httpClientFactory.CreateClient(FullTextSearchConstants.HttpClientFactoryNamedClientName);
-            var result = httpClient.GetAsync(publishedPageUrl).ConfigureAwait(false).GetAwaiter().GetResult();
-
-            string fullHtml = string.Empty;
-            
-            // If the response is not status OK (like a 40X or 30X) we don't want to index the content.
-            if (result.StatusCode == HttpStatusCode.OK)
+            try
             {
-                fullHtml = result.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                // Using a named client to allow for configuration of default headers, cookies and more during service registration
+                // if the named client is not registered during startup it will fallback so we never need to register if inside the package.
+
+                var httpClient = _httpClientFactory.CreateClient(FullTextSearchConstants.HttpClientFactoryNamedClientName);
+                var result = httpClient.GetAsync(publishedPageUrl).ConfigureAwait(false).GetAwaiter().GetResult();
+
+                string fullHtml = string.Empty;
+
+                // If the response is not status OK (like a 40X or 30X) we don't want to index the content.
+                if (result.StatusCode == HttpStatusCode.OK)
+                {
+                    fullHtml = result.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                }
+
+                return fullHtml;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error in http-request for full text indexing of page {nodeId}, tried to fetch {url}", publishedContent.Id, publishedPageUrl);
             }
 
-            return fullHtml;
-
+            return string.Empty;
         }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error in http-request for full text indexing of page {nodeId}, tried to fetch {url}",publishedContent.Id, publishedPageUrl);
-        }
-
-        return string.Empty;
     }
 }

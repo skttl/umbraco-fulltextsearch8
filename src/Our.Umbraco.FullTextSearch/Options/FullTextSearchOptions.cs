@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Our.Umbraco.FullTextSearch.Options
@@ -9,6 +10,7 @@ namespace Our.Umbraco.FullTextSearch.Options
         public bool Enabled { get; set; } = true;
         [JsonProperty("defaultTitleField")]
         public string DefaultTitleField { get; set; } = "nodeName";
+        [Obsolete("No longer used anymore, now the indexing is determined by the user-agent string of the request")]
         [JsonProperty("indexingActiveKey")]
         public string IndexingActiveKey { get; set; } = "FullTextIndexingActive";
         [JsonProperty("disallowedContentTypeAliases")]

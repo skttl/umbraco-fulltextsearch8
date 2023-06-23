@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Options;
+using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Templates;
 using Umbraco.Extensions;
@@ -17,18 +18,20 @@ namespace Our.Umbraco.FullTextSearch.Rendering;
 /// </remarks>
 public class RazorPageRenderer : IPageRenderer
 {
+    private readonly IProfilingLogger _profilingLogger;
     private readonly IUmbracoComponentRenderer _umbracoComponentRenderer;
     private readonly IVariationContextAccessor _variationContextAccessor;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private FullTextSearchOptions _options;
 
     public RazorPageRenderer(
-
-        IUmbracoComponentRenderer umbracoComponentRenderer, 
-        IVariationContextAccessor variationContextAccessor, 
-        IHttpContextAccessor httpContextAccessor, 
+        IProfilingLogger profilingLogger,
+        IUmbracoComponentRenderer umbracoComponentRenderer,
+        IVariationContextAccessor variationContextAccessor,
+        IHttpContextAccessor httpContextAccessor,
         IOptions<FullTextSearchOptions> options)
     {
+        _profilingLogger = profilingLogger;
         _umbracoComponentRenderer = umbracoComponentRenderer;
         _variationContextAccessor = variationContextAccessor;
         _httpContextAccessor = httpContextAccessor;
@@ -37,16 +40,23 @@ public class RazorPageRenderer : IPageRenderer
 
     public virtual string Render(IPublishedContent publishedContent, PublishedCultureInfo culture)
     {
-        if (!culture.Culture.IsNullOrWhiteSpace())
-            _variationContextAccessor.VariationContext = new VariationContext(culture.Culture);
+        using (_profilingLogger.DebugDuration<RazorPageRenderer>($"Rendering {publishedContent.Id} {culture.Culture} {publishedContent.Name}", $"Completed rendering {publishedContent.Id} {culture.Culture} {publishedContent.Name}"))
+        {
+            if (!culture.Culture.IsNullOrWhiteSpace())
+                _variationContextAccessor.VariationContext = new VariationContext(culture.Culture);
 
-        _httpContextAccessor.HttpContext?.Items.Add(_options.IndexingActiveKey, "1");
+            var fullHtmlString = string.Empty;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                var currentUserAgent = _httpContextAccessor.HttpContext.Request.Headers.UserAgent;
+                _httpContextAccessor.HttpContext.Request.Headers.UserAgent = FullTextSearchConstants.HttpClientFactoryNamedClientName;
 
-        // todo do we need the wrapping template?
-        var fullHtml = _umbracoComponentRenderer.RenderTemplateAsync(publishedContent.Id, publishedContent.TemplateId).Result.ToString();
+                var fullHtml = _umbracoComponentRenderer.RenderTemplateAsync(publishedContent.Id, publishedContent.TemplateId).ConfigureAwait(false).GetAwaiter().GetResult();
+                fullHtmlString = fullHtml.ToString();
 
-        _httpContextAccessor.HttpContext?.Items.Remove(_options.IndexingActiveKey);
-
-        return fullHtml;
+                _httpContextAccessor.HttpContext.Request.Headers.UserAgent = currentUserAgent;
+            }
+            return fullHtmlString;
+        }
     }
 }

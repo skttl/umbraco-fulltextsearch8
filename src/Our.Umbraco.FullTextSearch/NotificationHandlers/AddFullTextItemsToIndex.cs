@@ -54,7 +54,7 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
             indexProvider.TransformingIndexValues += IndexProviderTransformingIndexValues;
         }
 
-        private void IndexProviderTransformingIndexValues(object sender, IndexingItemEventArgs e)
+        private async void IndexProviderTransformingIndexValues(object sender, IndexingItemEventArgs e)
         {
             if (e.Index.Name != Constants.UmbracoIndexes.ExternalIndexName) return;
             if (e.ValueSet.Category != IndexTypes.Content) return;
@@ -110,7 +110,7 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
 
             using (_profilingLogger.DebugDuration<AddFullTextItemsToIndex>("Attempt to fulltext index for node " + id, "Completed fulltext index for node " + id))
             {
-                var cacheItems = _cacheService.GetFromCache(id);
+                var cacheItems = await _cacheService.GetFromCache(id);
                 if (cacheItems == null || !cacheItems.Any()) return;
 
                 foreach (var item in cacheItems)

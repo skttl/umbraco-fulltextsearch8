@@ -34,10 +34,10 @@ namespace Our.Umbraco.FullTextSearch
 
             builder
                 .AddNotificationHandler<UmbracoApplicationStartingNotification, ExecuteMigrations>()
-                .AddNotificationHandler<ContentCacheRefresherNotification, UpdateCacheOnPublish>()
+                .AddNotificationAsyncHandler<ContentCacheRefresherNotification, UpdateCacheOnPublish>()
                 .AddNotificationHandler<ServerVariablesParsingNotification, AddFullTextSearchToServerVariables>()
                 .AddNotificationHandler<UmbracoApplicationStartingNotification, AddFullTextItemsToIndex>();
-
+            
             return builder;
         }
 

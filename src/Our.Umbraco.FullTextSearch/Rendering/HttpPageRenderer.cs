@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -24,7 +25,7 @@ public class HttpPageRenderer : IPageRenderer
         _logger = logger;
     }
 
-    public virtual string Render(IPublishedContent publishedContent, PublishedCultureInfo culture)
+    public virtual async Task<string> Render(IPublishedContent publishedContent, PublishedCultureInfo culture)
     {
         var publishedPageUrl = publishedContent.Url(mode: UrlMode.Absolute);
 
@@ -34,7 +35,7 @@ public class HttpPageRenderer : IPageRenderer
             // if the named client is not registered during startup it will fallback so we never need to register if inside the package.
 
             var httpClient = _httpClientFactory.CreateClient(FullTextSearchConstants.HttpClientFactoryNamedClientName);
-            var result = httpClient.GetAsync(publishedPageUrl).ConfigureAwait(false).GetAwaiter().GetResult();
+            var result = await httpClient.GetAsync(publishedPageUrl);
 
             string fullHtml = string.Empty;
             

@@ -7,8 +7,8 @@ using Our.Umbraco.FullTextSearch.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Templates;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
@@ -41,7 +41,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             _pageRenderer = pageRenderer;
         }
 
-        public void AddToCache(IPublishedContent publishedContent)
+        public async Task AddToCache(IPublishedContent publishedContent)
         {
             if (publishedContent == null || IsDisallowed(publishedContent))
             {
@@ -50,11 +50,11 @@ namespace Our.Umbraco.FullTextSearch.Services
                 return;
             }
 
-            CleanupCultureCache(publishedContent.Id, publishedContent.Cultures.Select(x => x.Value.Culture));
+            await CleanupCultureCache(publishedContent.Id, publishedContent.Cultures.Select(x => x.Value.Culture));
 
             foreach (var culture in publishedContent.Cultures)
             {
-                var fullHtml = _pageRenderer.Render(publishedContent, culture.Value);
+                var fullHtml = await _pageRenderer.Render(publishedContent, culture.Value);
 
                 var fullText = _htmlService.GetTextFromHtml(fullHtml);
 
@@ -63,37 +63,43 @@ namespace Our.Umbraco.FullTextSearch.Services
                 AddToCache(publishedContent.Id, culture.Value.Culture, fullText);
 
             }
+
+            return;
         }
 
-        public void AddTreeToCache(IPublishedContent rootNode)
+        public async Task AddTreeToCache(IPublishedContent rootNode)
         {
-            if (rootNode == null) return;
-            AddToCache(rootNode);
+            if (rootNode == null) return; ;
+            await AddToCache(rootNode);
             rootNode.Children.ToList().ForEach(node => AddTreeToCache(node));
+
+            return;
         }
 
-        public void AddTreeToCache(int rootId)
+        public async Task AddTreeToCache(int rootId)
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
                 {
-                    AddTreeToCache(cref.UmbracoContext.Content.GetById(rootId));
+                    await AddTreeToCache(cref.UmbracoContext.Content.GetById(rootId));
                 }
             }
+
+            return;
         }
 
         /// <summary>
         /// Adds the content of the node with the id to the FullText Cache, by downloading the content of the nodes urls. One for each culture.
         /// </summary>
         /// <param name="id"></param>
-        public void AddToCache(int id)
+        public async Task AddToCache(int id)
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
                 {
-                    AddToCache(cref.UmbracoContext.Content.GetById(id));
+                    await AddToCache(cref.UmbracoContext.Content.GetById(id));
                 }
             }
         }
@@ -124,12 +130,12 @@ namespace Our.Umbraco.FullTextSearch.Services
         /// <param name="id"></param>
         /// <param name="culture"></param>
         /// <param name="text"></param>
-        private void AddToCache(int id, string culture, string text)
+        private async void AddToCache(int id, string culture, string text)
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql().Select("*").From<CacheItem>().Where<CacheItem>(x => x.NodeId == id && x.Culture == culture);
-                var cacheItem = scope.Database.FirstOrDefault<CacheItem>(sql);
+                var cacheItem = await scope.Database.FirstOrDefaultAsync<CacheItem>(sql);
                 var update = true;
 
                 if (cacheItem == null)
@@ -147,11 +153,11 @@ namespace Our.Umbraco.FullTextSearch.Services
 
                 if (update)
                 {
-                    scope.Database.Update(cacheItem);
+                    await scope.Database.UpdateAsync(cacheItem);
                 }
                 else
                 {
-                    scope.Database.Insert(cacheItem);
+                    await scope.Database.InsertAsync(cacheItem);
                 }
             }
         }
@@ -160,12 +166,12 @@ namespace Our.Umbraco.FullTextSearch.Services
         /// Deletes the content of the specified node id from the cache table.
         /// </summary>
         /// <param name="id"></param>
-        public void DeleteFromCache(int id)
+        public async Task DeleteFromCache(int id)
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql().Delete().From<CacheItem>().Where<CacheItem>(x => x.NodeId == id);
-                scope.Database.Execute(sql);
+                await scope.Database.ExecuteAsync(sql);
             }
         }
 
@@ -173,12 +179,12 @@ namespace Our.Umbraco.FullTextSearch.Services
         /// Deletes the content of the specified node id, in other cultures than specified.
         /// </summary>
         /// <param name="id"></param>
-        public void CleanupCultureCache(int id, IEnumerable<string> cultures)
+        public async Task CleanupCultureCache(int id, IEnumerable<string> cultures)
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql().Delete().From<CacheItem>().Where<CacheItem>(x => x.NodeId == id && !cultures.Contains(x.Culture));
-                scope.Database.Execute(sql);
+                await scope.Database.ExecuteAsync(sql);
             }
         }
 
@@ -187,12 +193,12 @@ namespace Our.Umbraco.FullTextSearch.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<CacheItem> GetFromCache(int id)
+        public async Task<List<CacheItem>> GetFromCache(int id)
         {
             using (var scope = _scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql().Select("*").From<CacheItem>().Where<CacheItem>(x => x.NodeId == id);
-                return scope.Database.Fetch<CacheItem>(sql);
+                return await scope.Database.FetchAsync<CacheItem>(sql);
             }
         }
     }

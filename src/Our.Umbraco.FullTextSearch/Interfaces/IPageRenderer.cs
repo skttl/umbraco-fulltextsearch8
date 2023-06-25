@@ -1,4 +1,5 @@
-﻿using Umbraco.Cms.Core.Models.PublishedContent;
+﻿using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace Our.Umbraco.FullTextSearch.Interfaces;
 
@@ -7,5 +8,5 @@ namespace Our.Umbraco.FullTextSearch.Interfaces;
 /// </summary>
 public interface IPageRenderer
 {
-    string Render(IPublishedContent publishedContent, PublishedCultureInfo culture);
+    Task<string> Render(IPublishedContent publishedContent, PublishedCultureInfo culture);
 }

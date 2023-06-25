@@ -363,7 +363,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             string summary;
             if (!input.IsNullOrWhiteSpace() && (input.Length > _search.SummaryLength || _search.HighlightSearchTerms))
             {
-                summary = Highlighter.FindSnippet(input, string.Join(" ", _search.SearchTermSplit), _search.SummaryLength, _search.HighlightSearchTerms ? "<b>" : "", _search.HighlightSearchTerms ? "</b>" : "");
+                summary = Highlighter.FindSnippet(input, string.Join(" ", _search.SearchTermSplit), _search.SummaryLength, _search.HighlightSearchTerms ? _options.HighlightPattern : "{0}");
 
                 if (!string.IsNullOrEmpty(summary))
                     return summary;

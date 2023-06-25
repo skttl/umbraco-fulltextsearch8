@@ -14,7 +14,7 @@ namespace Our.Umbraco.FullTextSearch.Helpers
             public int Offset;
         }
 
-        internal static string FindSnippet(string text, string query, int maxLength, string highlightBefore = "", string highlightAfter = "")
+        internal static string FindSnippet(string text, string query, int maxLength, string highlightPattern = "{0}")
         {
             if (maxLength < 0)
             {
@@ -52,34 +52,29 @@ namespace Our.Umbraco.FullTextSearch.Helpers
                     sb.Add(".");
                 }
                 previous = offset;
-                sb.Add(Highlight(sentence, words, highlightBefore, highlightAfter));
+                sb.Add(Highlight(sentence, words, highlightPattern));
             }
             return string.Join(".", sb);
         }
 
-        internal static string Highlight(string sentence, ILookup<string, string> words, string highlightBefore, string highlightAfter)
+        internal static string Highlight(string sentence, ILookup<string, string> words, string highlightPattern)
         {
             var sb = new List<string>();
-            var ff = true;
+
             foreach (var word in sentence.Split(' '))
             {
                 var token = word.ToLower();
-                if (ff && words.Contains(token))
+                if (words.Contains(token))
                 {
-                    sb.Add(highlightBefore);
-                    ff = !ff;
+                    sb.Add(string.Format(highlightPattern, word));
                 }
-                if (!ff && !string.IsNullOrWhiteSpace(token) && !words.Contains(token))
+                else
                 {
-                    sb.Add(highlightAfter);
-                    ff = !ff;
+                    sb.Add(word);
                 }
-                sb.Add(word);
+
             }
-            if (!ff)
-            {
-                sb.Add(highlightAfter);
-            }
+
             return string.Join(" ", sb);
         }
 

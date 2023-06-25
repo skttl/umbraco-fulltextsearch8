@@ -21,5 +21,11 @@ namespace Our.Umbraco.FullTextSearch.Options
         public string FullTextContentField { get; set; } = "FullTextContent";
         [JsonProperty("fullTextPathField")]
         public string FullTextPathField { get; set; } = "FullTextPath";
+
+        /// <summary>
+        /// Pattern to use for highlighting text in search result html. Example: &lt;b&gt;{0}&lt;/b&gt;
+        /// </summary>
+        [JsonProperty("highlightPattern")]
+        public string HighlightPattern { get; set; } = "<b>{0}</b>";
     }
 }

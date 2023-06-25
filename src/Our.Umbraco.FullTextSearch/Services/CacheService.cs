@@ -46,7 +46,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             if (publishedContent == null || IsDisallowed(publishedContent))
             {
                 // delete from cache if possible, and return
-                if (publishedContent is not null) DeleteFromCache(publishedContent.Id);
+                if (publishedContent is not null) await DeleteFromCache(publishedContent.Id);
                 return;
             }
 
@@ -64,16 +64,21 @@ namespace Our.Umbraco.FullTextSearch.Services
 
             }
 
-            return;
         }
 
         public async Task AddTreeToCache(IPublishedContent rootNode)
         {
             if (rootNode == null) return; ;
             await AddToCache(rootNode);
-            rootNode.Children.ToList().ForEach(node => AddTreeToCache(node));
 
-            return;
+            if (rootNode.Children is null)
+                return;
+
+            foreach (var node in rootNode.Children)
+            {
+                await AddTreeToCache(node);
+            }
+            
         }
 
         public async Task AddTreeToCache(int rootId)
@@ -86,7 +91,6 @@ namespace Our.Umbraco.FullTextSearch.Services
                 }
             }
 
-            return;
         }
 
         /// <summary>

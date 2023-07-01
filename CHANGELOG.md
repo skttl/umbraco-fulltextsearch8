@@ -6,11 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 4.0.0
-- **BREAKING** Changed the default rendering to use HttpClient, and abstracted the page rendering, so you can switch based on preferences / 🙏 [enkelmedia](https://github.com/enkelmedia)
+- **BREAKING** #86 Changed the default rendering to use HttpClient, and abstracted the page rendering, so you can switch based on preferences / 🙏 [enkelmedia](https://github.com/enkelmedia)
 - Asynced all the things, or at least a big chunk / 🙏 [enkelmedia](https://github.com/enkelmedia)
 - Added tests / 🙏 [enkelmedia](https://github.com/enkelmedia)
-- **BREAKING** Terminology around indexing / rendering. The `IndexingActiveKey` is now `RenderingActiveKey`, helper method `IsIndexingActive` is now `IsRenderingActive`. The old things are obsoleted, so should still work. Planning to remove them if we ever get to 5.0.0
-- **BREAKING** Detecting rendering/indexing is now based on a request header, instead of a key in HttpContext.Items.
+- **BREAKING** 6d6ab680d059d516c4b7a43a963eaa4df89655fe Terminology around indexing / rendering. The `IndexingActiveKey` is now `RenderingActiveKey`, helper method `IsIndexingActive` is now `IsRenderingActive`. The old things are obsoleted, so should still work. Planning to remove them if we ever get to 5.0.0
+- **BREAKING** 6d6ab680d059d516c4b7a43a963eaa4df89655fe Detecting rendering/indexing is now based on a request header, instead of a key in HttpContext.Items.
+- #82 Adds configurable markup for highlighting of search terms in result summaries.  / 🙏 [enkelmedia](https://github.com/enkelmedia)
 
 ## 3.1.0
 

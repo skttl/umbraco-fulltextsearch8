@@ -16,25 +16,20 @@ Full Text Search can be installed via NuGet
 
 #### Choose the right version for your Umbraco Project
 
-- 1.x.x: Umbraco 8.1+
-- 2.x.x: Umbraco 9
-- 3.x.x: Umbraco 10/11
+|FullTextSearch version|Compatible Umbraco Version|Documentation / developers guide|
+|-|-|-|
+|1.x.x|8.1.x - 8.x.x|[v1.x Developers Guide](docs/developers-guide-v1.md)|
+|2.x.x|9.0.0 - 9.x.x|[v2.x Developers Guide](docs/developers-guide-v2.md)|
+|3.x.x|10.0.0 - 12.x.x|[v2/3 Developers Guide](docs/developers-guide-v2.md)|
+|**4.x.x**|10.0.0 - 12.x.x|[v4.x Developers Guide](docs/developers-guide-v4.md)|
 
-#### NuGet package repository
+Only the latest minor is actively maintained.
+
+#### Install via NuGet package repository
 
 To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.FullTextSearch), you can run the following command from within Visual Studio:
 
     PM> Install-Package Our.Umbraco.FullTextSearch
-
-## Developers Guide
-
-For details on how to use the Full Text Search package, please refer to our documentation.
-
-[v1.x Developers Guide](docs/developers-guide-v1.md)
-The guide for v1 (the Umbraco 8 version)
-
-[v2.x-v3.x Developers Guide](docs/developers-guide-v2.md)
-The guide for v2 and v3 (the Umbraco 9-10 / net core version)
 
 ---
 
@@ -58,6 +53,7 @@ Have a question?
 
 ### Special thanks
 
+- [Markus Johansson](https://github.com/enkelmedia) for contributing the HttpPageRenderer, tests, async code etc.
 - Thanks to [Rigardt Pheiffer](https://github.com/rigardtpheiffer) for building the original Full Text Search package, which this one is inspired by and somewhat based off.
 - Icon made by [Vectors Market](https://www.flaticon.com/authors/vectors-market) from [www.flaticon.com](https://www.flaticon.com/)
 

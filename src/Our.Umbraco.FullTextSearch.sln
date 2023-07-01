@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
 		..\docs\developers-guide-v1.md = ..\docs\developers-guide-v1.md
 		..\docs\developers-guide-v2.md = ..\docs\developers-guide-v2.md
+		..\docs\developers-guide-v4.md = ..\docs\developers-guide-v4.md
 		..\docs\developers-guide.md = ..\docs\developers-guide.md
 		..\LICENSE.md = ..\LICENSE.md
 		..\README.md = ..\README.md
@@ -20,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.Testsite", "Our.Umbraco.FullTextSearch.Testsite\Our.Umbraco.FullTextSearch.Testsite.csproj", "{FD95D644-6C96-4731-A940-17AE8B784EBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.FullTextSearch.Tests", "Our.Umbraco.FullTextSearch.Tests\Our.Umbraco.FullTextSearch.Tests.csproj", "{31AFB56C-912D-480B-BD4F-F7FB0A7AC5C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.Tests", "Our.Umbraco.FullTextSearch.Tests\Our.Umbraco.FullTextSearch.Tests.csproj", "{31AFB56C-912D-480B-BD4F-F7FB0A7AC5C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

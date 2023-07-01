@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Options;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
@@ -15,7 +17,8 @@ using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch.NotificationHandlers
 {
-    public class UpdateCacheOnPublish : INotificationHandler<ContentCacheRefresherNotification>
+
+    public class UpdateCacheOnPublish : INotificationAsyncHandler<ContentCacheRefresherNotification>
     {
         private FullTextSearchOptions _options;
         private ILogger<UpdateCacheOnPublish> _logger;
@@ -38,7 +41,8 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
             _contentService = contentService;
 
         }
-        public void Handle(ContentCacheRefresherNotification notification)
+
+        public async Task HandleAsync(ContentCacheRefresherNotification notification, CancellationToken cancellationToken)
         {
             if (notification.MessageType != MessageType.RefreshByPayload)
                 return;
@@ -59,7 +63,7 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
             {
                 if (payload.ChangeTypes.HasType(TreeChangeTypes.Remove))
                 {
-                    _cacheService.DeleteFromCache(payload.Id);
+                    await _cacheService.DeleteFromCache(payload.Id);
                 }
                 else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll))
                 {
@@ -67,7 +71,7 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
                 }
                 else // RefreshNode or RefreshBranch (maybe trashed)
                 {
-                    _cacheService.AddToCache(payload.Id);
+                    await _cacheService.AddToCache(payload.Id);
 
                     // branch
                     if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
@@ -83,12 +87,13 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
 
                             foreach (var descendant in descendants)
                             {
-                                _cacheService.AddToCache(descendant.Id);
+                                await _cacheService.AddToCache(descendant.Id);
                             }
                         }
                     }
                 }
             }
         }
+
     }
 }

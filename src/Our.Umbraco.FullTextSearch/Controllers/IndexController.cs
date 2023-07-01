@@ -9,6 +9,7 @@ using Our.Umbraco.FullTextSearch.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Examine;
@@ -63,7 +64,7 @@ namespace Our.Umbraco.FullTextSearch.Controllers
 
         [HttpPost]
         [Produces("application/json")]
-        public ReIndexResult ReIndexNodes([FromBody] ReIndexRequest request)
+        public async Task<ReIndexResult> ReIndexNodes([FromBody] ReIndexRequest request)
         {
             if (!_options.Enabled)
             {
@@ -81,7 +82,13 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             {
                 try
                 {
-                    _umbracoHelper.ContentAtRoot().ToList().ForEach(node => _cacheService.AddTreeToCache(node));
+                    var nodes = _umbracoHelper.ContentAtRoot().ToList();
+
+                    foreach (var node in nodes)
+                    {
+                        await _cacheService.AddTreeToCache(node);
+                    }
+
                     index.CreateIndex();
                     _indexRebuilder.RebuildIndex(Constants.UmbracoIndexes.ExternalIndexName);
                 }
@@ -95,11 +102,14 @@ namespace Our.Umbraco.FullTextSearch.Controllers
             {
                 try
                 {
-                    _umbracoHelper.Content(request.NodeIds).ToList().ForEach(node =>
+                    var nodes = _umbracoHelper.Content(request.NodeIds).ToList();
+                    foreach (var node in nodes)
                     {
-                        if (request.IncludeDescendants) _cacheService.AddTreeToCache(node);
-                        else _cacheService.AddToCache(node);
-                    });
+                        if (request.IncludeDescendants)
+                            await _cacheService.AddTreeToCache(node);
+
+                        else await _cacheService.AddToCache(node);
+                    }
 
                     index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(request.NodeIds).ToArray()));
                 }

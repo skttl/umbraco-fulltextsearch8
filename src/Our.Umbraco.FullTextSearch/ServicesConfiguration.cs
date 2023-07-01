@@ -6,6 +6,8 @@ using Our.Umbraco.FullTextSearch.NotificationHandlers;
 using Our.Umbraco.FullTextSearch.Options;
 using Our.Umbraco.FullTextSearch.Services;
 using System;
+using System.Net.Http;
+using Our.Umbraco.FullTextSearch.Rendering;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
@@ -19,15 +21,23 @@ namespace Our.Umbraco.FullTextSearch
             builder.Services.AddUnique<ICacheService, CacheService>();
             builder.Services.AddUnique<IHtmlService, HtmlService>();
             builder.Services.AddUnique<IStatusService, StatusService>();
+            builder.Services.AddUnique<IPageRenderer,RazorPageRenderer>();
             builder.Services.AddScoped<ISearchService, SearchService>();
             builder.Services.AddScoped<FullTextSearchHelper>();
+            
+            builder.Services.AddHttpClient(FullTextSearchConstants.HttpClientFactoryNamedClientName)
+            .ConfigurePrimaryHttpMessageHandler(x => new HttpClientHandler()
+            {
+                AllowAutoRedirect = false // Needed to now index 404, 301 pages etc.
+            });
+
 
             builder
                 .AddNotificationHandler<UmbracoApplicationStartingNotification, ExecuteMigrations>()
-                .AddNotificationHandler<ContentCacheRefresherNotification, UpdateCacheOnPublish>()
+                .AddNotificationAsyncHandler<ContentCacheRefresherNotification, UpdateCacheOnPublish>()
                 .AddNotificationHandler<ServerVariablesParsingNotification, AddFullTextSearchToServerVariables>()
                 .AddNotificationHandler<UmbracoApplicationStartingNotification, AddFullTextItemsToIndex>();
-
+            
             return builder;
         }
 

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
 using Our.Umbraco.FullTextSearch.Options;
+using System;
 using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch.Helpers
@@ -24,14 +26,22 @@ namespace Our.Umbraco.FullTextSearch.Helpers
             _options = options.Value;
         }
         /// <summary>
-        /// Check whether the current page is being rendered by the indexer
+        /// Check whether the current page is being rendered by the Renderer
         /// </summary>
-        /// <returns>true if being indexed</returns>
+        /// <returns>true if being rendered by the Renderer</returns>
+        public bool IsRenderingActive()
+        {
+            return _httpContextAccessor.GetRequiredHttpContext().Request.Headers.TryGetValue(FullTextSearchConstants.HttpClientRequestHeaderName, out StringValues requestHeader) && requestHeader == _options.RenderingActiveKey;
+        }
+
+        /// <summary>
+        /// Check whether the current page is being rendered by the Renderer
+        /// </summary>
+        /// <returns>true if being rendered by the Renderer</returns>
+        [Obsolete("Use IsRenderingActive")]
         public bool IsIndexingActive()
         {
-            var searchActiveStringName = _options.IndexingActiveKey;
-
-            return !searchActiveStringName.IsNullOrWhiteSpace() && _httpContextAccessor.GetRequiredHttpContext().Items[searchActiveStringName] != null;
+            return IsRenderingActive();
         }
 
         /// <summary>

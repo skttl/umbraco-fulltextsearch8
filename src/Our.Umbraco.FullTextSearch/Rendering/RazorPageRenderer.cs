@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Options;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Templates;
 using Umbraco.Extensions;
@@ -25,9 +25,9 @@ public class RazorPageRenderer : IPageRenderer
 
     public RazorPageRenderer(
 
-        IUmbracoComponentRenderer umbracoComponentRenderer, 
-        IVariationContextAccessor variationContextAccessor, 
-        IHttpContextAccessor httpContextAccessor, 
+        IUmbracoComponentRenderer umbracoComponentRenderer,
+        IVariationContextAccessor variationContextAccessor,
+        IHttpContextAccessor httpContextAccessor,
         IOptions<FullTextSearchOptions> options)
     {
         _umbracoComponentRenderer = umbracoComponentRenderer;
@@ -41,12 +41,12 @@ public class RazorPageRenderer : IPageRenderer
         if (!culture.Culture.IsNullOrWhiteSpace())
             _variationContextAccessor.VariationContext = new VariationContext(culture.Culture);
 
-        _httpContextAccessor.HttpContext?.Items.Add(_options.IndexingActiveKey, "1");
+        _httpContextAccessor.HttpContext?.Request.Headers.Add(FullTextSearchConstants.HttpClientRequestHeaderName, _options.RenderingActiveKey);
 
         // todo do we need the wrapping template?
         var fullHtml = await _umbracoComponentRenderer.RenderTemplateAsync(publishedContent.Id, publishedContent.TemplateId);
 
-        _httpContextAccessor.HttpContext?.Items.Remove(_options.IndexingActiveKey);
+        _httpContextAccessor.HttpContext?.Request.Headers.Remove(FullTextSearchConstants.HttpClientRequestHeaderName);
 
         return fullHtml.ToString();
     }

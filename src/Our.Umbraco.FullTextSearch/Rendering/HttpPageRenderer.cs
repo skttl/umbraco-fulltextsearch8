@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Our.Umbraco.FullTextSearch.Interfaces;
+using Our.Umbraco.FullTextSearch.Options;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Our.Umbraco.FullTextSearch.Interfaces;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
@@ -14,13 +16,16 @@ namespace Our.Umbraco.FullTextSearch.Rendering;
 /// </summary>
 public class HttpPageRenderer : IPageRenderer
 {
+    private readonly FullTextSearchOptions _options;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<HttpPageRenderer> _logger;
 
     public HttpPageRenderer(
-        IHttpClientFactory httpClientFactory, 
+        IOptions<FullTextSearchOptions> options,
+        IHttpClientFactory httpClientFactory,
         ILogger<HttpPageRenderer> logger)
     {
+        _options = options.Value;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
     }
@@ -35,14 +40,15 @@ public class HttpPageRenderer : IPageRenderer
             // if the named client is not registered during startup it will fallback so we never need to register if inside the package.
 
             var httpClient = _httpClientFactory.CreateClient(FullTextSearchConstants.HttpClientFactoryNamedClientName);
+            httpClient.DefaultRequestHeaders.Add(FullTextSearchConstants.HttpClientRequestHeaderName, _options.RenderingActiveKey);
             var result = await httpClient.GetAsync(publishedPageUrl);
 
             string fullHtml = string.Empty;
-            
+
             // If the response is not status OK (like a 40X or 30X) we don't want to index the content.
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                fullHtml = result.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                fullHtml = await result.Content.ReadAsStringAsync();
             }
 
             return fullHtml;
@@ -50,7 +56,7 @@ public class HttpPageRenderer : IPageRenderer
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in http-request for full text indexing of page {nodeId}, tried to fetch {url}",publishedContent.Id, publishedPageUrl);
+            _logger.LogError(e, "Error in http-request for full text indexing of page {nodeId}, tried to fetch {url}", publishedContent.Id, publishedPageUrl);
         }
 
         return string.Empty;

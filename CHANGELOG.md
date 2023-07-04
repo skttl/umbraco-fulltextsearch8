@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## UNRELEAED
+## UNRELEASED
+- b760e1b8004893f85a44bcbaab932442230160a5 adds notifications to CacheService
 - #67 publishedPropertySuffix is not case invariant
 
 ## 4.0.0-alpha001

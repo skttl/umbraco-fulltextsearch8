@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Web.Common;
 using Umbraco.Extensions;
 
@@ -135,7 +134,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
 
 
-            var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture}";
+            var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture.ToLower()}";
             var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
             query.Append($" AND (__IndexType:content AND {publishedQuery})");
 
@@ -368,9 +367,9 @@ namespace Our.Umbraco.FullTextSearch.Services
                 if (!string.IsNullOrEmpty(summary))
                     return summary;
             }
-            
+
             summary = input.TruncateHtml(_search.SummaryLength, "&hellip;");
-            
+
             return summary;
         }
     }

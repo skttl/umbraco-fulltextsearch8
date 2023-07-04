@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 4.0.0
+## UNRELEAED
+- #67 publishedPropertySuffix is not case invariant
+
+## 4.0.0-alpha001
 - **BREAKING** #86 Changed the default rendering to use HttpClient, and abstracted the page rendering, so you can switch based on preferences / 🙏 [enkelmedia](https://github.com/enkelmedia)
 - Asynced all the things, or at least a big chunk / 🙏 [enkelmedia](https://github.com/enkelmedia)
 - Added tests / 🙏 [enkelmedia](https://github.com/enkelmedia)

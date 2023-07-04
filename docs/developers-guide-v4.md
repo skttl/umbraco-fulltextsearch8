@@ -365,3 +365,12 @@ Set which index to search. By default, Full Text Search will search in the built
 
 `SetSearcher(string searcher)`
 Set which searcher to use for searching. By default, Full Text Search will use the searcher from the selected index (default: the built in External Index).
+
+## Using Notifications
+Full Text Search uses Notifications (similar to the Umbraco) to allow you to hook into the workflow process for the package. Currently the CacheService published notifications when new text is saved (or while saving) to the cache. The notifications are handled just like in [Umbraco](https://docs.umbraco.com/umbraco-cms/reference/notifications).
+
+### CacheService Notifications
+|Notification|Members|Description|
+|-|-|-|
+|CacheSavingNotification|<ul><li>IEnumerable&#x3C;CacheItem> SavedEntities</li><li>EventMessages Messages</li><li>IDictionary&#x3C;string,object> State</li><li>bool Cancel</li></ul>|<p>Published when the ICacheService.AddToCache is called in the API.<br>SavedEntities: The collection of CacheItem objects being saved.</p>|
+|CacheSavedNotification|<ul><li>IEnumerable&#x3C;CacheItem> SavedEntities</li><li>EventMessages Messages</li><li>IDictionary&#x3C;string,object> State</li><li>bool Cancel</li></ul>|<p>Published when the ICacheService.AddToCache is called in the API and after data has been persisted.<br>SavedEntities: The collection of CacheItem objects saved.</p>|

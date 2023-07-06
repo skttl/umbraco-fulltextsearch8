@@ -62,6 +62,11 @@ public class CacheService : ICacheService
         {
             var fullHtml = await _pageRenderer.Render(publishedContent, culture.Value);
 
+            if (fullHtml != null && fullHtml.StartsWith("<!-- Error"))
+            {
+                _logger.LogWarning("FullTextSearch: Error updating nodeId: {nodeId} in culture: {culture} using templateId: {templateId}: {fullHtml}", publishedContent.Id, culture.Value.Culture, publishedContent.TemplateId, fullHtml);
+            }
+
             var fullText = _htmlService.GetTextFromHtml(fullHtml);
 
             _logger.LogDebug("Updating nodeId: {nodeId} in culture: {culture} using templateId: {templateId} with content: {fullText}", publishedContent.Id, culture.Value.Culture, publishedContent.TemplateId, fullText);

@@ -83,6 +83,39 @@ services.AddHttpClient(FullTextSearchConstants.HttpClientFactoryNamedClientName,
 });
 ```
 
+For example, if you are working locally and are getting this type of error: `System.Net.Http.HttpRequestException: The SSL connection could not be established, see inner exception.` You can add an appSettings.json value on your local environment:
+
+```json
+...
+ "SiteSettings": {
+        "CurrentEnvironment": "Local",
+        "IgnoreHttpSslErrors": true
+    }
+...
+```
+and update Startup.cs with the following:
+
+```csharp
+// Our.Umbraco.FullTextSearch HttpClient 
+services.AddHttpClient(FullTextSearchConstants.HttpClientFactoryNamedClientName, c =>
+{
+   //your custom config as needed
+})
+.ConfigurePrimaryHttpMessageHandler(_ =>
+{
+    var ftsHandler = new HttpClientHandler();
+    ftsHandler.ServerCertificateCustomValidationCallback +=
+        (sender, certificate, chain, errors) =>
+        {
+            if (bool.Parse(_config.GetSection("SiteSettings")["IgnoreHttpSslErrors"])) return true;
+            return errors == SslPolicyErrors.None;
+        };
+    ftsHandler.AllowAutoRedirect = false; // Important to keep this to avoid indexing pages where HTTP-status is not OK
+    return ftsHandler;
+});
+```
+
+
 ##### Controlling what content is indexed
 When rendering, FullTextSearch adds the value of `RenderingActiveKey` as the value of a Request header named `X-Umbraco-FullTextSearch`, so you can use that to send different content to the renderer. The default value is FullTextRenderingActive. You can also use the `IsRenderingActive` helper method, in your views, to determine whether or not FullTextSearch is rendering the page. You can use this to exclude parts of the views from the content being rendered/indexed.
 

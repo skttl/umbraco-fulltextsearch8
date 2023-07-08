@@ -97,6 +97,7 @@ and update Startup.cs with the following:
 
 ```csharp
 // Our.Umbraco.FullTextSearch HttpClient 
+var ignoreSSL = _config.GetSection("SiteSettings").GetSection("IgnoreHttpSslErrors").Value != null && bool.Parse(_config.GetSection("SiteSettings").GetSection("IgnoreHttpSslErrors").Value);
 services.AddHttpClient(FullTextSearchConstants.HttpClientFactoryNamedClientName, c =>
 {
    //your custom config as needed
@@ -104,12 +105,15 @@ services.AddHttpClient(FullTextSearchConstants.HttpClientFactoryNamedClientName,
 .ConfigurePrimaryHttpMessageHandler(_ =>
 {
     var ftsHandler = new HttpClientHandler();
-    ftsHandler.ServerCertificateCustomValidationCallback +=
-        (sender, certificate, chain, errors) =>
-        {
-            if (bool.Parse(_config.GetSection("SiteSettings")["IgnoreHttpSslErrors"])) return true;
-            return errors == SslPolicyErrors.None;
-        };
+	if (ignoreSSL)
+	{
+		ftsHandler.ServerCertificateCustomValidationCallback +=
+			(sender, certificate, chain, errors) =>
+			{
+				if (ignoreSSL) return true;
+				return errors == SslPolicyErrors.None;
+			};
+	}
     ftsHandler.AllowAutoRedirect = false; // Important to keep this to avoid indexing pages where HTTP-status is not OK
     return ftsHandler;
 });

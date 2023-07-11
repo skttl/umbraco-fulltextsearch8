@@ -37,6 +37,13 @@ namespace Our.Umbraco.FullTextSearch.Services
             _logger = logger;
             _umbracoHelper = umbracoHelper;
         }
+
+        /// <summary>
+        /// Perform the Search
+        /// </summary>
+        /// <param name="search">Search object containing customized search parameters, including the search terms</param>
+        /// <param name="currentPage">Page of search results to return (default is first page)</param>
+        /// <returns>IFullTextSearchResult object</returns>
         public IFullTextSearchResult Search(ISearch search, int currentPage = 1)
         {
             _search = search;

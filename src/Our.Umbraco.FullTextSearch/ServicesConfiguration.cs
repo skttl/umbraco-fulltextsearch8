@@ -10,6 +10,7 @@ using System;
 using System.Net.Http;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
+using Umbraco.Cms.Infrastructure.Search;
 using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch
@@ -34,10 +35,10 @@ namespace Our.Umbraco.FullTextSearch
 
             builder
                 .AddNotificationHandler<UmbracoApplicationStartingNotification, ExecuteMigrations>()
-                .AddNotificationAsyncHandler<ContentCacheRefresherNotification, UpdateCacheOnPublish>()
                 .AddNotificationHandler<ServerVariablesParsingNotification, AddFullTextSearchToServerVariables>()
-                .AddNotificationHandler<UmbracoApplicationStartingNotification, AddFullTextItemsToIndex>();
-
+                .AddNotificationHandler<UmbracoApplicationStartingNotification, AddFullTextItemsToIndex>()
+                .AddNotificationHandlerBefore<ContentCacheRefresherNotification,ContentIndexingNotificationHandler,UpdateCacheOnPublish>();
+            
             return builder;
         }
 
@@ -53,4 +54,5 @@ namespace Our.Umbraco.FullTextSearch
             return builder;
         }
     }
+    
 }

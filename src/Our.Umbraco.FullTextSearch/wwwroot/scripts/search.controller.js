@@ -67,6 +67,7 @@
                             options: vm.search.options,
                             submit: function (model) {
                                 vm.search.advancedSettings = model.advancedSettings;
+                                vm.search.advancedSettings.rootNodeIds = vm.search.advancedSettings.rootNodeIds.filter(id => !isNaN(id));
                                 editorService.close();
                             },
                             close: function () {

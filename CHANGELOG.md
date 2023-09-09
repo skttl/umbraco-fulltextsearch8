@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## UNRELEASED
+- #94 Changed datatype of text column in database
+- #89 Fixed bug in backoffice, when searching with advanced options
+- #98 Fixed issue with notification handlers
+- #90 Added warning logging  / 🙏 [hfloyd](https://github.com/hfloyd)
 - b760e1b8004893f85a44bcbaab932442230160a5 adds notifications to CacheService
 - #67 publishedPropertySuffix is not case invariant
 

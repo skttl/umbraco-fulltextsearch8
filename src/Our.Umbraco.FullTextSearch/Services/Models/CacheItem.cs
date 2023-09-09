@@ -1,9 +1,5 @@
 ﻿using NPoco;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 namespace Our.Umbraco.FullTextSearch.Services.Models
@@ -24,7 +20,7 @@ namespace Our.Umbraco.FullTextSearch.Services.Models
         public string Culture { get; set; }
 
         [Column("Text")]
-        [SpecialDbType(SpecialDbTypes.NTEXT)]
+        [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
         public string Text { get; set; }
 
         [Column("LastUpdated")]

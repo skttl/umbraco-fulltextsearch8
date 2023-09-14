@@ -151,7 +151,7 @@ public class CacheService : ICacheService
         using (var scope = _scopeProvider.CreateScope(autoComplete: true))
         {
             var sql = scope.SqlContext.Sql().Select("*").From<CacheItem>().Where<CacheItem>(x => x.NodeId == id && x.Culture == culture);
-            var cacheItem = await scope.Database.FirstOrDefaultAsync<CacheItem>(sql);
+            var cacheItem = await scope.Database.FirstOrDefaultAsync<CacheItem>(sql).ConfigureAwait(false);
             var update = true;
 
             if (cacheItem == null)
@@ -168,7 +168,7 @@ public class CacheService : ICacheService
             cacheItem.LastUpdated = DateTime.Now;
 
             var savingNotification = new CacheSavingNotification(cacheItem, eventMessages);
-            if (await scope.Notifications.PublishCancelableAsync(savingNotification))
+            if (await scope.Notifications.PublishCancelableAsync(savingNotification).ConfigureAwait(false))
             {
                 scope.Complete();
                 return OperationResult.Cancel(eventMessages);
@@ -176,11 +176,11 @@ public class CacheService : ICacheService
 
             if (update)
             {
-                await scope.Database.UpdateAsync(cacheItem);
+                await scope.Database.UpdateAsync(cacheItem).ConfigureAwait(false);
             }
             else
             {
-                await scope.Database.InsertAsync(cacheItem);
+                await scope.Database.InsertAsync(cacheItem).ConfigureAwait(false);
             }
             scope.Notifications.Publish(
                 new CacheSavedNotification(cacheItem, eventMessages).WithStateFrom(savingNotification));
@@ -198,7 +198,7 @@ public class CacheService : ICacheService
         using (var scope = _scopeProvider.CreateScope(autoComplete: true))
         {
             var sql = scope.SqlContext.Sql().Delete().From<CacheItem>().Where<CacheItem>(x => x.NodeId == id);
-            await scope.Database.ExecuteAsync(sql);
+            await scope.Database.ExecuteAsync(sql).ConfigureAwait(false);
         }
     }
 
@@ -211,7 +211,7 @@ public class CacheService : ICacheService
         using (var scope = _scopeProvider.CreateScope(autoComplete: true))
         {
             var sql = scope.SqlContext.Sql().Delete().From<CacheItem>().Where<CacheItem>(x => x.NodeId == id && !cultures.Contains(x.Culture));
-            await scope.Database.ExecuteAsync(sql);
+            await scope.Database.ExecuteAsync(sql).ConfigureAwait(false);
         }
     }
 
@@ -225,7 +225,7 @@ public class CacheService : ICacheService
         using (var scope = _scopeProvider.CreateScope(autoComplete: true))
         {
             var sql = scope.SqlContext.Sql().Select("*").From<CacheItem>().Where<CacheItem>(x => x.NodeId == id);
-            return await scope.Database.FetchAsync<CacheItem>(sql);
+            return await scope.Database.FetchAsync<CacheItem>(sql).ConfigureAwait(false);
         }
     }
 }

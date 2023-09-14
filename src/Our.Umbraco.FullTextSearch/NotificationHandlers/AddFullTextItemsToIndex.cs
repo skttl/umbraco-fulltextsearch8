@@ -6,6 +6,7 @@ using Our.Umbraco.FullTextSearch.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Logging;
@@ -38,7 +39,6 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
 
         public void Handle(UmbracoApplicationStartingNotification notification)
         {
-
             if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
             {
                 _logger.LogError(new InvalidOperationException($"{Constants.UmbracoIndexes.ExternalIndexName} not found"), $"{Constants.UmbracoIndexes.ExternalIndexName} not found");
@@ -51,11 +51,16 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
                 _logger.LogError(new InvalidOperationException($"Could not cast {Constants.UmbracoIndexes.ExternalIndexName} to BaseIndexProvider"), $"Could not cast {Constants.UmbracoIndexes.ExternalIndexName} to BaseIndexProvider");
                 return;
             }
+
+            _logger.LogDebug("Attaching TransformingIndexValues-handler for Full Text Search");
+
             indexProvider.TransformingIndexValues += IndexProviderTransformingIndexValues;
         }
 
-        private async void IndexProviderTransformingIndexValues(object sender, IndexingItemEventArgs e)
+        private void IndexProviderTransformingIndexValues(object sender, IndexingItemEventArgs e)
         {
+            _logger.LogDebug("Handling TransformingIndexValues for {NodeId}", e.ValueSet.Id);
+
             if (e.Index.Name != Constants.UmbracoIndexes.ExternalIndexName) return;
             if (e.ValueSet.Category != IndexTypes.Content) return;
             if (!_options.Enabled)
@@ -82,6 +87,7 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
                     var value = e.ValueSet.GetValue(disallowedPropertyAlias);
                     if (value != null && value.ToString() == "1")
                     {
+                        _logger.LogDebug("Node {nodeId} was excluded since to disallowed property alias {disallowedPropertyAlias} was equal to 1.", e.ValueSet.Id, disallowedPropertyAlias);
                         return;
                     }
                 }
@@ -106,23 +112,39 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
             }
 
             // convert id to int, so we can get it from the content cache
-            if (!int.TryParse(e.ValueSet.Id, out int id)) return;
+            if (!int.TryParse(e.ValueSet.Id, out int id))
+            {
+                _logger.LogWarning("Exit indexing since node id was {NodeId}",e.ValueSet.Id);
+
+                return;
+            }
+
 
             using (_profilingLogger.DebugDuration<AddFullTextItemsToIndex>("Attempt to fulltext index for node " + id, "Completed fulltext index for node " + id))
             {
-                var cacheItems = await _cacheService.GetFromCache(id);
-                if (cacheItems == null || !cacheItems.Any()) return;
+                
+                var cacheItems = _cacheService.GetFromCache(id).ConfigureAwait(false).GetAwaiter().GetResult();
+                if (cacheItems == null || !cacheItems.Any())
+                {
+                    _logger.LogDebug("Exit TransformIndexValues since no cached item for node {NodeId} was found.", id);
+                    return;
+                }
 
                 foreach (var item in cacheItems)
                 {
                     var fieldName = _options.FullTextContentField;
                     if (item.Culture != "") fieldName += "_" + item.Culture;
 
+                    _logger.LogDebug("Setting field {FieldName} to {FieldValue}",fieldName, item.Text);
+
                     updatedValues[fieldName] = new List<object> { item.Text };
+                    
                 }
             }
 
             e.SetValues(updatedValues);
+
+            _logger.LogDebug("Transformed {UpdatedPropertiesCount} index values for node {NodeId}", updatedValues.Count, e.ValueSet.Id);
         }
     }
 }

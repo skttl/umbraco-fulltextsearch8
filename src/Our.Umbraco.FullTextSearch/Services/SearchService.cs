@@ -233,8 +233,8 @@ namespace Our.Umbraco.FullTextSearch.Services
                 foreach (var property in _searchProperties)
                 {
                     termQuery.Append(simplify
-                                         ? QuerySingleItemSimple(term, property)
-                                         : QuerySingleItem(term, property, boostAll));
+                                         ? QuerySingleItemSimple(term.Trim(), property)
+                                         : QuerySingleItem(term.Trim(), property, boostAll));
                 }
                 if (termQuery.Length > 0)
                     queryBuilder.Add(termQuery);

@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## UNRELEASED
+## 4.0.0-alpha003
+- #103 trims search terms before searching, to prevent exceptions with wildcard queries
+- #101 fixes for async event handlers / 🙏 [enkelmedia](https://github.com/enkelmedia)
+
+## 4.0.0-alpha002
 - #94 Changed datatype of text column in database
 - #89 Fixed bug in backoffice, when searching with advanced options
 - #98 Fixed issue with notification handlers

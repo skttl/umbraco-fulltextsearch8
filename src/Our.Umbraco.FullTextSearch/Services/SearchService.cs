@@ -141,9 +141,17 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
 
 
-            var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture.ToLower()}";
-            var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
-            query.Append($" AND (__IndexType:content AND {publishedQuery})");
+            if (_search.PublishedOnly)
+            {
+                var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture.ToLower()}";
+                var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
+                query.Append($" AND {publishedQuery}");
+            }
+
+            if (_search.ContentOnly)
+            {
+                query.Append($" AND __IndexType:content");
+            }
 
             var disallowedContentTypes = _options.DisallowedContentTypeAliases;
             if (disallowedContentTypes.Any()) query.Append($" AND -({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
@@ -155,7 +163,15 @@ namespace Our.Umbraco.FullTextSearch.Services
                 query.Append($" AND -({disallowedPropertyAliasGroup})");
             }
 
-            query.Append($" AND -(templateID:0)");
+            if (_search.RequireTemplate)
+            {
+                query.Append($" AND -(templateID:0)");
+            }
+
+            if (!string.IsNullOrWhiteSpace(_search.CustomQuery))
+            {
+                query.Append($" AND ({_search.CustomQuery})");
+            }
 
             ISearcher searcher = null;
 

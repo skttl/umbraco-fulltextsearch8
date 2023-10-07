@@ -397,6 +397,21 @@ Adds Content Type aliases to the list of allowed Content Types, in order to limi
 `RemoveAllowedContentTypes(string[] aliases)` or `RemoveAllowedContentType(string alias)`
 Removes Content Type aliases from the list of allowed Content Types.
 
+`SetContentOnly(bool contentOnly)`
+By default, Full Text Search will only search for content (`__IndexType:content`). You can disable this behavior with this method.
+
+`SetPublishedOnly(bool publishedOnly)`
+By default, Full Text Search will only search for published content (`__Published:y`). You can disable this behavior with this method.
+
+`SetRequireTemplate(bool requireTemplate)`
+By default, Full Text Search will only search for content with a template (`NOT templateId:0`). You can disable this behavior with this method.
+
+`SearchEverything()`
+A combination of the above methods. This will disable searching for published content with a template only. This is useful if you want to use Full Text Search to search for other things like media or custom indexes.
+
+`SetCustomQuery(string customQuery)`
+This adds a custom query as a requirement for a search. Ie. if you need to filter out certain results based on other fields, like `myCustomField:"needs this content"` etc. The custom query is added to the end of the complete query, with an AND clause before.
+
 `SetIndex(string index)`
 Set which index to search. By default, Full Text Search will search in the built in External Index, but if you have content in another index you want to search - you can configure this here. Note, this only controls which index you are searching. Indexing is still only happening in the external index.
 

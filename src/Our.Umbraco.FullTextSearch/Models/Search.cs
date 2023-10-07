@@ -23,6 +23,9 @@ namespace Our.Umbraco.FullTextSearch.Models
             Fuzzyness = 0.8;
             AddWildcard = false;
             AllowedContentTypes = new string[] { };
+            ContentOnly = true;
+            PublishedOnly = true;
+            RequireTemplate = true;
         }
 
         public string Culture { get; set; }
@@ -39,6 +42,10 @@ namespace Our.Umbraco.FullTextSearch.Models
         public bool AddWildcard { get; set; }
         public bool HighlightSearchTerms { get; set; }
         public string[] AllowedContentTypes { get; set; }
+        public bool ContentOnly { get; set; }
+        public bool PublishedOnly { get; set; }
+        public bool RequireTemplate { get; set; }
+        public string CustomQuery { get; set; }
         public string Index { get; set; }
         public string Searcher { get; set; }
 
@@ -283,6 +290,38 @@ namespace Our.Umbraco.FullTextSearch.Models
         public Search SetSearcher(string searcher)
         {
             Searcher = searcher;
+            return this;
+        }
+
+        public Search SetContentOnly(bool contentOnly)
+        {
+            ContentOnly = contentOnly;
+            return this;
+        }
+
+        public Search SetPublishedOnly(bool publishedOnly)
+        {
+            PublishedOnly = publishedOnly;
+            return this;
+        }
+
+        public Search SetRequireTemplate(bool requireTemplate)
+        {
+            RequireTemplate = requireTemplate;
+            return this;
+        }
+
+        public Search SearchEverything()
+        {
+            ContentOnly = false;
+            PublishedOnly = false;
+            RequireTemplate = false;
+            return this;
+        }
+
+        public Search SetCustomQuery(string customQuery)
+        {
+            CustomQuery = customQuery;
             return this;
         }
     }

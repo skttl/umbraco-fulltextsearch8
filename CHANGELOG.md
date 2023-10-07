@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 4.0.0-alpha004
+- 1e823d4 fixes sqlite compatibility in migration to nvarchar column
+- 5c7c0b4 adds option to disable limiting search results to published content with a template, and add custom queries
+
 ## 4.0.0-alpha003
 - #103 trims search terms before searching, to prevent exceptions with wildcard queries
 - #101 fixes for async event handlers / 🙏 [enkelmedia](https://github.com/enkelmedia)
@@ -14,15 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - #89 Fixed bug in backoffice, when searching with advanced options
 - #98 Fixed issue with notification handlers
 - #90 Added warning logging  / 🙏 [hfloyd](https://github.com/hfloyd)
-- b760e1b8004893f85a44bcbaab932442230160a5 adds notifications to CacheService
+- b760e1b adds notifications to CacheService
 - #67 publishedPropertySuffix is not case invariant
 
 ## 4.0.0-alpha001
 - **BREAKING** #86 Changed the default rendering to use HttpClient, and abstracted the page rendering, so you can switch based on preferences / 🙏 [enkelmedia](https://github.com/enkelmedia)
 - Asynced all the things, or at least a big chunk / 🙏 [enkelmedia](https://github.com/enkelmedia)
 - Added tests / 🙏 [enkelmedia](https://github.com/enkelmedia)
-- **BREAKING** 6d6ab680d059d516c4b7a43a963eaa4df89655fe Terminology around indexing / rendering. The `IndexingActiveKey` is now `RenderingActiveKey`, helper method `IsIndexingActive` is now `IsRenderingActive`. The old things are obsoleted, so should still work. Planning to remove them if we ever get to 5.0.0
-- **BREAKING** 6d6ab680d059d516c4b7a43a963eaa4df89655fe Detecting rendering/indexing is now based on a request header, instead of a key in HttpContext.Items.
+- **BREAKING** 6d6ab68 Terminology around indexing / rendering. The `IndexingActiveKey` is now `RenderingActiveKey`, helper method `IsIndexingActive` is now `IsRenderingActive`. The old things are obsoleted, so should still work. Planning to remove them if we ever get to 5.0.0
+- **BREAKING** 6d6ab68 Detecting rendering/indexing is now based on a request header, instead of a key in HttpContext.Items.
 - #82 Adds configurable markup for highlighting of search terms in result summaries.  / 🙏 [enkelmedia](https://github.com/enkelmedia)
 
 ## 3.1.0

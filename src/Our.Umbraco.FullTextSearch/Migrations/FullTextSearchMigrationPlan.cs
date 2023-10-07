@@ -11,7 +11,8 @@ namespace Our.Umbraco.FullTextSearch.Migrations
                 .To<ZeroOneZero.CreateCacheTable>("CreateCacheTable")
                 .To<ZeroOneZero.CreateCacheTaskTable>("CreateCacheTaskTable")
                 .To<ZeroThreeZero.RemoveCacheTaskTable>("RemoveCacheTaskTable")
-                .To<FourZeroZero.ChangeTextColumnToNvarchar>("ChangeTextColumnToNvarchar");
+                .To<FourZeroZero.ChangeTextColumnToNvarchar>("ChangeTextColumnToNvarchar")
+                .To<FourZeroZero.ReindexEverything>("ReindexEverything");
         }
     }
 }

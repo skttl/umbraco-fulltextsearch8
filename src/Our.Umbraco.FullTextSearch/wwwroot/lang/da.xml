@@ -51,7 +51,7 @@
     <key alias="culture">Sprog</key>
     <key alias="cultureDescription">Vælg hvilket sprog der skal søges på. Du bør altid vælge dette, men søgningen virker muligvis uden sprog, hvis dit site ikke er sprogvarieret.</key>
     <key alias="enableWildcards">Aktiver wildcards</key>
-    <key alias="enableWildcardsDescription">Dette aktivere wildcards i søgningen, wildcard tegnet tilføjes automatisk til hver søgeterm.</key>
+    <key alias="enableWildcardsDescription">Dette aktiverer wildcards i søgningen, wildcard tegnet tilføjes automatisk til hver søgeterm.</key>
     <key alias="fuzzyness">Fuzzyness</key>
     <key alias="fuzzynessDescription">Fuzzyness bruges til at matche en søgeterm med lignende termer. Standardindstillingen er 0.8. Hvis wildcards er aktiveret, vil fuzzyness ikke blive brugt.</key>
     <key alias="allowedContentTypes">Tilladte dokumenttyper</key>

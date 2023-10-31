@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="cy_gb" intName="Welsh (UK)" localName="Cymraeg (UK)" lcid="1106" culture="cy-GB">
+	<creator>
+		<name>Owain Jones</name>
+		<link>https://owainjones.dev/</link>
+	</creator>
+	<area alias="fullTextSearch">
+		<key alias="indexStatus">Statws Mynegai</key>
+		<key alias="indexableNodes">Nodau Mynegeiddadwy</key>
+		<key alias="indexableNodesDescription">Cyfanswm y nodau y gellir eu mynegeio, yn ôl y ffurfweddiad Full Text Search presennol</key>
+		<key alias="allIndexableNodesAreIndexed">Mae gan bob nod a ellir ei mynegeio gynnwys testun llawn yn yr mynegai</key>
+		<key alias="indexedNodes">Nodau Mynegeiedig</key>
+		<key alias="indexedNodesDescription">Cyfanswm y nodau mynegeiedig y gellir eu chwilio gyda Full Text Search</key>
+		<key alias="missingNodes">Nodau ar Goll</key>
+		<key alias="missingNodesDescription">Cyfanswm y nodau mynegeiedig sydd ar goll, yn ôl y ffurfweddiad Full Text Search presennol</key>
+		<key alias="couldntGetMissingNodes">Methwyd â chael nodau coll</key>
+		<key alias="nodesAreMissingInIndex">Mae {0} nod(au) yn methu eu cynnwys testun llawn yn yr mynegai</key>
+		<key alias="incorrectIndexedNodes">Nodau sydd wedi'u Mynegeio yn Anghywir</key>
+		<key alias="incorrectIndexedNodesDescription">Cyfanswm y nodau mynegeiedig na ddylai fod wedi'u mynegeio yn ôl y ffurfweddiad Full Text Search presennol</key>
+		<key alias="couldntGetIncorrectIndexedNodes">Methu â chael nodau wedi'u mynegeio' y'n anghywir</key>
+		<key alias="nodesAreIncorrectlyIndexed">Mae {0} nod(au) wedi'u mynegeio'n anghywir gyda chynnwys testun llawn</key>
+		<key alias="reindexNodes">Ail-fynegi Nodau</key>
+		<key alias="reindexedNodes">Mae {0} nod(au) wedi'u hail-fynegeio</key>
+		<key alias="reindexedNodes">Ailfynegiedig {0} nod/nodau</key>
+		<key alias="reindexing">Ail-fynegio...</key>
+		<key alias="reindex">Ail-fynegi</key>
+		<key alias="reindexDescription">Dewiswch a ydych am ail-fynegi pob nod ai peidio</key>
+		<key alias="reindexWithDescendants">Ail-fynegi gyda disgynyddion</key>
+		<key alias="includeDescendants">Cynnwys disgynyddion</key>
+		<key alias="allNodes">Pob nod</key>
+		<key alias="selectNodes">Dewis nodau</key>
+		<key alias="selectNodesDescription">Dewiswch y nodau i'w hail-fynegi</key>
+		<key alias="selectedNodes">Nodau a ddewiswyd</key>
+		<key alias="description">Disgrifiad</key>
+		<key alias="developedBy">Datblygwyd gan</key>
+		<key alias="sponsoredBy">Noddwyd gan</key>
+		<key alias="status">Statws</key>
+		<key alias="search">Chwilio</key>
+		<key alias="enterKeywordsHere">Rhowch eiriau allweddol yma</key>
+		<key alias="advancedSettings">Gosodiadau Uwch</key>
+		<key alias="inspect">Archwilio</key>
+		<key alias="searchType">Math o chwiliad</key>
+		<key alias="searchTypeDescription">Y math o chwiliad i'w wneud.</key>
+		<key alias="titleProperties">Priodweddau teitl</key>
+		<key alias="titlePropertiesDescription">Ychwanegwch enwau maes i'w defnyddio ar gyfer priodweddau teitl. Sylwer, fod hyn yn diystyru'r gosodiad ffurfweddiad, felly bydd angen ychwanegu pob maes rydych am eu defnyddio ar gyfer teitlau yma.</key>
+		<key alias="titleBoost">Hyby teitl</key>
+		<key alias="titleBoostDescription">Gosodwch y gwerth hyby ar gyfer y priodweddau teitl, i wneud teitlau'n bwysicach na thestun y corff wrth chwilio.</key>
+		<key alias="bodyProperties">Priodweddau'r corff</key>
+		<key alias="bodyPropertiesDescription">Ychwanegwch enwau maes i'w defnyddio ar gyfer priodweddau'r corff. Sylwer, fod hyn yn diystyru'r gosodiad ffurfweddiad, felly bydd angen ychwanegu pob maes rydych am eu defnyddio ar gyfer testun y corff yma.</key>
+		<key alias="summaryProperties">Priodoleddau Crynodeb</key>
+		<key alias="summaryPropertiesDescription">Ychwanegwch enwau maes i'w defnyddio ar gyfer priodweddau crynodeb. Sylwer, os nad ydych yn nodi unrhyw briodweddau crynodeb, bydd y priodweddau corff yn cael eu defnyddio yn lle.</key>
+		<key alias="summaryLength">Hyd y Crynodeb</key>
+		<key alias="summaryLengthDescription">Gosodwch hyd y crynodeb yn y canlyniadau. Y diofyn yw 300 o gymeriadau.</key>
+		<key alias="rootNodes">Nodau gwraidd</key>
+		<key alias="rootNodesDescription">Gyda'r gosodiad hwn, gallwch gyfyngu'r canlyniadau chwilio i fod yn ddisgynyddion y nodau a ddewiswyd.</key>
+		<key alias="culture">Diwylliant</key>
+		<key alias="cultureDescription">Defnyddir hwn i ddiffinio pa ddiwylliant i chwilio ynddo. Mae'n debyg y dylech osod hwn bob amser, ond gallai weithio hebddo, mewn safleoedd un iaith.</key>
+		<key alias="enableWildcards">Galluogi cardiau gwyllt</key>
+		<key alias="enableWildcardsDescription">Mae hyn yn galluogi neu'n analluogi defnydd o gardiau gwyllt yn y termau chwilio. Mae nodau cerdyn gwyllt yn cael eu hychwanegu'n awtomatig at bob un o'r termau.</key>
+		<key alias="fuzzyness">Aneglurder</key>
+		<key alias="fuzzynessDescription">Defnyddir aneglurder i gyfateb eich term chwilio gyda geiriau tebyg. Mae'r dull hwn yn gosod y paramedr aneglurder y chwiliad. Y rhagosodiad yw 0.8. Os yw cardiau gwyllt yn cael eu galluogi, ni ddefnyddir aneglurder.</key>
+		<key alias="allowedContentTypes">Mathau o Gynnwys a ganiateir</key>
+		<key alias="allowedContentTypesDescription">Cyfyngu'r chwiliad i nodau efo enwau arall fathau o gynnwys penodedig.</key>
+		<key alias="fullTextSearchIsDisabled">Mae FullTextSearch wedi'i analluogi</key>
+		<key alias="fullTextSearchIsEnabled">Mae FullTextSearch wedi'i alluogi</key>
+		<key alias="externalIndexNotFound">Heb ddod o hyd i ExternalIndex</key>
+		<key alias="enabled">Wedi'i alluogi</key>
+		<key alias="defaultTitleField">Maes Teitl diofyn</key>
+		<key alias="indexingActiveKey">Allwedd "Indexing Active"</key>
+		<key alias="disallowedContentTypeAliases">Enwau arall y mathau o gynnwys na caniateir</key>
+		<key alias="disallowedPropertyAliases">Enwau arall y Eiddo na caniateir</key>
+		<key alias="xPathsToRemove">Llwybrau XPath i'w tynnu o'r cynnwys</key>
+		<key alias="fullTextContentField">Maes Cynnwys Testun Llawn</key>
+		<key alias="fullTextPathField">Maes Llwybr Testun Llawn</key>
+	</area>
+</language>

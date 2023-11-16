@@ -41,6 +41,10 @@ public class HttpPageRenderer : IPageRenderer
 
             var httpClient = _httpClientFactory.CreateClient(FullTextSearchConstants.HttpClientFactoryNamedClientName);
             httpClient.DefaultRequestHeaders.Add(FullTextSearchConstants.HttpClientRequestHeaderName, _options.RenderingActiveKey);
+
+            if (_logger.IsEnabled(LogLevel.Debug))
+                _logger.LogDebug("FullTextSearch: Processing node {NodeId}, fetching {Url}", publishedContent.Id, publishedPageUrl);
+
             var result = await httpClient.GetAsync(publishedPageUrl);
 
             string fullHtml = string.Empty;
@@ -50,13 +54,18 @@ public class HttpPageRenderer : IPageRenderer
             {
                 fullHtml = await result.Content.ReadAsStringAsync();
             }
+            else if(_logger.IsEnabled(LogLevel.Debug))
+            {
+                string pageContent = await result.Content.ReadAsStringAsync();
+                _logger.LogDebug("FullTextSearch: Status {HttpStatus} when rendering node {NodeId}. Content: {PageContent}", result.StatusCode, publishedContent.Id, pageContent);
+            }
 
             return fullHtml;
 
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error in http-request for full text indexing of page {nodeId}, tried to fetch {url}", publishedContent.Id, publishedPageUrl);
+            _logger.LogError(e, "Error in http-request for full text indexing of page {NodeId}, tried to fetch {Url}", publishedContent.Id, publishedPageUrl);
         }
 
         return string.Empty;

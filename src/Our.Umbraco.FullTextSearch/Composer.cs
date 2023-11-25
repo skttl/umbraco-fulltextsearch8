@@ -7,7 +7,6 @@ namespace Our.Umbraco.FullTextSearch
     {
         public void Compose(IUmbracoBuilder builder)
         {
-            builder.ManifestFilters().Append<FullTextSearchManifestFilter>();
             builder.AddFullTextSearch();
         }
     }

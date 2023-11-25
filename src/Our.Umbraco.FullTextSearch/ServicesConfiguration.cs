@@ -19,6 +19,7 @@ namespace Our.Umbraco.FullTextSearch
     {
         public static IUmbracoBuilder AddFullTextSearch(this IUmbracoBuilder builder)
         {
+            builder.ManifestFilters().Append<FullTextSearchManifestFilter>();
             builder.Services.AddUnique<ICacheService, CacheService>();
             builder.Services.AddUnique<IHtmlService, HtmlService>();
             builder.Services.AddUnique<IStatusService, StatusService>();

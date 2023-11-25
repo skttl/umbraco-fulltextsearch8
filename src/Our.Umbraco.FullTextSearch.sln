@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.Testsite13", "Testsites\Our.Umbraco.FullTextSearch.Testsite13\Our.Umbraco.FullTextSearch.Testsite13.csproj", "{9D899317-F4E7-4966-A03B-85FFA9B80E3C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.SchemaGenerator", "Our.Umbraco.FullTextSearch.SchemaGenerator\Our.Umbraco.FullTextSearch.SchemaGenerator.csproj", "{560727BD-EFD0-4D19-ADB7-706C504E6E86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{9D899317-F4E7-4966-A03B-85FFA9B80E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D899317-F4E7-4966-A03B-85FFA9B80E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D899317-F4E7-4966-A03B-85FFA9B80E3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{560727BD-EFD0-4D19-ADB7-706C504E6E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{560727BD-EFD0-4D19-ADB7-706C504E6E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{560727BD-EFD0-4D19-ADB7-706C504E6E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{560727BD-EFD0-4D19-ADB7-706C504E6E86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

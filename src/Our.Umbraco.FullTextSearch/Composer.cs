@@ -1,4 +1,5 @@
-﻿using Umbraco.Cms.Core.Composing;
+﻿using System.Linq;
+using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace Our.Umbraco.FullTextSearch

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 4.0.0-beta001
+- 4c00c6f adds appschema, and generator for it
+- **BREAKING** 1ef25d9 automatically reads options from configuration (appsettings.json) when starting
+- #105 adds french language to the backoffice UI / 🙏 [mikecp](https://github.com/mikecp)
+- #107 adds welsh language to the backoffice UI / 🙏 [OwainJ](https://github.com/OwainJ)
+
 ## 4.0.0-alpha004
 - 1e823d4 fixes sqlite compatibility in migration to nvarchar column
 - 5c7c0b4 adds option to disable limiting search results to published content with a template, and add custom queries

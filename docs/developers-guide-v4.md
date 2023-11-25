@@ -5,10 +5,30 @@ The rendered content of nodes is cached in a seperate database table, so renderi
 
 ## Installation
 Install using the nuget package.
-This package requires Umbraco 10.0 as a minimum version.
+This package requires Umbraco 10.0 as a minimum version, and is tested against 10.x, 11.x, 12.x and 13.x.
 
 ## Configuration
-FullTextSearch is configured using configuration in your Startup.cs file. You can use the default configuration without doing anything, but if you want to do your own configuration, you can add it to your ConfigureServices method in Startup.cs like this:
+You can configure FullTextSearch in your appsettings.json, like
+```json
+{
+  "Umbraco": {
+    "FullTextSearch": {
+      "DefaultTitleField": "searchResultTitle",
+      "DisallowedContentTypeAliases": [ "verySecretContent" ],
+      "DisallowedPropertyAliases": [ "hideInSearch" ],
+      "Enabled": true,
+      "FullTextPathField": "MyCustomPathField",
+      "FullTextContentField": "MyCustomContentField",
+      "HighlightPattern": "<span class=\"bold\">{0}</span>",
+      "RenderingActiveKey": "HiEverybody!",
+      "XPathsToRemove": [ "//script" ]
+    },
+  }
+}
+
+```
+
+The package comes with a schema for your appsettings, to enable Intellisense in the IDE of your choice. You can also configure in your startup like this:
 
 ```cs
 public void ConfigureServices(IServiceCollection services)
@@ -16,16 +36,25 @@ public void ConfigureServices(IServiceCollection services)
     services.AddUmbraco(_env, _config)
         .AddBackOffice()
         .AddWebsite()
+        .AddDeliveryApi()
+        .AddFullTextSearch(options =>
+        {
+            options.DefaultTitleField = "title";
+            options.DisallowedContentTypeAliases = new List<string> { "verySecretContent" };
+            options.DisallowedPropertyAliases = new List<string> { "hideInSearch" };
+            options.Enabled = true;
+            options.FullTextPathField = "MyCustomPathField";
+            options.FullTextContentField = "MyCustomContentField";
+            options.HighlightPattern = "<span class=\"bold\">{0}</span>";
+            options.RenderingActiveKey = "HiEverybody!";
+            options.XPathsToRemove = new List<string>() { "//script" };
+        })
         .AddComposers()
         .Build();
-
-    // using Our.Umbraco.FullTextSearch.Options
-    services.Configure<FullTextSearchOptions>(o =>
-    {
-        o.Enabled = false; // set your own config here.
-    });
 }
 ```
+
+Note, you don't need to add `.AddFullTextSearch(` in your startup, unless you want to configure it from there. If not added - a composer will take care of adding it for you, using the configuration from appsettings.json - or the default config.
 
 FullTextSearch config comes with a [default config, you can see it here](/src/Our.Umbraco.FullTextSearch/Options/FullTextSearchOptions.cs)
 

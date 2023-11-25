@@ -426,3 +426,18 @@ Full Text Search uses Notifications (similar to the Umbraco) to allow you to hoo
 |-|-|-|
 |CacheSavingNotification|<ul><li>IEnumerable&#x3C;CacheItem> SavedEntities</li><li>EventMessages Messages</li><li>IDictionary&#x3C;string,object> State</li><li>bool Cancel</li></ul>|<p>Published when the ICacheService.AddToCache is called in the API.<br>SavedEntities: The collection of CacheItem objects being saved.</p>|
 |CacheSavedNotification|<ul><li>IEnumerable&#x3C;CacheItem> SavedEntities</li><li>EventMessages Messages</li><li>IDictionary&#x3C;string,object> State</li><li>bool Cancel</li></ul>|<p>Published when the ICacheService.AddToCache is called in the API and after data has been persisted.<br>SavedEntities: The collection of CacheItem objects saved.</p>|
+
+## Debugging
+For easier debugging, you can override the default log level for the package in `appsettings.json` like this:
+
+```json
+"Serilog": {
+  "MinimumLevel": {
+    "Default": "Information",
+    "Override": {
+      "Our.Umbraco.FullTextSearch": "Debug",
+      ...
+    }
+  }
+}
+```

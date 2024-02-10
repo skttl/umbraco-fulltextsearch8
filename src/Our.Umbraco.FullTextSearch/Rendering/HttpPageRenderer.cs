@@ -34,6 +34,12 @@ public class HttpPageRenderer : IPageRenderer
     {
         var publishedPageUrl = publishedContent.Url(mode: UrlMode.Absolute);
 
+        if (!Uri.TryCreate(publishedPageUrl, UriKind.Absolute, out var url))
+        {
+            _logger.LogInformation("Unable to render page {NodeId}, url returned is invalid ({Url})", publishedContent.Id, publishedPageUrl);
+            return string.Empty;
+        }
+
         try
         {
             // Using a named client to allow for configuration of default headers, cookies and more during service registration

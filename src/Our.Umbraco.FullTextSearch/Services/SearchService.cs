@@ -85,45 +85,48 @@ namespace Our.Umbraco.FullTextSearch.Services
         {
             var query = new StringBuilder();
 
-            query.Append("(");
-
-            switch (_search.SearchType)
+            if (_search.SearchTerm.IsNullOrWhiteSpace() == false)
             {
-                case SearchType.MultiRelevance:
-                case SearchType.MultiAnd:
+                query.Append("(");
 
-                    // We formulate the query differently depending on the input.
-                    if (_search.SearchTerm.Contains('"'))
-                    {
-                        // If the user has entered double quotes we don't bother
-                        // searching for the full string
-                        query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
-                    }
-                    else if (!_search.SearchTerm.Contains('"') && !_search.SearchTerm.Contains(' '))
-                    {
-                        // if there's no spaces or quotes we don't need to get the quoted term and boost it
-                        query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
-                    }
-                    else
-                    {
-                        // otherwise we search first for the entire query in quotes,
-                        // then for each term in the query OR'd together.
-                        query.Append($"({QueryAllPropertiesOr(_search.SearchTermQuoted, 2)} OR {QueryAllPropertiesOr(_search.SearchTermSplit, 1)})");
-                    }
+                switch (_search.SearchType)
+                {
+                    case SearchType.MultiRelevance:
+                    case SearchType.MultiAnd:
 
-                    break;
+                        // We formulate the query differently depending on the input.
+                        if (_search.SearchTerm.Contains('"'))
+                        {
+                            // If the user has entered double quotes we don't bother
+                            // searching for the full string
+                            query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
+                        }
+                        else if (!_search.SearchTerm.Contains('"') && !_search.SearchTerm.Contains(' '))
+                        {
+                            // if there's no spaces or quotes we don't need to get the quoted term and boost it
+                            query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
+                        }
+                        else
+                        {
+                            // otherwise we search first for the entire query in quotes,
+                            // then for each term in the query OR'd together.
+                            query.Append($"({QueryAllPropertiesOr(_search.SearchTermQuoted, 2)} OR {QueryAllPropertiesOr(_search.SearchTermSplit, 1)})");
+                        }
 
-                case SearchType.SimpleOr:
+                        break;
 
-                    query.Append(QueryAllProperties(_search.SearchTermSplit, 1.0, "OR", true));
-                    break;
+                    case SearchType.SimpleOr:
 
-                case SearchType.AsEntered:
+                        query.Append(QueryAllProperties(_search.SearchTermSplit, 1.0, "OR", true));
+                        break;
 
-                    query.Append(QueryAllPropertiesAnd(_search.SearchTermSplit, 1.0));
-                    break;
+                    case SearchType.AsEntered:
+
+                        query.Append(QueryAllPropertiesAnd(_search.SearchTermSplit, 1.0));
+                        break;
+                }
+                query.Append(")");
             }
-            query.Append(")");
 
             if (_search.RootNodeIds.Any())
             {

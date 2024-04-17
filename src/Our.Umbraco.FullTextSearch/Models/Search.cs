@@ -1,4 +1,5 @@
-﻿using Lucene.Net.QueryParsers.Classic;
+﻿using Examine.Search;
+using Lucene.Net.QueryParsers.Classic;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,9 @@ namespace Our.Umbraco.FullTextSearch.Models
         public ICollection<string> SearchTermQuoted => new List<string> { '"' + QueryParser.Escape(SearchTerm) + '"' };
 
         public ICollection<string> SearchTermSplit => new List<string> { QueryParser.Escape(SearchTerm) };
+
+        public SortableField[] OrderByFields { get; set; }
+        public OrderDirection OrderDirection { get; set; } = OrderDirection.Descending;
 
         public Search SetSearchType(SearchType searchType)
         {
@@ -322,6 +326,13 @@ namespace Our.Umbraco.FullTextSearch.Models
         public Search SetCustomQuery(string customQuery)
         {
             CustomQuery = customQuery;
+            return this;
+        }
+
+        public Search OrderBy(SortableField[] orderBy, OrderDirection direction = OrderDirection.Ascending)
+        {
+            OrderByFields = orderBy;
+            OrderDirection = direction;
             return this;
         }
     }

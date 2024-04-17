@@ -1,4 +1,5 @@
-﻿using Our.Umbraco.FullTextSearch.Models;
+﻿using Examine.Search;
+using Our.Umbraco.FullTextSearch.Models;
 using System.Collections.Generic;
 
 namespace Our.Umbraco.FullTextSearch.Interfaces
@@ -27,6 +28,8 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         string CustomQuery { get; set; }
         string Searcher { get; set; }
         string Index { get; set; }
+        SortableField[] OrderByFields { get; set; }
+        OrderDirection OrderDirection { get; set; }
 
         Search SetIndex(string index);
         Search SetSearcher(string searcher);

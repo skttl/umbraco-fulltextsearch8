@@ -189,7 +189,25 @@ namespace Our.Umbraco.FullTextSearch.Services
             if (searcher != null)
             {
                 _logger.LogDebug("Trying to search for {query}", query.ToString());
-                return searcher.CreateQuery().NativeQuery(query.ToString()).Execute(new Examine.Search.QueryOptions(_search.PageLength * (_currentPage - 1), _search.PageLength));
+
+                var searchQuery = searcher.CreateQuery().NativeQuery(query.ToString());
+                var queryOptions = new Examine.Search.QueryOptions(_search.PageLength * (_currentPage - 1), _search.PageLength);
+
+                if (_search.OrderByFields?.Length > 0)
+                {
+                    if (_search.OrderDirection is OrderDirection.Descending)
+                    {
+                        return searchQuery.OrderByDescending(_search.OrderByFields).Execute(queryOptions);
+                    }
+                    else
+                    {
+                        return searchQuery.OrderBy(_search.OrderByFields).Execute(queryOptions);
+                    }
+                }
+                else
+                {
+                    return searchQuery.Execute(queryOptions);
+                }
             }
 
             return null;

@@ -88,6 +88,7 @@ namespace Our.Umbraco.FullTextSearch.Services
 
             if (_search.SearchTerm.IsNullOrWhiteSpace() == false)
             {
+                query.Append("(");
                 switch (_search.SearchType)
                 {
                     case SearchType.MultiRelevance:
@@ -124,6 +125,7 @@ namespace Our.Umbraco.FullTextSearch.Services
                         query.Append(QueryAllPropertiesAnd(_search.SearchTermSplit, 1.0));
                         break;
                 }
+                query.Append(")");
                 queryParts.Add(query.ToString());
             }
 
@@ -131,7 +133,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             {
                 var rootNodeGroup = string.Join(" OR ", _search.RootNodeIds.Select(x =>
                     $"{_options.FullTextPathField}:{x}"));
-                queryParts.Add(rootNodeGroup);
+                queryParts.Add($"({rootNodeGroup})");
             }
 
             var allowedContentTypes = _search.AllowedContentTypes.Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
@@ -139,7 +141,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             {
                 var contentTypeGroup = string.Join(" OR ", allowedContentTypes.Select(x =>
                     $"__NodeTypeAlias:{x}"));
-                queryParts.Add(contentTypeGroup);
+                queryParts.Add($"({contentTypeGroup})");
             }
 
 
@@ -186,7 +188,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
 
             query.Clear();
-            query.Append(string.Join(" AND ", queryParts.Select(x => $"({x})")));
+            query.Append(string.Join(" AND ", queryParts));
 
             if (searcher != null)
             {

@@ -84,11 +84,10 @@ namespace Our.Umbraco.FullTextSearch.Services
         private ISearchResults GetResults()
         {
             var query = new StringBuilder();
+            var queryParts = new List<string>();
 
             if (_search.SearchTerm.IsNullOrWhiteSpace() == false)
             {
-                query.Append("(");
-
                 switch (_search.SearchType)
                 {
                     case SearchType.MultiRelevance:
@@ -125,14 +124,14 @@ namespace Our.Umbraco.FullTextSearch.Services
                         query.Append(QueryAllPropertiesAnd(_search.SearchTermSplit, 1.0));
                         break;
                 }
-                query.Append(")");
+                queryParts.Add(query.ToString());
             }
 
             if (_search.RootNodeIds.Any())
             {
                 var rootNodeGroup = string.Join(" OR ", _search.RootNodeIds.Select(x =>
                     $"{_options.FullTextPathField}:{x}"));
-                query.Append($" AND ({rootNodeGroup})");
+                queryParts.Add(rootNodeGroup);
             }
 
             var allowedContentTypes = _search.AllowedContentTypes.Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
@@ -140,7 +139,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             {
                 var contentTypeGroup = string.Join(" OR ", allowedContentTypes.Select(x =>
                     $"__NodeTypeAlias:{x}"));
-                query.Append($" AND ({contentTypeGroup})");
+                queryParts.Add(contentTypeGroup);
             }
 
 
@@ -148,32 +147,32 @@ namespace Our.Umbraco.FullTextSearch.Services
             {
                 var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture.ToLower()}";
                 var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
-                query.Append($" AND {publishedQuery}");
+                queryParts.Add(publishedQuery);
             }
 
             if (_search.ContentOnly)
             {
-                query.Append($" AND __IndexType:content");
+                queryParts.Add("__IndexType:content");
             }
 
             var disallowedContentTypes = _options.DisallowedContentTypeAliases;
-            if (disallowedContentTypes.Any()) query.Append($" AND -({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
+            if (disallowedContentTypes.Any()) queryParts.Add($"-({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
 
             var disallowedPropertyAliases = _options.DisallowedPropertyAliases;
             if (disallowedPropertyAliases.Any())
             {
                 var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"{x}_{_search.Culture}:1 OR {x}:1"));
-                query.Append($" AND -({disallowedPropertyAliasGroup})");
+                queryParts.Add($"-({disallowedPropertyAliasGroup})");
             }
 
             if (_search.RequireTemplate)
             {
-                query.Append($" AND -(templateID:0)");
+                queryParts.Add($"-(templateID:0)");
             }
 
             if (!string.IsNullOrWhiteSpace(_search.CustomQuery))
             {
-                query.Append($" AND ({_search.CustomQuery})");
+                queryParts.Add($"({_search.CustomQuery})");
             }
 
             ISearcher searcher = null;
@@ -185,6 +184,9 @@ namespace Our.Umbraco.FullTextSearch.Services
                     searcher = index.Searcher;
                 }
             }
+
+            query.Clear();
+            query.Append(string.Join(" AND ", queryParts.Select(x => $"({x})")));
 
             if (searcher != null)
             {

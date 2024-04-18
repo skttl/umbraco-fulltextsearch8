@@ -24,7 +24,6 @@ namespace Our.Umbraco.FullTextSearch.Services
         private readonly UmbracoHelper _umbracoHelper;
         private ISearch _search;
         private int _currentPage;
-        private List<SearchProperty> _searchProperties;
 
         public SearchService(
             IExamineManager examineManager,
@@ -49,7 +48,6 @@ namespace Our.Umbraco.FullTextSearch.Services
             _search = search;
             SetDefaults();
 
-            _searchProperties = SetSearchProperties();
             _currentPage = currentPage;
 
             var result = new FullTextSearchResult();
@@ -70,114 +68,12 @@ namespace Our.Umbraco.FullTextSearch.Services
             if (!_search.SummaryProperties.Any()) _search.SummaryProperties = _search.BodyProperties;
         }
 
-        private List<SearchProperty> SetSearchProperties()
-        {
-            _searchProperties = new List<SearchProperty>();
-
-            var bodyProperties = !_search.BodyProperties.Any() ? new[] { _options.FullTextContentField } : _search.BodyProperties;
-
-            _searchProperties.AddRange(GetProperties(_search.TitleProperties, _search.TitleBoost, _search.Fuzzyness, _search.AddWildcard));
-            _searchProperties.AddRange(GetProperties(bodyProperties, 1.0, _search.Fuzzyness, _search.AddWildcard));
-            return _searchProperties;
-        }
 
         private ISearchResults GetResults()
         {
-            var query = new StringBuilder();
-            var queryParts = new List<string>();
-
-            if (_search.SearchTerm.IsNullOrWhiteSpace() == false)
-            {
-                query.Append("(");
-                switch (_search.SearchType)
-                {
-                    case SearchType.MultiRelevance:
-                    case SearchType.MultiAnd:
-
-                        // We formulate the query differently depending on the input.
-                        if (_search.SearchTerm.Contains('"'))
-                        {
-                            // If the user has entered double quotes we don't bother
-                            // searching for the full string
-                            query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
-                        }
-                        else if (!_search.SearchTerm.Contains('"') && !_search.SearchTerm.Contains(' '))
-                        {
-                            // if there's no spaces or quotes we don't need to get the quoted term and boost it
-                            query.Append(QueryAllPropertiesOr(_search.SearchTermSplit, 1));
-                        }
-                        else
-                        {
-                            // otherwise we search first for the entire query in quotes,
-                            // then for each term in the query OR'd together.
-                            query.Append($"({QueryAllPropertiesOr(_search.SearchTermQuoted, 2)} OR {QueryAllPropertiesOr(_search.SearchTermSplit, 1)})");
-                        }
-
-                        break;
-
-                    case SearchType.SimpleOr:
-
-                        query.Append(QueryAllProperties(_search.SearchTermSplit, 1.0, "OR", true));
-                        break;
-
-                    case SearchType.AsEntered:
-
-                        query.Append(QueryAllPropertiesAnd(_search.SearchTermSplit, 1.0));
-                        break;
-                }
-                query.Append(")");
-                queryParts.Add(query.ToString());
-            }
-
-            if (_search.RootNodeIds.Any())
-            {
-                var rootNodeGroup = string.Join(" OR ", _search.RootNodeIds.Select(x =>
-                    $"{_options.FullTextPathField}:{x}"));
-                queryParts.Add($"({rootNodeGroup})");
-            }
-
-            var allowedContentTypes = _search.AllowedContentTypes.Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
-            if (allowedContentTypes.Any())
-            {
-                var contentTypeGroup = string.Join(" OR ", allowedContentTypes.Select(x =>
-                    $"__NodeTypeAlias:{x}"));
-                queryParts.Add($"({contentTypeGroup})");
-            }
-
-
-            if (_search.PublishedOnly)
-            {
-                var publishedPropertySuffix = string.IsNullOrEmpty(_search.Culture) ? "" : $"_{_search.Culture.ToLower()}";
-                var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
-                queryParts.Add(publishedQuery);
-            }
-
-            if (_search.ContentOnly)
-            {
-                queryParts.Add("__IndexType:content");
-            }
-
-            var disallowedContentTypes = _options.DisallowedContentTypeAliases;
-            if (disallowedContentTypes.Any()) queryParts.Add($"-({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
-
-            var disallowedPropertyAliases = _options.DisallowedPropertyAliases;
-            if (disallowedPropertyAliases.Any())
-            {
-                var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"{x}_{_search.Culture}:1 OR {x}:1"));
-                queryParts.Add($"-({disallowedPropertyAliasGroup})");
-            }
-
-            if (_search.RequireTemplate)
-            {
-                queryParts.Add($"-(templateID:0)");
-            }
-
-            if (!string.IsNullOrWhiteSpace(_search.CustomQuery))
-            {
-                queryParts.Add($"({_search.CustomQuery})");
-            }
 
             ISearcher searcher = null;
+            var query = GetLuceneQuery(_search);
 
             if (string.IsNullOrWhiteSpace(_search.Searcher) || !_examineManager.TryGetSearcher(_search.Searcher, out searcher))
             {
@@ -186,9 +82,6 @@ namespace Our.Umbraco.FullTextSearch.Services
                     searcher = index.Searcher;
                 }
             }
-
-            query.Clear();
-            query.Append(string.Join(" AND ", queryParts));
 
             if (searcher != null)
             {
@@ -217,152 +110,7 @@ namespace Our.Umbraco.FullTextSearch.Services
             return null;
         }
 
-        /// <summary>
-        /// OR's together all the passed search terms into a query
-        /// for each property in the properties list
-        ///
-        /// </summary>
-        /// <param name="searchTerms">A list of fully escaped search terms</param>
-        /// <param name="boostAll">all terms are boosted by this amount, multiplied by the amount in the property/boost dictionary</param>
-        /// <returns>a query fragment</returns>
-        protected StringBuilder QueryAllPropertiesOr(ICollection<string> searchTerms, double boostAll)
-        {
-            if (searchTerms == null || searchTerms.Count < 1)
-                return new StringBuilder();
 
-            return QueryAllProperties(searchTerms, boostAll, "OR");
-        }
-
-        /// <summary>
-        /// AND's together all the passed search terms into a query
-        /// for each property in the properties list
-        /// </summary>
-        /// <param name="searchTerms">A list of fully escaped search terms</param>
-        /// <param name="boostAll">all terms are boosted by this amount, multiplied by the amount in the property/boost dictionary</param>
-        /// <returns>a query fragment</returns>
-        protected StringBuilder QueryAllPropertiesAnd(ICollection<string> searchTerms, double boostAll)
-        {
-            if (searchTerms == null || searchTerms.Count < 1)
-                return new StringBuilder();
-
-            return QueryAllProperties(searchTerms, boostAll, "AND");
-        }
-
-        /// <summary>
-        /// Called by queryAllPropertiesOr, queryAllPropertiesAnd
-        /// Creates a somewhat convuleted lucene query string.
-        /// Each search term is applied to each property in the umbracoProperties list,
-        /// boosted by the boost value associated with the property, multiplied by
-        /// the boost value passed to the function.
-        /// The global fuzziness level is applied, multiplied by the fuzzyness value
-        /// associated with the relevant property.
-        /// Terms are ether OR'd or AND'd (or theoretically anything else
-        /// you stick into joinWith'd, though I can't think of much that would
-        /// actually be useful) according to the contents of joinWith
-        /// </summary>
-        /// <param name="searchTerms">A list of fully escaped search terms</param>
-        /// <param name="boostAll">Boost all terms by this amount</param>
-        /// <param name="joinWith">Join terms with this string, should be AND/OR</param>
-        /// <param name="simplify"></param>
-        /// <returns></returns>
-        protected StringBuilder QueryAllProperties(ICollection<string> searchTerms, double boostAll, string joinWith, bool simplify = false)
-        {
-            var queryBuilder = new List<StringBuilder>();
-            foreach (var term in searchTerms)
-            {
-                var termQuery = new StringBuilder();
-                foreach (var property in _searchProperties)
-                {
-                    termQuery.Append(simplify
-                                         ? QuerySingleItemSimple(term.Trim(), property)
-                                         : QuerySingleItem(term.Trim(), property, boostAll));
-                }
-                if (termQuery.Length > 0)
-                    queryBuilder.Add(termQuery);
-            }
-            var query = new StringBuilder();
-            var count = queryBuilder.Count;
-            if (count < 1)
-                return query;
-            var i = 0;
-            for (; ; )
-            {
-                query.Append($" ({queryBuilder[i]}) ");
-                if (++i >= count)
-                    break;
-                query.Append($"{joinWith} ");
-            }
-            return query;
-        }
-        protected string QuerySingleItem(string term, SearchProperty property, double boostAll)
-        {
-            var boost = property.BoostMultiplier * boostAll;
-            var boostString = string.Empty;
-            if (boost != 1.0)
-            {
-                boostString = "^" + boost.ToString(CultureInfo.InvariantCulture);
-            }
-            var fuzzyString = string.Empty;
-            var wildcardQuery = string.Empty;
-            if (!term.Contains('"'))
-            {
-                // wildcard queries get lower relevance than exact matches, and ignore fuzzieness
-                if (property.Wildcard)
-                {
-                    var halfBoost = (boost * 0.5).ToString(CultureInfo.InvariantCulture);
-                    wildcardQuery = $"({property.PropertyName}:{term}*^{halfBoost} OR {property.PropertyName}_{_search.Culture}:{term}*^{halfBoost}) ";
-                }
-                else
-                {
-                    var fuzzyLocal = property.FuzzyMultiplier;
-                    if (fuzzyLocal < 1.0 && fuzzyLocal > 0.0)
-                    {
-                        fuzzyString = "~" + fuzzyLocal.ToString(CultureInfo.InvariantCulture);
-                    }
-                }
-            }
-            return $"({property.PropertyName}:{term}{fuzzyString}{boostString} OR {property.PropertyName}_{_search.Culture}:{term}{fuzzyString}{boostString}) {wildcardQuery}";
-        }
-        protected string QuerySingleItemSimple(string term, SearchProperty property)
-        {
-            var fuzzyString = string.Empty;
-            var wildcard = string.Empty;
-            if (!term.Contains('"'))
-            {
-                if (property.Wildcard)
-                {
-                    wildcard = "*";
-                }
-                else
-                {
-                    var fuzzyLocal = property.FuzzyMultiplier;
-                    if (fuzzyLocal < 1.0 && fuzzyLocal > 0.0)
-                    {
-                        fuzzyString = "~" + fuzzyLocal.ToString(CultureInfo.InvariantCulture);
-                    }
-                }
-            }
-            return $"({property.PropertyName}:{term}{fuzzyString}{wildcard} OR {property.PropertyName}_{_search.Culture}:{term}{fuzzyString}{wildcard}) ";
-        }
-
-        /// <summary>
-        /// Split up the comma separated string and return a list of UmbracoProperty objects
-        /// </summary>
-        /// <param name="properties"></param>
-        /// <param name="boost"></param>
-        /// <param name="fuzzy"></param>
-        /// <param name="wildcard"></param>
-        /// <returns></returns>
-        private static IEnumerable<SearchProperty> GetProperties(ICollection<string> properties, double boost, double fuzzy, bool wildcard)
-        {
-            var umbracoProperties = new List<SearchProperty>();
-            if (properties.Any())
-            {
-                umbracoProperties.AddRange(properties.Where(propName => !string.IsNullOrEmpty(propName))
-                    .Select(propName => new SearchProperty(propName, boost, fuzzy, wildcard)));
-            }
-            return umbracoProperties;
-        }
 
         public SearchResultItem GetFullTextSearchResultItem(ISearchResult result)
         {
@@ -419,6 +167,265 @@ namespace Our.Umbraco.FullTextSearch.Services
             summary = input.TruncateHtml(_search.SummaryLength, "&hellip;");
 
             return summary;
+        }
+
+
+        public string GetLuceneQuery(ISearch search)
+        {
+            var query = new StringBuilder();
+            var queryParts = new List<string>();
+
+            if (search.SearchTerm.IsNullOrWhiteSpace() == false)
+            {
+                query.Append("(");
+                switch (search.SearchType)
+                {
+                    case SearchType.MultiRelevance:
+                    case SearchType.MultiAnd:
+
+                        // We formulate the query differently depending on the input.
+                        if (search.SearchTerm.Contains('"'))
+                        {
+                            // If the user has entered double quotes we don't bother
+                            // searching for the full string
+                            query.Append(QueryAllPropertiesOr(search.SearchTermSplit, search, 1));
+                        }
+                        else if (!search.SearchTerm.Contains('"') && !search.SearchTerm.Contains(' '))
+                        {
+                            // if there's no spaces or quotes we don't need to get the quoted term and boost it
+                            query.Append(QueryAllPropertiesOr(search.SearchTermSplit, search, 1));
+                        }
+                        else
+                        {
+                            // otherwise we search first for the entire query in quotes,
+                            // then for each term in the query OR'd together.
+                            query.Append($"({QueryAllPropertiesOr(search.SearchTermQuoted, search, 2)} OR {QueryAllPropertiesOr(search.SearchTermSplit, search, 1)})");
+                        }
+                        break;
+                    case SearchType.SimpleOr:
+
+                        query.Append(QueryAllProperties(search.SearchTermSplit, search, 1.0, "OR", true));
+                        break;
+                    case SearchType.AsEntered:
+
+                        query.Append(QueryAllPropertiesAnd(search.SearchTermSplit, search, 1.0));
+                        break;
+                }
+                query.Append(")");
+                queryParts.Add(query.ToString());
+            }
+
+            if (search.RootNodeIds.Any())
+            {
+                var rootNodeGroup = string.Join(" OR ", search.RootNodeIds.Select(x =>
+                    $"{_options.FullTextPathField}:{x}"));
+                queryParts.Add($"({rootNodeGroup})");
+            }
+
+            var allowedContentTypes = search.AllowedContentTypes.Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
+            if (allowedContentTypes.Any())
+            {
+                var contentTypeGroup = string.Join(" OR ", allowedContentTypes.Select(x =>
+                    $"__NodeTypeAlias:{x}"));
+                queryParts.Add($"({contentTypeGroup})");
+            }
+
+
+            if (search.PublishedOnly)
+            {
+                var publishedPropertySuffix = string.IsNullOrEmpty(search.Culture) ? "" : $"_{search.Culture.ToLower()}";
+                var publishedQuery = $"((__VariesByCulture:y AND __Published{publishedPropertySuffix}:y) OR (__VariesByCulture:n AND __Published:y))";
+                queryParts.Add(publishedQuery);
+            }
+
+            if (search.ContentOnly)
+            {
+                queryParts.Add("__IndexType:content");
+            }
+
+            var disallowedContentTypes = _options.DisallowedContentTypeAliases;
+            if (disallowedContentTypes.Any()) queryParts.Add($"-({string.Join(" ", disallowedContentTypes.Select(x => $"__NodeTypeAlias:{x}"))})");
+
+            var disallowedPropertyAliases = _options.DisallowedPropertyAliases;
+            if (disallowedPropertyAliases.Any())
+            {
+                var disallowedPropertyAliasGroup = string.Join(" OR ", disallowedPropertyAliases.Select(x => $"{x}_{search.Culture}:1 OR {x}:1"));
+                queryParts.Add($"-({disallowedPropertyAliasGroup})");
+            }
+
+            if (search.RequireTemplate)
+            {
+                queryParts.Add($"-(templateID:0)");
+            }
+
+            if (!string.IsNullOrWhiteSpace(search.CustomQuery))
+            {
+                queryParts.Add($"({search.CustomQuery})");
+            }
+
+            query.Clear();
+            query.Append(string.Join(" AND ", queryParts));
+
+            return query.ToString();
+        }
+
+        private List<SearchProperty> GetSearchProperties(ISearch search)
+        {
+            var searchProperties = new List<SearchProperty>();
+
+            var bodyProperties = !search.BodyProperties.Any() ? new[] { _options.FullTextContentField } : search.BodyProperties;
+
+            searchProperties.AddRange(GetProperties(search.TitleProperties, search.TitleBoost, search.Fuzzyness, search.AddWildcard));
+            searchProperties.AddRange(GetProperties(bodyProperties, 1.0, search.Fuzzyness, search.AddWildcard));
+            return searchProperties;
+        }
+
+        /// <summary>
+        /// OR's together all the passed search terms into a query
+        /// for each property in the properties list
+        ///
+        /// </summary>
+        /// <param name="searchTerms">A list of fully escaped search terms</param>
+        /// <param name="boostAll">all terms are boosted by this amount, multiplied by the amount in the property/boost dictionary</param>
+        /// <returns>a query fragment</returns>
+        private StringBuilder QueryAllPropertiesOr(ICollection<string> searchTerms, ISearch search, double boostAll)
+        {
+            if (searchTerms == null || searchTerms.Count < 1)
+                return new StringBuilder();
+
+            return QueryAllProperties(searchTerms, search, boostAll, "OR");
+        }
+
+        /// <summary>
+        /// AND's together all the passed search terms into a query
+        /// for each property in the properties list
+        /// </summary>
+        /// <param name="searchTerms">A list of fully escaped search terms</param>
+        /// <param name="boostAll">all terms are boosted by this amount, multiplied by the amount in the property/boost dictionary</param>
+        /// <returns>a query fragment</returns>
+        private StringBuilder QueryAllPropertiesAnd(ICollection<string> searchTerms, ISearch search, double boostAll)
+        {
+            if (searchTerms == null || searchTerms.Count < 1)
+                return new StringBuilder();
+
+            return QueryAllProperties(searchTerms, search, boostAll, "AND");
+        }
+
+        /// <summary>
+        /// Called by queryAllPropertiesOr, queryAllPropertiesAnd
+        /// Creates a somewhat convuleted lucene query string.
+        /// Each search term is applied to each property in the umbracoProperties list,
+        /// boosted by the boost value associated with the property, multiplied by
+        /// the boost value passed to the function.
+        /// The global fuzziness level is applied, multiplied by the fuzzyness value
+        /// associated with the relevant property.
+        /// Terms are ether OR'd or AND'd (or theoretically anything else
+        /// you stick into joinWith'd, though I can't think of much that would
+        /// actually be useful) according to the contents of joinWith
+        /// </summary>
+        /// <param name="searchTerms">A list of fully escaped search terms</param>
+        /// <param name="boostAll">Boost all terms by this amount</param>
+        /// <param name="joinWith">Join terms with this string, should be AND/OR</param>
+        /// <param name="simplify"></param>
+        /// <returns></returns>
+        private StringBuilder QueryAllProperties(ICollection<string> searchTerms, ISearch search, double boostAll, string joinWith, bool simplify = false)
+        {
+            var queryBuilder = new List<StringBuilder>();
+            var searchProperties = GetSearchProperties(search);
+            foreach (var term in searchTerms)
+            {
+                var termQuery = new StringBuilder();
+                foreach (var property in searchProperties)
+                {
+                    termQuery.Append(simplify
+                                         ? QuerySingleItemSimple(term.Trim(), property, search)
+                                         : QuerySingleItem(term.Trim(), property, boostAll, search));
+                }
+                if (termQuery.Length > 0)
+                    queryBuilder.Add(termQuery);
+            }
+            var query = new StringBuilder();
+            var count = queryBuilder.Count;
+            if (count < 1)
+                return query;
+            var i = 0;
+            for (; ; )
+            {
+                query.Append($" ({queryBuilder[i]}) ");
+                if (++i >= count)
+                    break;
+                query.Append($"{joinWith} ");
+            }
+            return query;
+        }
+        private static string QuerySingleItem(string term, SearchProperty property, double boostAll, ISearch search)
+        {
+            var boost = property.BoostMultiplier * boostAll;
+            var boostString = string.Empty;
+            if (boost != 1.0)
+            {
+                boostString = "^" + boost.ToString(CultureInfo.InvariantCulture);
+            }
+            var fuzzyString = string.Empty;
+            var wildcardQuery = string.Empty;
+            if (!term.Contains('"'))
+            {
+                // wildcard queries get lower relevance than exact matches, and ignore fuzzieness
+                if (property.Wildcard)
+                {
+                    var halfBoost = (boost * 0.5).ToString(CultureInfo.InvariantCulture);
+                    wildcardQuery = $"({property.PropertyName}:{term}*^{halfBoost} OR {property.PropertyName}_{search.Culture}:{term}*^{halfBoost}) ";
+                }
+                else
+                {
+                    var fuzzyLocal = property.FuzzyMultiplier;
+                    if (fuzzyLocal < 1.0 && fuzzyLocal > 0.0)
+                    {
+                        fuzzyString = "~" + fuzzyLocal.ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+            return $"({property.PropertyName}:{term}{fuzzyString}{boostString} OR {property.PropertyName}_{search.Culture}:{term}{fuzzyString}{boostString}) {wildcardQuery}";
+        }
+        private static string QuerySingleItemSimple(string term, SearchProperty property, ISearch search)
+        {
+            var fuzzyString = string.Empty;
+            var wildcard = string.Empty;
+            if (!term.Contains('"'))
+            {
+                if (property.Wildcard)
+                {
+                    wildcard = "*";
+                }
+                else
+                {
+                    var fuzzyLocal = property.FuzzyMultiplier;
+                    if (fuzzyLocal < 1.0 && fuzzyLocal > 0.0)
+                    {
+                        fuzzyString = "~" + fuzzyLocal.ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+            return $"({property.PropertyName}:{term}{fuzzyString}{wildcard} OR {property.PropertyName}_{search.Culture}:{term}{fuzzyString}{wildcard}) ";
+        }
+
+        /// <summary>
+        /// Split up the comma separated string and return a list of UmbracoProperty objects
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <param name="boost"></param>
+        /// <param name="fuzzy"></param>
+        /// <param name="wildcard"></param>
+        /// <returns></returns>
+        private static IEnumerable<SearchProperty> GetProperties(ICollection<string> properties, double boost, double fuzzy, bool wildcard)
+        {
+            var umbracoProperties = new List<SearchProperty>();
+            if (properties.Any())
+            {
+                umbracoProperties.AddRange(properties.Where(propName => !string.IsNullOrEmpty(propName))
+                    .Select(propName => new SearchProperty(propName, boost, fuzzy, wildcard)));
+            }
+            return umbracoProperties;
         }
     }
 }

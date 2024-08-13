@@ -41,7 +41,7 @@ public class RazorPageRenderer : IPageRenderer
         if (!culture.Culture.IsNullOrWhiteSpace())
             _variationContextAccessor.VariationContext = new VariationContext(culture.Culture);
 
-        _httpContextAccessor.HttpContext?.Request.Headers.Add(FullTextSearchConstants.HttpClientRequestHeaderName, _options.RenderingActiveKey);
+        _httpContextAccessor.HttpContext?.Request.Headers.Append(FullTextSearchConstants.HttpClientRequestHeaderName, _options.RenderingActiveKey);
 
         // todo do we need the wrapping template?
         var fullHtml = await _umbracoComponentRenderer.RenderTemplateAsync(publishedContent.Id, publishedContent.TemplateId);

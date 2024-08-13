@@ -13,6 +13,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Infrastructure.Persistence.DatabaseModelDefinitions;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
 
@@ -45,6 +46,14 @@ public class CacheService : ICacheService
         _htmlService = htmlService;
         _options = options.Value;
         _pageRenderer = pageRenderer;
+    }
+
+    public bool CacheTableExists()
+    {
+        using (var scope = _scopeProvider.CreateScope(autoComplete: true))
+        {
+            return scope.SqlContext.SqlSyntax.DoesTableExist(scope.Database, DefinitionFactory.GetTableDefinition(typeof(CacheItem), scope.SqlContext.SqlSyntax).Name);
+        }
     }
 
     public async Task AddToCache(IPublishedContent publishedContent)

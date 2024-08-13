@@ -20,9 +20,10 @@ namespace Our.Umbraco.FullTextSearch
         public static IUmbracoBuilder AddFullTextSearch(this IUmbracoBuilder builder, Action<FullTextSearchOptions> defaultOptions = default)
         {
             // if the Manifest Filter is registred then we assume this has been added before so we don't do it again. 
+            /* TODO: Port
             if (builder.ManifestFilters().Has<FullTextSearchManifestFilter>())
                 return builder;
-
+            */
 
             // load up the settings. 
             var options = builder.Services.AddOptions<FullTextSearchOptions>()
@@ -34,7 +35,9 @@ namespace Our.Umbraco.FullTextSearch
             }
             options.ValidateDataAnnotations();
 
+            /* TODO: Port
             builder.ManifestFilters().Append<FullTextSearchManifestFilter>();
+            */
             builder.Services.AddUnique<ICacheService, CacheService>();
             builder.Services.AddUnique<IHtmlService, HtmlService>();
             builder.Services.AddUnique<IStatusService, StatusService>();
@@ -53,10 +56,10 @@ namespace Our.Umbraco.FullTextSearch
                 .AddNotificationHandler<UmbracoApplicationStartingNotification, ExecuteMigrations>()
                 .AddNotificationHandler<ServerVariablesParsingNotification, AddFullTextSearchToServerVariables>()
                 .AddNotificationHandler<UmbracoApplicationStartingNotification, AddFullTextItemsToIndex>()
-                .AddNotificationHandlerBefore<ContentCacheRefresherNotification,ContentIndexingNotificationHandler,UpdateCacheOnPublish>();
-            
+                .AddNotificationHandlerBefore<ContentCacheRefresherNotification, ContentIndexingNotificationHandler, UpdateCacheOnPublish>();
+
             return builder;
         }
     }
-    
+
 }

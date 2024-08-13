@@ -1,4 +1,5 @@
-﻿using Examine;
+﻿/* TODO: Port
+using Examine;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -321,3 +322,4 @@ namespace Our.Umbraco.FullTextSearch.Controllers
         }
     }
 }
+*/

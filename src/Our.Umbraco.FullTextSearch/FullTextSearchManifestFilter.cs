@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿/* TODO: Replace with umbraco-package.json
+using System.Collections.Generic;
 using Umbraco.Cms.Core.Manifest;
 
 namespace Our.Umbraco.FullTextSearch
@@ -30,3 +31,4 @@ namespace Our.Umbraco.FullTextSearch
         }
     }
 }
+*/

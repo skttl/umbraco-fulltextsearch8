@@ -11,6 +11,7 @@ namespace Our.Umbraco.FullTextSearch.Interfaces
         Task AddToCache(IPublishedContent publishedContent);
         Task AddTreeToCache(IPublishedContent rootNode);
         Task AddTreeToCache(int rootId);
+        bool CacheTableExists();
         Task DeleteFromCache(int id);
         Task<List<CacheItem>> GetFromCache(int id);
     }

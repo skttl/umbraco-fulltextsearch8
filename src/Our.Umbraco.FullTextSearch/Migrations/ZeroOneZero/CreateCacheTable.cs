@@ -1,5 +1,5 @@
-﻿using System;
-using NPoco;
+﻿using NPoco;
+using System;
 using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 

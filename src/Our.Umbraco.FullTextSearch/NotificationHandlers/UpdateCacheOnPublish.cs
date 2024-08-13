@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Options;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
@@ -44,7 +43,7 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
 
         public void Handle(ContentCacheRefresherNotification notification)
         {
-        
+
             if (notification.MessageType != MessageType.RefreshByPayload)
                 return;
 
@@ -57,6 +56,12 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
             if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
             {
                 _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
+                return;
+            }
+
+            if (_cacheService.CacheTableExists() == false)
+            {
+                _logger.LogError("Cache table doesn't exist, maybe the site is installing");
                 return;
             }
 
@@ -96,6 +101,6 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
             }
         }
 
-     
+
     }
 }

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ContentTargetFolders>.</ContentTargetFolders>
 	  <StaticWebAssetBasePath>App_Plugins/FullTextSearch</StaticWebAssetBasePath>
 
@@ -20,9 +20,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.0.0" />
-	<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.0.0" />
-	<PackageReference Include="Umbraco.Cms.Persistence.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="14.0.0" />
+	<PackageReference Include="Umbraco.Cms.Persistence.Sqlite" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup>

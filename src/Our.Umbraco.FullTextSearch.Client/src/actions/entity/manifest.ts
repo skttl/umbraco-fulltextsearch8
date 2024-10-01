@@ -12,7 +12,7 @@ const entityAction: ManifestEntityAction = {
     elementName: 'our-umbraco-fulltext-search-actions-entity-reindexnode',
     meta: {
         icon: 'icon-alarm-clock',
-        label: '#fulltextsearch_reindex',
+        label: '#fullTextSearch_reindex',
         repositoryAlias: UMB_DOCUMENT_DETAIL_REPOSITORY_ALIAS,
     }
 }

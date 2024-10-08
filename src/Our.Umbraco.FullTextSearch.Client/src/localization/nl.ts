@@ -1,6 +1,5 @@
 export default {
     fullTextSearch: {
-        indexStatus: "Index status",
         indexableNodes: "Indexeerbare nodes",
         indexableNodesDescription: "Het totaal aantal indexeerbare nodes volgens de huidige Full Text Search configuratie",
         indexedNodes: "Geïndexeerde nodes",

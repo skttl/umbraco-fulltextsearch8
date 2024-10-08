@@ -11,12 +11,12 @@
     "generate": "openapi-ts --input http://localhost:37830/umbraco/swagger/fulltextsearch/swagger.json --output src/api --debug true --enums typescript --lint true --schemas false"
   },
   "dependencies": {
-    "lit": "^3.1.4"
+    "lit": "^3.2.1"
   },
   "devDependencies": {
-    "@umbraco-cms/backoffice": "^14.2.0-rc2",
-    "typescript": "^5.5.3",
-    "vite": "^5.4.0",
-    "@hey-api/openapi-ts": "^0.40.0"
+    "@umbraco-cms/backoffice": "^14.3.0",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8",
+    "@hey-api/openapi-ts": "^0.53.8"
   }
 }

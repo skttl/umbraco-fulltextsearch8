@@ -1,38 +1,39 @@
-var O = (t) => {
+var P = (t) => {
   throw TypeError(t);
 };
-var M = (t, e, n) => e.has(t) || O("Cannot " + n);
-var d = (t, e, n) => (M(t, e, "read from private field"), n ? n.call(t) : e.get(t)), p = (t, e, n) => e.has(t) ? O("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, n), y = (t, e, n, r) => (M(t, e, "write to private field"), r ? r.call(t, n) : e.set(t, n), n);
-import { UMB_AUTH_CONTEXT as H } from "@umbraco-cms/backoffice/auth";
-import { UMB_DOCUMENT_ROOT_ENTITY_TYPE as Q, UMB_DOCUMENT_ENTITY_TYPE as Z, UMB_DOCUMENT_DETAIL_REPOSITORY_ALIAS as ee } from "@umbraco-cms/backoffice/document";
-import { UmbEntityActionBase as te } from "@umbraco-cms/backoffice/entity-action";
-import { UmbModalToken as ne, UMB_MODAL_MANAGER_CONTEXT as re } from "@umbraco-cms/backoffice/modal";
-import { LitElement as se, html as C, property as V, state as G, customElement as ie } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as oe } from "@umbraco-cms/backoffice/element-api";
-import { UmbControllerBase as de } from "@umbraco-cms/backoffice/class-api";
-import { UmbContextToken as ae } from "@umbraco-cms/backoffice/context-api";
-import { tryExecuteAndNotify as m } from "@umbraco-cms/backoffice/resources";
-import { UmbObjectState as F, UmbStringState as B } from "@umbraco-cms/backoffice/observable-api";
-const le = {
+var q = (t, e, n) => e.has(t) || P("Cannot " + n);
+var a = (t, e, n) => (q(t, e, "read from private field"), n ? n.call(t) : e.get(t)), h = (t, e, n) => e.has(t) ? P("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, n), f = (t, e, n, r) => (q(t, e, "write to private field"), r ? r.call(t, n) : e.set(t, n), n);
+import { UMB_AUTH_CONTEXT as W } from "@umbraco-cms/backoffice/auth";
+import { UMB_DOCUMENT_ROOT_ENTITY_TYPE as ne, UMB_DOCUMENT_ENTITY_TYPE as re, UMB_DOCUMENT_DETAIL_REPOSITORY_ALIAS as ie } from "@umbraco-cms/backoffice/document";
+import { UmbEntityActionBase as se } from "@umbraco-cms/backoffice/entity-action";
+import { UmbModalToken as oe, UMB_MODAL_MANAGER_CONTEXT as ae } from "@umbraco-cms/backoffice/modal";
+import { LitElement as de, html as C, property as K, state as X, customElement as le } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as ce } from "@umbraco-cms/backoffice/element-api";
+import { UmbControllerBase as ue } from "@umbraco-cms/backoffice/class-api";
+import { UmbContextToken as xe } from "@umbraco-cms/backoffice/context-api";
+import { tryExecuteAndNotify as y } from "@umbraco-cms/backoffice/resources";
+import { UmbObjectState as F, UmbStringState as H } from "@umbraco-cms/backoffice/observable-api";
+import { UMB_NOTIFICATION_CONTEXT as he } from "@umbraco-cms/backoffice/notification";
+const fe = {
   type: "entityAction",
   kind: "default",
   alias: "our.umbraco.fulltextsearch.reindex.action",
   name: "ReindexNode",
   weight: -100,
-  forEntityTypes: [Q, Z],
-  api: () => Promise.resolve().then(() => Ce),
+  forEntityTypes: [ne, re],
+  api: () => Promise.resolve().then(() => je),
   elementName: "our-umbraco-fulltext-search-actions-entity-reindexnode",
   meta: {
     icon: "icon-alarm-clock",
     label: "#fullTextSearch_reindex",
-    repositoryAlias: ee
+    repositoryAlias: ie
   }
-}, ce = [le], ue = {
+}, me = [fe], ge = {
   type: "modal",
   alias: "our.umbraco.fulltextsearch.modals.reindexnode",
   name: "Reindex node",
-  js: () => Promise.resolve().then(() => Me)
-}, he = [ue], pe = [
+  js: () => Promise.resolve().then(() => qe)
+}, ye = [ge], be = [
   {
     type: "localization",
     alias: "Our.Umbraco.FullTextSearch.Localizations.En",
@@ -49,7 +50,7 @@ const le = {
     meta: {
       culture: "da"
     },
-    js: () => Promise.resolve().then(() => qe)
+    js: () => Promise.resolve().then(() => Be)
   },
   {
     type: "localization",
@@ -67,7 +68,7 @@ const le = {
     meta: {
       culture: "fr"
     },
-    js: () => Promise.resolve().then(() => We)
+    js: () => Promise.resolve().then(() => Ke)
   },
   {
     type: "localization",
@@ -76,7 +77,7 @@ const le = {
     meta: {
       culture: "nb"
     },
-    js: () => Promise.resolve().then(() => Ke)
+    js: () => Promise.resolve().then(() => Je)
   },
   {
     type: "localization",
@@ -85,22 +86,22 @@ const le = {
     meta: {
       culture: "nl"
     },
-    js: () => Promise.resolve().then(() => Xe)
+    js: () => Promise.resolve().then(() => Qe)
   }
-], ye = pe, ge = [
+], pe = be, Te = [
   {
     type: "globalContext",
     alias: "our.umbraco.fulltextsearch.context",
     name: "Full Text Search context",
-    js: () => Promise.resolve().then(() => Ee)
+    js: () => Promise.resolve().then(() => Ue)
   }
-], fe = [...ge];
+], Se = [...Te];
 class L extends Error {
   constructor(e, n, r) {
     super(r), this.name = "ApiError", this.url = n.url, this.status = n.status, this.statusText = n.statusText, this.body = n.body, this.request = e;
   }
 }
-class me extends Error {
+class _e extends Error {
   constructor(e) {
     super(e), this.name = "CancelError";
   }
@@ -108,16 +109,16 @@ class me extends Error {
     return !0;
   }
 }
-class xe {
+class Ne {
   constructor(e) {
     this._isResolved = !1, this._isRejected = !1, this._isCancelled = !1, this.cancelHandlers = [], this.promise = new Promise((n, r) => {
       this._resolve = n, this._reject = r;
-      const s = (a) => {
-        this._isResolved || this._isRejected || this._isCancelled || (this._isResolved = !0, this._resolve && this._resolve(a));
-      }, i = (a) => {
-        this._isResolved || this._isRejected || this._isCancelled || (this._isRejected = !0, this._reject && this._reject(a));
-      }, o = (a) => {
-        this._isResolved || this._isRejected || this._isCancelled || this.cancelHandlers.push(a);
+      const i = (d) => {
+        this._isResolved || this._isRejected || this._isCancelled || (this._isResolved = !0, this._resolve && this._resolve(d));
+      }, s = (d) => {
+        this._isResolved || this._isRejected || this._isCancelled || (this._isRejected = !0, this._reject && this._reject(d));
+      }, o = (d) => {
+        this._isResolved || this._isRejected || this._isCancelled || this.cancelHandlers.push(d);
       };
       return Object.defineProperty(o, "isResolved", {
         get: () => this._isResolved
@@ -125,7 +126,7 @@ class xe {
         get: () => this._isRejected
       }), Object.defineProperty(o, "isCancelled", {
         get: () => this._isCancelled
-      }), e(s, i, o);
+      }), e(i, s, o);
     });
   }
   get [Symbol.toStringTag]() {
@@ -150,14 +151,14 @@ class xe {
           console.warn("Cancellation threw an error", e);
           return;
         }
-      this.cancelHandlers.length = 0, this._reject && this._reject(new me("Request aborted"));
+      this.cancelHandlers.length = 0, this._reject && this._reject(new _e("Request aborted"));
     }
   }
   get isCancelled() {
     return this._isCancelled;
   }
 }
-class U {
+class $ {
   constructor() {
     this._fns = [];
   }
@@ -183,79 +184,79 @@ const l = {
   VERSION: "Latest",
   WITH_CREDENTIALS: !1,
   interceptors: {
-    request: new U(),
-    response: new U()
+    request: new $(),
+    response: new $()
   }
-}, D = (t) => typeof t == "string", E = (t) => D(t) && t !== "", R = (t) => t instanceof Blob, W = (t) => t instanceof FormData, be = (t) => {
+}, k = (t) => typeof t == "string", D = (t) => k(t) && t !== "", M = (t) => t instanceof Blob, J = (t) => t instanceof FormData, Ie = (t) => {
   try {
     return btoa(t);
   } catch {
     return Buffer.from(t).toString("base64");
   }
-}, we = (t) => {
-  const e = [], n = (s, i) => {
-    e.push(`${encodeURIComponent(s)}=${encodeURIComponent(String(i))}`);
-  }, r = (s, i) => {
-    i != null && (Array.isArray(i) ? i.forEach((o) => r(s, o)) : typeof i == "object" ? Object.entries(i).forEach(([o, a]) => r(`${s}[${o}]`, a)) : n(s, i));
+}, Ae = (t) => {
+  const e = [], n = (i, s) => {
+    e.push(`${encodeURIComponent(i)}=${encodeURIComponent(String(s))}`);
+  }, r = (i, s) => {
+    s != null && (Array.isArray(s) ? s.forEach((o) => r(i, o)) : typeof s == "object" ? Object.entries(s).forEach(([o, d]) => r(`${i}[${o}]`, d)) : n(i, s));
   };
-  return Object.entries(t).forEach(([s, i]) => r(s, i)), e.length ? `?${e.join("&")}` : "";
-}, Te = (t, e) => {
-  const n = encodeURI, r = e.url.replace("{api-version}", t.VERSION).replace(/{(.*?)}/g, (i, o) => {
-    var a;
-    return (a = e.path) != null && a.hasOwnProperty(o) ? n(String(e.path[o])) : i;
-  }), s = t.BASE + r;
-  return e.query ? s + we(e.query) : s;
-}, ve = (t) => {
+  return Object.entries(t).forEach(([i, s]) => r(i, s)), e.length ? `?${e.join("&")}` : "";
+}, ve = (t, e) => {
+  const n = encodeURI, r = e.url.replace("{api-version}", t.VERSION).replace(/{(.*?)}/g, (s, o) => {
+    var d;
+    return (d = e.path) != null && d.hasOwnProperty(o) ? n(String(e.path[o])) : s;
+  }), i = t.BASE + r;
+  return e.query ? i + Ae(e.query) : i;
+}, ke = (t) => {
   if (t.formData) {
-    const e = new FormData(), n = (r, s) => {
-      D(s) || R(s) ? e.append(r, s) : e.append(r, JSON.stringify(s));
+    const e = new FormData(), n = (r, i) => {
+      k(i) || M(i) ? e.append(r, i) : e.append(r, JSON.stringify(i));
     };
-    return Object.entries(t.formData).filter(([, r]) => r != null).forEach(([r, s]) => {
-      Array.isArray(s) ? s.forEach((i) => n(r, i)) : n(r, s);
+    return Object.entries(t.formData).filter(([, r]) => r != null).forEach(([r, i]) => {
+      Array.isArray(i) ? i.forEach((s) => n(r, s)) : n(r, i);
     }), e;
   }
-}, _ = async (t, e) => typeof e == "function" ? e(t) : e, ke = async (t, e) => {
-  const [n, r, s, i] = await Promise.all([
-    _(e, t.TOKEN),
-    _(e, t.USERNAME),
-    _(e, t.PASSWORD),
-    _(e, t.HEADERS)
+}, E = async (t, e) => typeof e == "function" ? e(t) : e, we = async (t, e) => {
+  const [n, r, i, s] = await Promise.all([
+    E(e, t.TOKEN),
+    E(e, t.USERNAME),
+    E(e, t.PASSWORD),
+    E(e, t.HEADERS)
   ]), o = Object.entries({
     Accept: "application/json",
-    ...i,
+    ...s,
     ...e.headers
-  }).filter(([, a]) => a != null).reduce((a, [g, c]) => ({
-    ...a,
-    [g]: String(c)
+  }).filter(([, d]) => d != null).reduce((d, [m, c]) => ({
+    ...d,
+    [m]: String(c)
   }), {});
-  if (E(n) && (o.Authorization = `Bearer ${n}`), E(r) && E(s)) {
-    const a = be(`${r}:${s}`);
-    o.Authorization = `Basic ${a}`;
+  if (D(n) && (o.Authorization = `Bearer ${n}`), D(r) && D(i)) {
+    const d = Ie(`${r}:${i}`);
+    o.Authorization = `Basic ${d}`;
   }
-  return e.body !== void 0 && (e.mediaType ? o["Content-Type"] = e.mediaType : R(e.body) ? o["Content-Type"] = e.body.type || "application/octet-stream" : D(e.body) ? o["Content-Type"] = "text/plain" : W(e.body) || (o["Content-Type"] = "application/json")), new Headers(o);
-}, Ne = (t) => {
+  return e.body !== void 0 && (e.mediaType ? o["Content-Type"] = e.mediaType : M(e.body) ? o["Content-Type"] = e.body.type || "application/octet-stream" : k(e.body) ? o["Content-Type"] = "text/plain" : J(e.body) || (o["Content-Type"] = "application/json")), new Headers(o);
+}, Ee = (t) => {
   var e, n;
   if (t.body !== void 0)
-    return (e = t.mediaType) != null && e.includes("application/json") || (n = t.mediaType) != null && n.includes("+json") ? JSON.stringify(t.body) : D(t.body) || R(t.body) || W(t.body) ? t.body : JSON.stringify(t.body);
-}, Se = async (t, e, n, r, s, i, o) => {
-  const a = new AbortController();
-  let g = {
-    headers: i,
-    body: r ?? s,
+    return (e = t.mediaType) != null && e.includes("application/json") || (n = t.mediaType) != null && n.includes("+json") ? JSON.stringify(t.body) : k(t.body) || M(t.body) || J(t.body) ? t.body : JSON.stringify(t.body);
+}, Re = async (t, e, n, r, i, s, o) => {
+  const d = new AbortController();
+  let m = {
+    headers: s,
+    body: r ?? i,
     method: e.method,
-    signal: a.signal
+    signal: d.signal
   };
-  t.WITH_CREDENTIALS && (g.credentials = t.CREDENTIALS);
+  t.WITH_CREDENTIALS && (m.credentials = t.CREDENTIALS);
   for (const c of t.interceptors.request._fns)
-    g = await c(g);
-  return o(() => a.abort()), await fetch(n, g);
-}, De = (t, e) => {
+    m = await c(m);
+  return o(() => d.abort()), await fetch(n, m);
+}, Ce = (t, e) => {
   if (e) {
     const n = t.headers.get(e);
-    if (D(n))
+    if (k(n))
       return n;
   }
-}, Ie = async (t) => {
+}, Fe = async (t) => {
   if (t.status !== 204)
     try {
       const e = t.headers.get("Content-Type");
@@ -273,7 +274,7 @@ const l = {
     } catch (e) {
       console.error(e);
     }
-}, _e = (t, e) => {
+}, De = (t, e) => {
   const r = {
     400: "Bad Request",
     401: "Unauthorized",
@@ -320,7 +321,7 @@ const l = {
   if (r)
     throw new L(t, e, r);
   if (!e.ok) {
-    const s = e.status ?? "unknown", i = e.statusText ?? "unknown", o = (() => {
+    const i = e.status ?? "unknown", s = e.statusText ?? "unknown", o = (() => {
       try {
         return JSON.stringify(e.body, null, 2);
       } catch {
@@ -330,36 +331,36 @@ const l = {
     throw new L(
       t,
       e,
-      `Generic Error: status: ${s}; status text: ${i}; body: ${o}`
+      `Generic Error: status: ${i}; status text: ${s}; body: ${o}`
     );
   }
-}, x = (t, e) => new xe(async (n, r, s) => {
+}, b = (t, e) => new Ne(async (n, r, i) => {
   try {
-    const i = Te(t, e), o = ve(e), a = Ne(e), g = await ke(t, e);
-    if (!s.isCancelled) {
-      let c = await Se(t, e, i, a, o, g, s);
-      for (const J of t.interceptors.response._fns)
-        c = await J(c);
-      const Y = await Ie(c), X = De(c, e.responseHeader), j = {
-        url: i,
+    const s = ve(t, e), o = ke(e), d = Ee(e), m = await we(t, e);
+    if (!i.isCancelled) {
+      let c = await Re(t, e, s, d, o, m, i);
+      for (const te of t.interceptors.response._fns)
+        c = await te(c);
+      const Z = await Fe(c), ee = Ce(c, e.responseHeader), z = {
+        url: s,
         ok: c.ok,
         status: c.status,
         statusText: c.statusText,
-        body: X ?? Y
+        body: ee ?? Z
       };
-      _e(e, j), n(j.body);
+      De(e, z), n(z.body);
     }
-  } catch (i) {
-    r(i);
+  } catch (s) {
+    r(s);
   }
 });
-class b {
+class p {
   /**
   * @returns unknown OK
   * @throws ApiError
   */
   static getUmbracoFulltextsearchApiV5FulltextsearchConfig() {
-    return x(l, {
+    return b(l, {
       method: "GET",
       url: "/umbraco/fulltextsearch/api/v5/fulltextsearch/config"
     });
@@ -370,7 +371,7 @@ class b {
   */
   static getUmbracoFulltextsearchApiV5FulltextsearchIncorrectindexednodes(e = {}) {
     const { pageNumber: n } = e;
-    return x(l, {
+    return b(l, {
       method: "GET",
       url: "/umbraco/fulltextsearch/api/v5/fulltextsearch/incorrectindexednodes",
       query: {
@@ -384,7 +385,7 @@ class b {
   */
   static getUmbracoFulltextsearchApiV5FulltextsearchIndexednodes(e = {}) {
     const { pageNumber: n } = e;
-    return x(l, {
+    return b(l, {
       method: "GET",
       url: "/umbraco/fulltextsearch/api/v5/fulltextsearch/indexednodes",
       query: {
@@ -397,7 +398,7 @@ class b {
   * @throws ApiError
   */
   static getUmbracoFulltextsearchApiV5FulltextsearchIndexstatus() {
-    return x(l, {
+    return b(l, {
       method: "GET",
       url: "/umbraco/fulltextsearch/api/v5/fulltextsearch/indexstatus"
     });
@@ -408,7 +409,7 @@ class b {
   */
   static getUmbracoFulltextsearchApiV5FulltextsearchMissingnodes(e = {}) {
     const { pageNumber: n } = e;
-    return x(l, {
+    return b(l, {
       method: "GET",
       url: "/umbraco/fulltextsearch/api/v5/fulltextsearch/missingnodes",
       query: {
@@ -422,7 +423,7 @@ class b {
   */
   static postUmbracoFulltextsearchApiV5FulltextsearchReindexnodes(e = {}) {
     const { requestBody: n } = e;
-    return x(l, {
+    return b(l, {
       method: "POST",
       url: "/umbraco/fulltextsearch/api/v5/fulltextsearch/reindexnodes",
       body: n,
@@ -430,80 +431,75 @@ class b {
     });
   }
 }
-const at = (t, e) => {
+const ut = (t, e) => {
   e.registerMany([
-    ...ce,
-    ...he,
+    ...me,
     ...ye,
-    ...fe
-  ]), t.consumeContext(H, (n) => {
+    ...pe,
+    ...Se
+  ]), t.consumeContext(W, (n) => {
     const r = n.getOpenApiConfiguration();
     l.TOKEN = r.token, l.BASE = r.base, l.WITH_CREDENTIALS = r.withCredentials;
   });
-}, Ae = new ne("our.umbraco.fulltextsearch.modals.reindexnode", {
+}, Oe = new oe("our.umbraco.fulltextsearch.modals.reindexnode", {
   modal: {
     type: "dialog",
     size: "small"
   }
 });
-var S;
-class q extends te {
+var v;
+class B extends se {
   constructor(n, r) {
     super(n, r);
-    p(this, S);
-    this.consumeContext(re, (s) => {
-      y(this, S, s);
+    h(this, v);
+    this.consumeContext(ae, (i) => {
+      f(this, v, i);
     });
   }
   async execute() {
-    var r;
-    const n = (r = d(this, S)) == null ? void 0 : r.open(this, Ae, {
+    var n;
+    (n = a(this, v)) == null || n.open(this, Oe, {
       data: {
         unique: this.args.unique
       }
     });
-    await (n == null ? void 0 : n.onSubmit().then(() => {
-      console.log("ok");
-    }).catch(() => {
-      console.log("no");
-    }));
   }
 }
-S = new WeakMap();
-const Ce = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+v = new WeakMap();
+const je = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  ReindexNodeAction: q,
-  default: q
+  ReindexNodeAction: B,
+  default: B
 }, Symbol.toStringTag, { value: "Module" }));
 var u;
-class Fe {
+class Me {
   constructor(e) {
-    p(this, u);
-    y(this, u, e);
+    h(this, u);
+    f(this, u, e);
   }
   async config() {
-    return await m(d(this, u), b.getUmbracoFulltextsearchApiV5FulltextsearchConfig());
+    return await y(a(this, u), p.getUmbracoFulltextsearchApiV5FulltextsearchConfig());
   }
   async indexStatus() {
-    return await m(d(this, u), b.getUmbracoFulltextsearchApiV5FulltextsearchIndexstatus());
+    return await y(a(this, u), p.getUmbracoFulltextsearchApiV5FulltextsearchIndexstatus());
   }
   async incorrectIndexedNodes(e) {
-    return await m(d(this, u), b.getUmbracoFulltextsearchApiV5FulltextsearchIncorrectindexednodes({
+    return await y(a(this, u), p.getUmbracoFulltextsearchApiV5FulltextsearchIncorrectindexednodes({
       pageNumber: e
     }));
   }
   async indexedNodes(e) {
-    return await m(d(this, u), b.getUmbracoFulltextsearchApiV5FulltextsearchIndexednodes({
+    return await y(a(this, u), p.getUmbracoFulltextsearchApiV5FulltextsearchIndexednodes({
       pageNumber: e
     }));
   }
   async missingNodes(e) {
-    return await m(d(this, u), b.getUmbracoFulltextsearchApiV5FulltextsearchMissingnodes({
+    return await y(a(this, u), p.getUmbracoFulltextsearchApiV5FulltextsearchMissingnodes({
       pageNumber: e
     }));
   }
   async reindex(e, n) {
-    return await m(d(this, u), b.postUmbracoFulltextsearchApiV5FulltextsearchReindexnodes({
+    return await y(a(this, u), p.postUmbracoFulltextsearchApiV5FulltextsearchReindexnodes({
       requestBody: {
         includeDescendants: e,
         nodeIds: n
@@ -512,81 +508,93 @@ class Fe {
   }
 }
 u = new WeakMap();
-var h, w, T, v, k, N;
-class P extends de {
+var x, T, S, _, N, I;
+class j extends ue {
   constructor(n) {
     super(n);
-    p(this, h);
-    p(this, w);
-    p(this, T);
-    p(this, v);
-    p(this, k);
-    p(this, N);
-    y(this, w, new F(void 0)), this.config = d(this, w).asObservable(), y(this, T, new F(void 0)), this.indexStatus = d(this, T).asObservable(), y(this, v, new F(void 0)), this.indexedNodes = d(this, v).asObservable(), y(this, k, new B(void 0)), this.incorrectIndexedNodes = d(this, k).asObservable(), y(this, N, new B(void 0)), this.missingIndexedNodes = d(this, N).asObservable(), this.provideContext(z, this), y(this, h, new Fe(n)), this.consumeContext(H, (r) => {
-      const s = r.getOpenApiConfiguration();
-      l.TOKEN = s.token, l.BASE = s.base, l.WITH_CREDENTIALS = s.withCredentials;
+    h(this, x);
+    h(this, T);
+    h(this, S);
+    h(this, _);
+    h(this, N);
+    h(this, I);
+    f(this, T, new F(void 0)), this.config = a(this, T).asObservable(), f(this, S, new F(void 0)), this.indexStatus = a(this, S).asObservable(), f(this, _, new F(void 0)), this.indexedNodes = a(this, _).asObservable(), f(this, N, new H(void 0)), this.incorrectIndexedNodes = a(this, N).asObservable(), f(this, I, new H(void 0)), this.missingIndexedNodes = a(this, I).asObservable(), this.provideContext(U, this), f(this, x, new Me(n)), this.consumeContext(W, (r) => {
+      const i = r.getOpenApiConfiguration();
+      l.TOKEN = i.token, l.BASE = i.base, l.WITH_CREDENTIALS = i.withCredentials;
     });
   }
   async getConfig() {
-    const { data: n } = await d(this, h).config();
-    n && d(this, w).setValue(n);
+    const { data: n } = await a(this, x).config();
+    n && a(this, T).setValue(n);
   }
   async reindex(n, r) {
-    await d(this, h).reindex(n, r);
+    await a(this, x).reindex(n, r);
   }
   async getIndexStatus() {
-    const { data: n } = await d(this, h).indexStatus();
-    n && d(this, T).setValue(n);
+    const { data: n } = await a(this, x).indexStatus();
+    n && a(this, S).setValue(n);
   }
   async getIndexedNodes(n) {
-    const { data: r } = await d(this, h).indexedNodes(n);
-    r && d(this, v).setValue(r);
+    const { data: r } = await a(this, x).indexedNodes(n);
+    r && a(this, _).setValue(r);
   }
   async getIncorrectIndexedNodes(n) {
-    const { data: r } = await d(this, h).incorrectIndexedNodes(n);
-    r && d(this, k).setValue(r);
+    const { data: r } = await a(this, x).incorrectIndexedNodes(n);
+    r && a(this, N).setValue(r);
   }
   async getMissingNodes(n) {
-    const { data: r } = await d(this, h).missingNodes(n);
-    r && d(this, N).setValue(r);
+    const { data: r } = await a(this, x).missingNodes(n);
+    r && a(this, I).setValue(r);
   }
 }
-h = new WeakMap(), w = new WeakMap(), T = new WeakMap(), v = new WeakMap(), k = new WeakMap(), N = new WeakMap();
-const z = new ae(P.name), Ee = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+x = new WeakMap(), T = new WeakMap(), S = new WeakMap(), _ = new WeakMap(), N = new WeakMap(), I = new WeakMap();
+const U = new xe(j.name), Ue = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  FULLTEXTSEARCH_CONTEXT_TOKEN: z,
-  FullTextSearchContext: P,
-  default: P
+  FULLTEXTSEARCH_CONTEXT_TOKEN: U,
+  FullTextSearchContext: j,
+  default: j
 }, Symbol.toStringTag, { value: "Module" }));
-var Pe = Object.defineProperty, Re = Object.getOwnPropertyDescriptor, $ = (t) => {
+var ze = Object.defineProperty, Pe = Object.getOwnPropertyDescriptor, Y = (t) => {
   throw TypeError(t);
-}, I = (t, e, n, r) => {
-  for (var s = r > 1 ? void 0 : r ? Re(e, n) : e, i = t.length - 1, o; i >= 0; i--)
-    (o = t[i]) && (s = (r ? o(e, n, s) : o(s)) || s);
-  return r && s && Pe(e, n, s), s;
-}, K = (t, e, n) => e.has(t) || $("Cannot " + n), ze = (t, e, n) => (K(t, e, "read from private field"), e.get(t)), je = (t, e, n) => e.has(t) ? $("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, n), Oe = (t, e, n, r) => (K(t, e, "write to private field"), e.set(t, n), n), A;
-let f = class extends oe(se) {
+}, w = (t, e, n, r) => {
+  for (var i = r > 1 ? void 0 : r ? Pe(e, n) : e, s = t.length - 1, o; s >= 0; s--)
+    (o = t[s]) && (i = (r ? o(e, n, i) : o(i)) || i);
+  return r && i && ze(e, n, i), i;
+}, Q = (t, e, n) => e.has(t) || Y("Cannot " + n), O = (t, e, n) => (Q(t, e, "read from private field"), e.get(t)), G = (t, e, n) => e.has(t) ? Y("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, n), V = (t, e, n, r) => (Q(t, e, "write to private field"), e.set(t, n), n), A, R;
+let g = class extends ce(de) {
   constructor() {
-    super(), je(this, A), this.consumeContext(z, (t) => {
-      Oe(this, A, t);
+    super(), G(this, A), G(this, R), this.consumeContext(U, (t) => {
+      V(this, R, t);
+    }), this.consumeContext(he, (t) => {
+      V(this, A, t);
     });
   }
   _handleCancel() {
     var t;
     (t = this.modalContext) == null || t.submit();
   }
-  _reindex(t) {
-    var e;
-    this._setButtonState(t, "waiting"), (e = ze(this, A)) == null || e.reindex(t, []), console.log("reindexing", t);
-  }
-  _setButtonState(t, e) {
-    t ? this._withDescendantsState = e : this._withoutDescendantsState = e;
+  async _reindex(t) {
+    var n, r, i, s, o;
+    if (!this.modalContext) return;
+    (n = this.modalContext) == null || n.submit();
+    const e = (r = O(this, A)) == null ? void 0 : r.stay("default", {
+      data: {
+        headline: this.localize.term("fullTextSearch_reindexing"),
+        message: this.localize.term("fullTextSearch_reindexingMessage")
+      }
+    });
+    await ((s = O(this, R)) == null ? void 0 : s.reindex(t, [Number((i = this.modalContext) == null ? void 0 : i.data.unique) || 0])), e == null || e.close(), (o = O(this, A)) == null || o.peek("positive", {
+      data: {
+        headline: this.localize.term("fullTextSearch_reindexed"),
+        message: this.localize.term("fullTextSearch_reindexedMessage")
+      }
+    });
   }
   render() {
     var t, e;
     return C`
-            <uui-dialog-layout headline="${(t = this.data) != null && t.unique ? "#fullTextSearch_reindexNode" : "#fullTextSearch_reindexAllNodes"}">
-                ${(e = this.data) != null && e.unique ? C`
+            <uui-dialog-layout headline="${this.localize.term((t = this.modalContext) != null && t.data.unique ? "fullTextSearch_reindexNode" : "fullTextSearch_reindexAllNodes")}">
+                ${(e = this.modalContext) != null && e.data.unique ? C`
                     <uui-button look="primary" .state=${this._withoutDescendantsState} @click=${() => this._reindex(!1)}>
                         <umb-localize key="fullTextSearch_reindexJustThisNode">
                             Reindex just this node
@@ -612,379 +620,163 @@ let f = class extends oe(se) {
   }
 };
 A = /* @__PURE__ */ new WeakMap();
-I([
-  V({ attribute: !1 })
-], f.prototype, "modalContext", 2);
-I([
-  V({ attribute: !1 })
-], f.prototype, "data", 2);
-I([
-  G()
-], f.prototype, "_withDescendantsState", 2);
-I([
-  G()
-], f.prototype, "_withoutDescendantsState", 2);
-f = I([
-  ie("our-umbraco-fulltext-search-reindex-node-modal")
-], f);
-const Me = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+R = /* @__PURE__ */ new WeakMap();
+w([
+  K({ attribute: !1 })
+], g.prototype, "modalContext", 2);
+w([
+  K({ attribute: !1 })
+], g.prototype, "data", 2);
+w([
+  X()
+], g.prototype, "_withDescendantsState", 2);
+w([
+  X()
+], g.prototype, "_withoutDescendantsState", 2);
+g = w([
+  le("our-umbraco-fulltext-search-reindex-node-modal")
+], g);
+const qe = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   get default() {
-    return f;
+    return g;
   }
-}, Symbol.toStringTag, { value: "Module" })), Be = {
+}, Symbol.toStringTag, { value: "Module" })), He = {
   fullTextSearch: {
-    indexStatus: "Index Status",
-    indexableNodes: "Indexable Nodes",
-    indexableNodesDescription: "The total number of indexable nodes, according to the current Full Text Search config",
     allIndexableNodesAreIndexed: "All indexable nodes has full text content in index",
-    indexedNodes: "Indexed Nodes",
-    indexedNodesDescription: "The total number of indexed nodes searchable by Full Text Search",
-    missingNodes: "Missing Nodes",
-    missingNodesDescription: "The total number of missing indexed nodes, according to the current Full Text Search config",
-    couldntGetMissingNodes: "Couldn't get missing nodes",
-    nodesAreMissingInIndex: "{0} node(s) are missing full text content in index",
-    incorrectIndexedNodes: "Incorrectly Indexed Nodes",
-    incorrectIndexedNodesDescription: "The total number of indexed nodes that should not be indexed according to the current Full Text Search config",
     couldntGetIncorrectIndexedNodes: "Couldn't get incorrectly indexed nodes",
-    nodesAreIncorrectlyIndexed: "{0} node(s) are incorrectly indexed with full text content",
-    reindexNode: "Reindex Node",
-    reindexNodes: "Reindex Nodes",
-    reindexedNodes: "Reindexed {0} node(s)",
-    reindexing: "Reindexing...",
-    reindex: "Reindex",
-    reindexDescription: "Select whether or not to reindex all nodes",
-    reindexWithDescendants: "Reindex with descendants",
-    includeDescendants: "Include descendants",
-    allNodes: "All nodes",
-    selectNodes: "Select nodes",
-    selectNodesDescription: "Select the nodes to reindex",
-    selectedNodes: "Selected nodes",
-    description: "Description",
-    developedBy: "Developed by",
-    sponsoredBy: "Sponsored by",
-    status: "Status",
-    search: "Search",
-    enterKeywordsHere: "Enter keywords here",
-    advancedSettings: "Advanced settings",
-    inspect: "Inspect",
-    searchType: "Search type",
-    searchTypeDescription: "The type of search to perform.",
-    titleProperties: "Title properties",
-    titlePropertiesDescription: "Adds field names to use for title properties. Note, that this overrides the config setting, so you need to add all wanted fields for titles here.",
-    titleBoost: "Title boost",
-    titleBoostDescription: "Set the boosting value for the title properties, to make titles more important than body text when searching.",
-    bodyProperties: "Body properties",
-    bodyPropertiesDescription: "Adds field names to use for body properties. Note, that this overrides the config setting, so you need to add all wanted fields for bodytext here.",
-    summaryProperties: "Summary properties",
-    summaryPropertiesDescription: "Adds field names to use for summary properties. Note, that if you don't specify any summary properties, the body properties will be used instead.",
-    summaryLength: "Summary length",
-    summaryLengthDescription: "Sets the summary length in the results. The default is 300 characters.",
-    rootNodes: "Root nodes",
-    rootNodesDescription: "With this setting, you can limit search results to be descendants of the selected nodes.",
-    culture: "Culture",
-    cultureDescription: "This is used to define which culture to search in. You should probably always set this, but it might work without it, in invariant sites.",
-    enableWildcards: "Enable wildcards",
-    enableWildcardsDescription: "This enables or disables use of wildcards in the search terms. Wildcard characters are added automatically to each of the terms.",
-    fuzzyness: "Fuzzyness",
-    fuzzynessDescription: "Fuzzyness is used to match your search term with similar words. This method sets the fuzzyness parameter of the search. The default is 0.8. If wildcards is enabled, fuzzyness will not be used.",
-    allowedContentTypes: "Allowed Content Types",
-    allowedContentTypesDescription: "Limit the search to nodes of the specified Content Type Aliases.",
+    couldntGetMissingNodes: "Couldn't get missing nodes",
+    externalIndexNotFound: "ExternalIndex not found",
     fullTextSearchIsDisabled: "FullTextSearch is disabled",
     fullTextSearchIsEnabled: "FullTextSearch is enabled",
-    externalIndexNotFound: "ExternalIndex not found",
-    enabled: "Enabled",
-    defaultTitleField: "Default Title field",
-    indexingActiveKey: '"Indexing Active" key',
-    disallowedContentTypeAliases: "Disallowed Content Type aliases",
-    disallowedPropertyAliases: "Disallowed property aliases",
-    xPathsToRemove: "XPaths to remove from content",
-    fullTextContentField: "Full Text Content field",
-    fullTextPathField: "Full Text Path field"
+    indexableNodesDescription: "The total number of indexable nodes, according to the current Full Text Search config",
+    indexedNodesDescription: "The total number of indexed nodes searchable by Full Text Search",
+    incorrectIndexedNodesDescription: "The total number of indexed nodes that should not be indexed according to the current Full Text Search config",
+    missingNodesDescription: "The total number of missing indexed nodes, according to the current Full Text Search config",
+    nodesAreIncorrectlyIndexed: "{0} node(s) are incorrectly indexed with full text content",
+    nodesAreMissingInIndex: "{0} node(s) are missing full text content in index",
+    reindex: "Reindex",
+    reindexAllNodes: "Reindex all nodes",
+    reindexing: "Reindexing...",
+    reindexingMessage: "This can take a while, please be patient",
+    reindexNode: "Reindex node",
+    reindexed: "Reindexed",
+    reindexedMessage: "Reindexing complete",
+    reindexNodes: "Reindex nodes",
+    reindexWithDescendants: "Reindex with descendants"
   }
 }, Le = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: Be
-}, Symbol.toStringTag, { value: "Module" })), Ue = {
+  default: He
+}, Symbol.toStringTag, { value: "Module" })), $e = {
   fullTextSearch: {
-    indexStatus: "Index Status",
-    indexableNodes: "Indekserbare noder",
-    indexableNodesDescription: "Antal noder der kan indekseres, ifølge den nuværende konfiguration",
     allIndexableNodesAreIndexed: "Alle indekserbare noder har full text indhold i indekset",
-    indexedNodes: "Indekserede noder",
-    indexedNodesDescription: "Antal noder der kan søges frem med Full Text Search",
-    missingNodes: "Manglende noder",
-    missingNodesDescription: "Antal noder der mangler full text indhold i indekset",
-    couldntGetMissingNodes: "Kunne ikke hente manglende noder",
-    nodesAreMissingInIndex: "{0} node(r) mangler full text indhold i indekset",
-    incorrectIndexedNodes: "Fejlagtigt indekserede noder",
-    incorrectIndexedNodesDescription: "Antal noder der ikke burde være indekseret, ifølge den nuværende konfiguration",
     couldntGetIncorrectIndexedNodes: "Kunne ikke hente fejlagtigt indekserede noder",
-    nodesAreIncorrectlyIndexed: "{0} node(r) er fejlagtigt indekseret med full text indhold",
-    reindexNodes: "Reindeksér noder",
-    reindexedNodes: "Reindekserede {0} node(r)",
-    reindexing: "Reindekserer...",
-    reindex: "Reindeksér",
-    reindexDescription: "Vælg om alle noder skal reindekseres",
-    reindexWithDescendants: "Reindeksér med undernoder",
-    includeDescendants: "Inkludér undernoder",
-    allNodes: "Alle noder",
-    selectNodes: "Vælg noder",
-    selectNodesDescription: "Vælg noder at reindeksere",
-    selectedNodes: "Valgte noder",
-    description: "Beskrivelse",
-    developedBy: "Udviklet af",
-    sponsoredBy: "Sponsoreret af",
-    status: "Status",
-    search: "Søg",
-    enterKeywordsHere: "Indtast søgeord her",
-    advancedSettings: "Avancerede indstillinger",
-    inspect: "Inspicér",
-    searchType: "Søgningstype",
-    searchTypeDescription: "Hvilken slags søgning skal der foretages",
-    titleProperties: "Titelfelter",
-    titlePropertiesDescription: "Vælg felter der skal bruges til titlen for søgeresultatet. Bemærk, dette overskriver standardkonfigurationen, vælg derfor alle ønskede felter her.",
-    titleBoost: "Titelboost",
-    titleBoostDescription: "Sæt boost værdien for titelfelterne, så titler vægter højere end indhold i søgningen.",
-    bodyProperties: "Indholdsfelter",
-    bodyPropertiesDescription: "Vælg felter der skal bruges til indholdet for søgeresultatet. Bemærk, dette overskriver standardkonfigurationen, vælg derfor alle ønskede felter her.",
-    summaryProperties: "Beskrivelsesfelter",
-    summaryPropertiesDescription: "Vælg felter der skal bruges til beskrivelsen af søgeresultatet. Bemærk, dette overskriver standardkonfigurationen, vælg derfor alle ønskede felter her.",
-    summaryLength: "Beskrivelseslængde",
-    summaryLengthDescription: "Angiv beskrivelseslængden for søgeresultaterne. Standardindstillingen er 300 tegn.",
-    rootNodes: "Rodnoder",
-    rootNodesDescription: "Med denne indstilling, kan du begrænse søgeresultaterne, til at være undernoder til den/de valgte noder.",
-    culture: "Sprog",
-    cultureDescription: "Vælg hvilket sprog der skal søges på. Du bør altid vælge dette, men søgningen virker muligvis uden sprog, hvis dit site ikke er sprogvarieret.",
-    enableWildcards: "Aktiver wildcards",
-    enableWildcardsDescription: "Dette aktiverer wildcards i søgningen, wildcard tegnet tilføjes automatisk til hver søgeterm.",
-    fuzzyness: "Fuzzyness",
-    fuzzynessDescription: "Fuzzyness bruges til at matche en søgeterm med lignende termer. Standardindstillingen er 0.8. Hvis wildcards er aktiveret, vil fuzzyness ikke blive brugt.",
-    allowedContentTypes: "Tilladte dokumenttyper",
-    allowedContentTypesDescription: "Begrænser søgningen til indhold af de valgte dokumenttypealiaser.",
+    couldntGetMissingNodes: "Kunne ikke hente manglende noder",
     externalIndexNotFound: "ExternalIndex blev ikke fundet",
     fullTextSearchIsDisabled: "FullTextSearch er deaktiveret",
     fullTextSearchIsEnabled: "FullTextSearch is aktiveret",
-    enabled: "Aktiveret",
-    defaultTitleField: "Standard titel felt",
-    indexingActiveKey: '"Aktiv indeksering" nøgle',
-    disallowedContentTypeAliases: "Udelukkede dokumenttype aliaser",
-    disallowedPropertyAliases: "Udelukkede egenskabsaliaser",
-    xPathsToRemove: "Fjern XPaths fra indhold",
-    fullTextContentField: "Full Text indholdsfelt",
-    fullTextPathField: "Full Text sti felt"
+    incorrectIndexedNodesDescription: "Antal noder der ikke burde være indekseret, ifølge den nuværende konfiguration",
+    indexableNodesDescription: "Antal noder der kan indekseres, ifølge den nuværende konfiguration",
+    indexedNodesDescription: "Antal noder der kan søges frem med Full Text Search",
+    missingNodesDescription: "Antal noder der mangler full text indhold i indekset",
+    nodesAreIncorrectlyIndexed: "{0} node(r) er fejlagtigt indekseret med full text indhold",
+    nodesAreMissingInIndex: "{0} node(r) mangler full text indhold i indekset",
+    reindex: "Reindeksér",
+    reindexAllNodes: "Reindeksér alle noder",
+    reindexed: "Reindekseret",
+    reindexedMessage: "Reindeksering færdig",
+    reindexing: "Reindekserer...",
+    reindexingMessage: "Dette kan tage et øjeblik",
+    reindexNode: "Reindeksér node",
+    reindexNodes: "Reindeksér noder",
+    reindexWithDescendants: "Reindeksér med undernoder"
   }
-}, qe = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Be = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: Ue
-}, Symbol.toStringTag, { value: "Module" })), He = {
+  default: $e
+}, Symbol.toStringTag, { value: "Module" })), Ge = {
   fullTextSearch: {
-    indexStatus: "Statws Mynegai",
-    indexableNodes: "Nodau Mynegeiddadwy",
-    indexableNodesDescription: "Cyfanswm y nodau y gellir eu mynegeio, yn ôl y ffurfweddiad Full Text Search presennol",
     allIndexableNodesAreIndexed: "Mae gan bob nod a ellir ei mynegeio gynnwys testun llawn yn yr mynegai",
-    indexedNodes: "Nodau Mynegeiedig",
-    indexedNodesDescription: "Cyfanswm y nodau mynegeiedig y gellir eu chwilio gyda Full Text Search",
-    missingNodes: "Nodau ar Goll",
-    missingNodesDescription: "Cyfanswm y nodau mynegeiedig sydd ar goll, yn ôl y ffurfweddiad Full Text Search presennol",
-    couldntGetMissingNodes: "Methwyd â chael nodau coll",
-    nodesAreMissingInIndex: "Mae {0} nod(au) yn methu eu cynnwys testun llawn yn yr mynegai",
-    incorrectIndexedNodes: "Nodau sydd wedi'u Mynegeio yn Anghywir",
-    incorrectIndexedNodesDescription: "Cyfanswm y nodau mynegeiedig na ddylai fod wedi'u mynegeio yn ôl y ffurfweddiad Full Text Search presennol",
     couldntGetIncorrectIndexedNodes: "Methu â chael nodau wedi'u mynegeio' yn anghywir",
-    nodesAreIncorrectlyIndexed: "Mae {0} nod(au) wedi'u mynegeio'n anghywir gyda chynnwys testun llawn",
-    reindexNodes: "Ail-fynegi Nodau",
-    reindexedNodes: "Mae {0} nod(au) wedi'u hail-fynegeio",
-    reindexing: "Ail-fynegio...",
-    reindex: "Ail-fynegi",
-    reindexDescription: "Dewiswch a ydych am ail-fynegi pob nod ai peidio",
-    reindexWithDescendants: "Ail-fynegi gyda disgynyddion",
-    includeDescendants: "Cynnwys disgynyddion",
-    allNodes: "Pob nod",
-    selectNodes: "Dewis nodau",
-    selectNodesDescription: "Dewiswch y nodau i'w hail-fynegi",
-    selectedNodes: "Nodau a ddewiswyd",
-    description: "Disgrifiad",
-    developedBy: "Datblygwyd gan",
-    sponsoredBy: "Noddwyd gan",
-    status: "Statws",
-    search: "Chwilio",
-    enterKeywordsHere: "Rhowch eiriau allweddol yma",
-    advancedSettings: "Gosodiadau Uwch",
-    inspect: "Archwilio",
-    searchType: "Math o chwiliad",
-    searchTypeDescription: "Y math o chwiliad i'w wneud.",
-    titleProperties: "Priodweddau teitl",
-    titlePropertiesDescription: "Ychwanegwch enwau maes i'w defnyddio ar gyfer priodweddau teitl. Sylwer, fod hyn yn diystyru'r gosodiad ffurfweddiad, felly bydd angen ychwanegu pob maes rydych am eu defnyddio ar gyfer teitlau yma.",
-    titleBoost: "Hyby teitl",
-    titleBoostDescription: "Gosodwch y gwerth hyby ar gyfer y priodweddau teitl, i wneud teitlau'n bwysicach na thestun y corff wrth chwilio.",
-    bodyProperties: "Priodweddau'r corff",
-    bodyPropertiesDescription: "Ychwanegwch enwau maes i'w defnyddio ar gyfer priodweddau'r corff. Sylwer, fod hyn yn diystyru'r gosodiad ffurfweddiad, felly bydd angen ychwanegu pob maes rydych am eu defnyddio ar gyfer testun y corff yma.",
-    summaryProperties: "Priodoleddau Crynodeb",
-    summaryPropertiesDescription: "Ychwanegwch enwau maes i'w defnyddio ar gyfer priodweddau crynodeb. Sylwer, os nad ydych yn nodi unrhyw briodweddau crynodeb, bydd y priodweddau corff yn cael eu defnyddio yn lle.",
-    summaryLength: "Hyd y Crynodeb",
-    summaryLengthDescription: "Gosodwch hyd y crynodeb yn y canlyniadau. Y diofyn yw 300 o gymeriadau.",
-    rootNodes: "Nodau gwraidd",
-    rootNodesDescription: "Gyda'r gosodiad hwn, gallwch gyfyngu'r canlyniadau chwilio i fod yn ddisgynyddion y nodau a ddewiswyd.",
-    culture: "Diwylliant",
-    cultureDescription: "Defnyddir hwn i ddiffinio pa ddiwylliant i chwilio ynddo. Mae'n debyg y dylech osod hwn bob amser, ond gallai weithio hebddo, mewn safleoedd un iaith.",
-    enableWildcards: "Galluogi cardiau gwyllt",
-    enableWildcardsDescription: "Mae hyn yn galluogi neu'n analluogi defnydd o gardiau gwyllt yn y termau chwilio. Mae nodau cerdyn gwyllt yn cael eu hychwanegu'n awtomatig at bob un o'r termau.",
-    fuzzyness: "Aneglurder",
-    fuzzynessDescription: "Defnyddir aneglurder i gyfateb eich term chwilio gyda geiriau tebyg. Mae'r dull hwn yn gosod y paramedr aneglurder y chwiliad. Y rhagosodiad yw 0.8. Os yw cardiau gwyllt yn cael eu galluogi, ni ddefnyddir aneglurder.",
-    allowedContentTypes: "Mathau o Gynnwys a ganiateir",
-    allowedContentTypesDescription: "Cyfyngu'r chwiliad i nodau efo enwau arall fathau o gynnwys penodedig.",
+    couldntGetMissingNodes: "Methwyd â chael nodau coll",
+    externalIndexNotFound: "Heb ddod o hyd i ExternalIndex",
     fullTextSearchIsDisabled: "Mae FullTextSearch wedi'i analluogi",
     fullTextSearchIsEnabled: "Mae FullTextSearch wedi'i alluogi",
-    externalIndexNotFound: "Heb ddod o hyd i ExternalIndex",
-    enabled: "Wedi'i alluogi",
-    defaultTitleField: "Maes Teitl diofyn",
-    indexingActiveKey: 'Allwedd "Indexing Active"',
-    disallowedContentTypeAliases: "Enwau arall y mathau o gynnwys na caniateir",
-    disallowedPropertyAliases: "Enwau arall y Eiddo na caniateir",
-    xPathsToRemove: "Llwybrau XPath i'w tynnu o'r cynnwys",
-    fullTextContentField: "Maes Cynnwys Testun Llawn",
-    fullTextPathField: "Maes Llwybr Testun Llawn"
+    incorrectIndexedNodesDescription: "Cyfanswm y nodau mynegeiedig na ddylai fod wedi'u mynegeio yn ôl y ffurfweddiad Full Text Search presennol",
+    indexableNodesDescription: "Cyfanswm y nodau y gellir eu mynegeio, yn ôl y ffurfweddiad Full Text Search presennol",
+    indexedNodesDescription: "Cyfanswm y nodau mynegeiedig y gellir eu chwilio gyda Full Text Search",
+    missingNodesDescription: "Cyfanswm y nodau mynegeiedig sydd ar goll, yn ôl y ffurfweddiad Full Text Search presennol",
+    nodesAreIncorrectlyIndexed: "Mae {0} nod(au) wedi'u mynegeio'n anghywir gyda chynnwys testun llawn",
+    nodesAreMissingInIndex: "Mae {0} nod(au) yn methu eu cynnwys testun llawn yn yr mynegai",
+    reindex: "Ail-fynegi",
+    reindexAllNodes: "Ail-fynegi all nodau",
+    reindexed: "Ail-fynegiwyd",
+    reindexedMessage: "Wedi ail-fynegiwyd",
+    reindexing: "Ail-fynegio...",
+    reindexingMessage: "Wedi ail-fynegio",
+    reindexNodes: "Ail-fynegi Nodau",
+    reindexWithDescendants: "Ail-fynegi gyda disgynyddion"
   }
 }, Ve = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: He
-}, Symbol.toStringTag, { value: "Module" })), Ge = {
+  default: Ge
+}, Symbol.toStringTag, { value: "Module" })), We = {
   fullTextSearch: {
-    indexStatus: "Statut de l'Index",
-    indexableNodes: "Noeuds Indexables",
-    indexableNodesDescription: "Le nombre total de noeuds indexables, selon la configuration actuelle du Full Text Search",
     allIndexableNodesAreIndexed: "Tous les noeuds indexables ont leur contenu intégral dans l'index",
-    indexedNodes: "Noeuds Indexés",
-    indexedNodesDescription: "Le nombre total de noeuds indexés qui peuvent être cherchés par le Full Text Search",
-    missingNodes: "Noeuds manquant",
-    missingNodesDescription: "Le nombre total de noeuds indexés manquant, selon la configuration actuelle du Full Text Search",
-    couldntGetMissingNodes: "Impossible de récupérer les noeuds manquant",
-    nodesAreMissingInIndex: "{0} noeud(s) n'ont pas leur contenu intégral dans l'index",
-    incorrectIndexedNodes: "Noeuds Indexés Incorrectement",
-    incorrectIndexedNodesDescription: "Le nombre total de noeuds indexés qui ne devraient pas l'être selon la configuration actuelle du Full Text Search",
     couldntGetIncorrectIndexedNodes: "Impossible de récupérer les noeuds indexés incorrectement",
-    nodesAreIncorrectlyIndexed: "{0} noeud(s) sont incorrectement indexés avec leur contenu intégral",
-    reindexNodes: "Indexer à nouveau les noeuds",
-    reindexedNodes: "{0} noeud(s) ont été indexés à nouveau",
-    reindexing: "Nouvelle indexation en cours...",
-    reindex: "Indexer à nouveau",
-    reindexDescription: "Choisissez s'il faut ou pas indexer à nouveau tous les noeuds",
-    reindexWithDescendants: "Indexer à nouveau, y compris les descendants",
-    includeDescendants: "Inclure les descendants",
-    allNodes: "Tous les noeuds",
-    selectNodes: "Sélectionner les noeuds",
-    selectNodesDescription: "Sélectionner les noeuds à indexer à nouveau",
-    selectedNodes: "Noeuds sélectionnés",
-    description: "Description",
-    developedBy: "Developpé par",
-    sponsoredBy: "Sponsorisé par",
-    status: "Statut",
-    search: "Chercher",
-    enterKeywordsHere: "Introduire les mots-clés ici",
-    advancedSettings: "Réglages avancés",
-    inspect: "Inspecter",
-    searchType: "Type de recherche",
-    searchTypeDescription: "Le type de recherche à exécuter.",
-    titleProperties: "Propriétés pour le Titre",
-    titlePropertiesDescription: "Ajouter le nom des champs à utiliser pour les propriété du titre. Notez que ceci remplace le paramètre de configuration, vous devez donc ajouter ici tous les champs souhaités pour le titre.",
-    titleBoost: "Mise en avant du titre",
-    titleBoostDescription: "Définissez la valeur de mise en avant pour les propriétés du titre, afin de rendre les titres plus importants que le corps du texte lors de la recherche.",
-    bodyProperties: "Propriétés du Corps",
-    bodyPropertiesDescription: "Ajouter le nom des champs à utiliser pour les propriétés du corps. Notez que ceci remplace le paramètre de configuration, vous devez donc ajouter ici tous les champs souhaités pour le corps du texte.",
-    summaryProperties: "Propriétés du Résumé",
-    summaryPropertiesDescription: "Ajouter le nom des champs à utiliser pour les propriétés du résumé. Notez que si vous ne spécifiez aucune propriété du résumé, les propriétés du corps seront utilisées à la place.",
-    summaryLength: "Longueur du résumé",
-    summaryLengthDescription: "Fixe la longueur du résumé dans les résultats. La valeur par défaut est de 300 caractères.",
-    rootNodes: "Noeuds racine",
-    rootNodesDescription: "Avec ce réglage, vous pouvez limiter les résultats de recherche aux descendants des noeuds sélectionnés.",
-    culture: "Culture",
-    cultureDescription: "Ceci est utilisé pour définir la culture dans laquelle la recherche est faite. Vous devriez probablement toujours la spécifier, mais cela pourrait fonctionner sans, notamment dans les sites invariants.",
-    enableWildcards: "Activer les caractères génériques",
-    enableWildcardsDescription: "Ceci active ou désactive l'utilisation de caractères génériques (wildcards) dans les termes de recherches. Les caractères génériques sont ajoutés automatiquement à chacun des termes.",
-    fuzzyness: "Approximation",
-    fuzzynessDescription: "L'approximation est utilisée pour faire correspondre votre terme de recherche avec des mots similaires. Cette méthode fixe le niveau d'approximation de la recherche. La valeur par défaut est 0,8. Si les caractères génériques sont activés, l'approximation ne sera pas utilisée.",
-    allowedContentTypes: "Types de Contenu Autorisés",
-    allowedContentTypesDescription: "Limite la recherche aux noeuds des Types de Contenu spécifiés.",
+    couldntGetMissingNodes: "Impossible de récupérer les noeuds manquant",
+    externalIndexNotFound: "ExternalIndex n'a pas été trouvé",
     fullTextSearchIsDisabled: "FullTextSearch est désactivé",
     fullTextSearchIsEnabled: "FullTextSearch est activé",
-    externalIndexNotFound: "ExternalIndex n'a pas été trouvé",
-    enabled: "Activé",
-    defaultTitleField: "Champ par défaut pour le Titre",
-    indexingActiveKey: 'Clé "Indexation Active"',
-    disallowedContentTypeAliases: "Alias des Types de Contenu non-autorisés",
-    disallowedPropertyAliases: "Alias des propriétés non-autorisées",
-    xPathsToRemove: "XPaths à supprimer du contenu",
-    fullTextContentField: "Champ du Contenu de Texte Intégral",
-    fullTextPathField: "Champ du Chemin vers le Contenu Intégral"
-  }
-}, We = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  default: Ge
-}, Symbol.toStringTag, { value: "Module" })), $e = {
-  fullTextSearch: {
-    indexStatus: "Indeksstatus",
-    indexableNodes: "Indekserbare noder",
-    indexableNodesDescription: "Det totale antall indekserbare noder, i henhold til gjeldende Full Text Search konfigurasjon",
-    allIndexableNodesAreIndexed: "Alle indekserbare noder har fulltekstinnhold i indeksen",
-    indexedNodes: "Indekserte noder",
-    indexedNodesDescription: "Det totale antall indekserte noder som kan søkes etter av Full Text Search",
-    missingNodes: "Manglende noder",
-    missingNodesDescription: "Totalt antall manglende indekserte noder, i henhold til gjeldende Full Text Search konfigurasjon",
-    couldntGetMissingNodes: "Kunne ikke hente manglende noder",
-    nodesAreMissingInIndex: "{0} node(r) mangler fulltekstinnhold i indeksen",
-    incorrectIndexedNodes: "Feilaktig indekserte noder",
-    incorrectIndexedNodesDescription: "Det totale antall indekserte noder som ikke skal indekseres i henhold til gjeldende Full Text Search-konfigurasjon",
-    couldntGetIncorrectIndexedNodes: "Kunne ikke hente feilaktig indekserte noder",
-    nodesAreIncorrectlyIndexed: "{0} node(r) er feilaktig indeksert med fulltekstinnhold",
-    reindexNodes: "Reindekser noder",
-    reindexedNodes: "Reindekserte {0} node(r)",
-    reindexing: "Reindekserer...",
-    reindex: "Reindekser",
-    reindexDescription: "Velg om alle noder skal reindekseres",
-    reindexWithDescendants: "Reindekser med etterkommere",
-    includeDescendants: "Inkluder etterkommere",
-    allNodes: "Alle noder",
-    selectNodes: "Velg noder",
-    selectNodesDescription: "Velg nodene som skal reindekseres",
-    selectedNodes: "Valgte noder",
-    description: "Beskrivelse",
-    developedBy: "Utviklet av",
-    sponsoredBy: "Sponset av",
-    status: "Status",
-    search: "Søk",
-    enterKeywordsHere: "Skriv inn nøkkelord her",
-    advancedSettings: "Avanserte innstillinger",
-    inspect: "Inspiser",
-    searchType: "Søketype",
-    searchTypeDescription: "Typen søk du vil utføre.",
-    titleProperties: "Tittelegenskaper",
-    titlePropertiesDescription: "Legger til feltnavn som brukes for tittelegenskaper. Merk at dette overstyrer innstillingene, så du må legge til alle ønskede felt for titler her.",
-    titleBoost: "Tittelboost",
-    titleBoostDescription: "Still inn boostingsverdien for tittelegenskapene for å gjøre titler viktigere enn brødtekst når du søker.",
-    bodyProperties: "Brødtekstegenskaper",
-    bodyPropertiesDescription: "Legger til feltnavn som brukes for brødtekstegenskaper. Merk at dette overstyrer innstillingene, så du må legge til alle ønskede felt for brødtekst her.",
-    summaryProperties: "Oppsummeringsegenskaper",
-    summaryPropertiesDescription: "Legger til feltnavn som skal brukes for oppsummeringsegenskaper. Merk at hvis du ikke spesifiserer noen oppsummeringsegenskaper, vil brødtekstegenskapene brukes i stedet.",
-    summaryLength: "Oppsummeringslengde",
-    summaryLengthDescription: "Angir sammendragets lengde i resultatene. Standardverdien er 300 tegn.",
-    rootNodes: "Hovednoder",
-    rootNodesDescription: "Med denne innstillingen kan du begrense søkeresultatene til å være etterkommere av de valgte nodene.",
-    culture: "Kultur",
-    cultureDescription: "Dette brukes til å definere hvilken kultur du skal søke i. Du bør sannsynligvis alltid angi dette, men det kan fungere uten den, på uforanderlige nettsteder.",
-    enableWildcards: "Aktiver jokertegn",
-    enableWildcardsDescription: "Disse aktiverer eller deaktiverer bruk av jokertegn i søkeordene. Jokertegn blir automatisk lagt til hvert av søkeordene.",
-    fuzzyness: "Fuzzyness",
-    fuzzynessDescription: "Fuzzyness brukes til å matche søkeordet ditt med lignende ord. Denne metoden angir fuzzyness-parameteren for søket. Standard er 0,8. Hvis jokertegn er aktivert, vil ikke fuzzyness brukes.",
-    fullTextSearchIsDisabled: "FullTextSearch er deaktivert",
-    externalIndexNotFound: "ExternalIndex ikke funnet"
+    incorrectIndexedNodesDescription: "Le nombre total de noeuds indexés qui ne devraient pas l'être selon la configuration actuelle du Full Text Search",
+    indexableNodesDescription: "Le nombre total de noeuds indexables, selon la configuration actuelle du Full Text Search",
+    indexedNodesDescription: "Le nombre total de noeuds indexés qui peuvent être cherchés par le Full Text Search",
+    missingNodesDescription: "Le nombre total de noeuds indexés manquant, selon la configuration actuelle du Full Text Search",
+    nodesAreIncorrectlyIndexed: "{0} noeud(s) sont incorrectement indexés avec leur contenu intégral",
+    nodesAreMissingInIndex: "{0} noeud(s) n'ont pas leur contenu intégral dans l'index",
+    reindex: "Indexer à nouveau",
+    reindexAllNodes: "Indexer à nouveau tous les nœuds",
+    reindexed: "Nouvelle indexation",
+    reindexedMessage: "Nouvelle indexation terminée",
+    reindexing: "Nouvelle indexation en cours...",
+    reindexingMessage: "Veuillez patienter",
+    reindexNode: "Indexer à nouveau le nœud",
+    reindexNodes: "Indexer à nouveau les noeuds",
+    reindexWithDescendants: "Indexer à nouveau, y compris les descendants"
   }
 }, Ke = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: $e
+  default: We
+}, Symbol.toStringTag, { value: "Module" })), Xe = {
+  fullTextSearch: {
+    allIndexableNodesAreIndexed: "Alle indekserbare noder har fulltekstinnhold i indeksen",
+    couldntGetIncorrectIndexedNodes: "Kunne ikke hente feilaktig indekserte noder",
+    couldntGetMissingNodes: "Kunne ikke hente manglende noder",
+    externalIndexNotFound: "ExternalIndex ikke funnet",
+    fullTextSearchIsDisabled: "FullTextSearch er deaktivert",
+    fullTextSearchIsEnabled: "FullTextSearch er aktivert",
+    incorrectIndexedNodesDescription: "Det totale antall indekserte noder som ikke skal indekseres i henhold til gjeldende Full Text Search-konfigurasjon",
+    indexableNodesDescription: "Det totale antall indekserbare noder, i henhold til gjeldende Full Text Search konfigurasjon",
+    indexedNodesDescription: "Det totale antall indekserte noder som kan søkes etter av Full Text Search",
+    missingNodesDescription: "Totalt antall manglende indekserte noder, i henhold til gjeldende Full Text Search konfigurasjon",
+    nodesAreIncorrectlyIndexed: "{0} node(r) er feilaktig indeksert med fulltekstinnhold",
+    nodesAreMissingInIndex: "{0} node(r) mangler fulltekstinnhold i indeksen",
+    reindex: "Reindekser",
+    reindexAllNodes: "Reindekser alle noder",
+    reindexed: "Reindekseret",
+    reindexedMessage: "Reindeksering ferdig",
+    reindexing: "Reindekserer...",
+    reindexingMessage: "Vennligst vent",
+    reindexNode: "Reindekser node",
+    reindexNodes: "Reindekser noder",
+    reindexWithDescendants: "Reindekser med etterkommere"
+  }
+}, Je = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: Xe
 }, Symbol.toStringTag, { value: "Module" })), Ye = {
   fullTextSearch: {
-    indexStatus: "Index status",
     indexableNodes: "Indexeerbare nodes",
     indexableNodesDescription: "Het totaal aantal indexeerbare nodes volgens de huidige Full Text Search configuratie",
     indexedNodes: "Geïndexeerde nodes",
@@ -1007,11 +799,11 @@ const Me = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     developedBy: "Ontwikkeld door",
     sponsoredBy: "Gesponsord door"
   }
-}, Xe = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Qe = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Ye
 }, Symbol.toStringTag, { value: "Module" }));
 export {
-  at as onInit
+  ut as onInit
 };
 //# sourceMappingURL=assets.js.map

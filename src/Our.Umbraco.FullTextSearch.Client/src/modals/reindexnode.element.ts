@@ -5,13 +5,14 @@ import { UmbModalExtensionElement } from "@umbraco-cms/backoffice/extension-regi
 import { ReindexNodeModalData } from "./reindexnode.modaltoken.ts";
 import { UUIButtonState } from "@umbraco-cms/backoffice/external/uui";
 import FullTextSearchContext, { FULLTEXTSEARCH_CONTEXT_TOKEN } from "../context/fulltextsearch.context.ts";
+import { UMB_NOTIFICATION_CONTEXT, UmbNotificationContext } from "@umbraco-cms/backoffice/notification";
 
 @customElement('our-umbraco-fulltext-search-reindex-node-modal')
 export default class ReindexNodeDialogElement
     extends UmbElementMixin(LitElement)
     implements UmbModalExtensionElement<ReindexNodeModalData> {
     
-    
+    #notificationContext?: UmbNotificationContext;
     #fullTextSearchContext?: FullTextSearchContext;
 
     constructor() {
@@ -20,6 +21,10 @@ export default class ReindexNodeDialogElement
         this.consumeContext(FULLTEXTSEARCH_CONTEXT_TOKEN, (fullTextSearchContext) => {
             this.#fullTextSearchContext = fullTextSearchContext;
         })
+
+        this.consumeContext(UMB_NOTIFICATION_CONTEXT, (instance) => {
+            this.#notificationContext = instance;
+        });
     }
 
     @property({ attribute: false })
@@ -38,27 +43,34 @@ export default class ReindexNodeDialogElement
         this.modalContext?.submit();
     }
 
-    private _reindex(includeDescendants: boolean) {
-        this._setButtonState(includeDescendants, 'waiting');
+    private async _reindex(includeDescendants: boolean) {
+        if (!this.modalContext) return;
 
-        this.#fullTextSearchContext?.reindex(includeDescendants, [ ]);
+        this.modalContext?.submit();
 
-        console.log("reindexing", includeDescendants);
-    }
+        const reindexingNotification = this.#notificationContext?.stay('default', {
+            data: {
+                headline: this.localize.term(`fullTextSearch_reindexing`),
+                message: this.localize.term(`fullTextSearch_reindexingMessage`)
+            }
+        });
 
-    private _setButtonState(includeDescendants: boolean, state: UUIButtonState) {
-        if (includeDescendants) {
-            this._withDescendantsState = state;
-        }
-        else {
-            this._withoutDescendantsState = state;
-        }
+        await this.#fullTextSearchContext?.reindex(includeDescendants, [Number(this.modalContext?.data.unique) || 0]);
+        
+        reindexingNotification?.close();
+
+        this.#notificationContext?.peek('positive', {
+            data: {
+                headline: this.localize.term(`fullTextSearch_reindexed`),
+                message: this.localize.term(`fullTextSearch_reindexedMessage`)
+            }
+        });
     }
 
     override render() {
         return html`
-            <uui-dialog-layout headline="${(this.data?.unique ? `#fullTextSearch_reindexNode` : `#fullTextSearch_reindexAllNodes`)}">
-                ${(this.data?.unique
+            <uui-dialog-layout headline="${this.localize.term(this.modalContext?.data.unique ? `fullTextSearch_reindexNode` : `fullTextSearch_reindexAllNodes`)}">
+                ${(this.modalContext?.data.unique
                 ? html`
                     <uui-button look="primary" .state=${this._withoutDescendantsState} @click=${() => this._reindex(false)}>
                         <umb-localize key="fullTextSearch_reindexJustThisNode">

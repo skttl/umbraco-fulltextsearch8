@@ -20,6 +20,8 @@
     </div>
 </section>
 
+@await Html.PartialAsync("Search")
+
 <section class="section section">
     @await Html.GetBlockGridHtmlAsync(Model.BodyText)
 </section>

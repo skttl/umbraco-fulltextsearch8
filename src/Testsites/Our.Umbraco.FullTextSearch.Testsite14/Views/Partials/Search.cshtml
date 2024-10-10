@@ -1,0 +1,55 @@
+﻿@inject Our.Umbraco.FullTextSearch.Interfaces.ISearchService SearchService
+@using Our.Umbraco.FullTextSearch.Models
+@using System.Web
+@using Umbraco.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+
+<section class="section section">
+<form>
+    <fieldset>
+        <legend>Search</legend>
+        <input type="search" name="q" value="@Context.Request.Query["q"]" />
+        <button type="submit">search</button>
+    </fieldset>
+</form>
+
+@if (Context.Request.Query["q"].ToString() is string searchQuery && searchQuery.IsNullOrWhiteSpace() == false)
+{
+    var currentPage = int.TryParse(Context.Request.Query["p"], out var p) ? p : 1;
+    var search = new Search(searchQuery);
+    var results = SearchService.Search(search, currentPage);
+
+    <fieldset>
+        <legend>Search Results for '@searchQuery'</legend>
+
+        <div>@results.TotalResults results found</div>
+        <ul>
+            @foreach (var result in results.Results)
+            {
+                <li>
+                    <h3>
+                    <a href="@result.Content.Url()">
+                        @result.Title
+                    </a>
+                    </h3>
+                    <p>
+                        @result.Summary
+                    </p>
+                    <p><small>Score: @result.Score</small></p>
+                </li>
+            }
+        </ul>
+
+        @if (currentPage > 1)
+        {
+            <a href="?=@HttpUtility.UrlEncode(searchQuery)&p=@(currentPage - 1)">Previous page</a>
+        }
+        @if (results.TotalPages > currentPage)
+        {
+            <a href="?=@HttpUtility.UrlEncode(searchQuery)&p=@(currentPage + 1)">Next page</a>
+        }
+    </fieldset>
+
+}
+</section>

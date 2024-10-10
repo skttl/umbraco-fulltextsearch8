@@ -26,7 +26,6 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
         private readonly IStatusService _statusService;
         private readonly ICacheService _cacheService;
         private readonly FullTextSearchOptions _options;
-        private readonly ILocalizedTextService _textService;
         private readonly IPublishedContentValueSetBuilder _valueSetBuilder;
         private readonly IContentService _contentService;
         private readonly IExamineManager _examineManager;
@@ -35,7 +34,6 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
             IStatusService statusService,
             ICacheService cacheService,
             IOptions<FullTextSearchOptions> options,
-            ILocalizedTextService textService,
             IPublishedContentValueSetBuilder valueSetBuilder,
             IContentService contentService,
             IExamineManager examineManager)
@@ -43,7 +41,6 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
             _statusService = statusService;
             _cacheService = cacheService;
             _options = options.Value;
-            _textService = textService;
             _valueSetBuilder = valueSetBuilder;
             _contentService = contentService;
             _examineManager = examineManager;
@@ -56,7 +53,7 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
                 {
                     if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
                     {
-                        return new HealthCheckStatus(_textService.Localize("fullTextSearch","externalIndexNotFound"))
+                        return new HealthCheckStatus("ExternalIndex not found")
                         {
                             ResultType = StatusResultType.Error
                         };
@@ -67,8 +64,7 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
                         _cacheService.AddToCache(id);
                     }
                     index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(nodeIds.Select(x => x.Value<int>())).ToArray()));
-                    var textFormat = _textService.Localize("fullTextSearch", "reindexedMessage");
-                    return new HealthCheckStatus(string.Format(textFormat, nodeIds.Count))
+                    return new HealthCheckStatus("Reindexing complete")
                     {
                         ResultType = StatusResultType.Success
                     };
@@ -85,7 +81,7 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
         {
             if (!_options.Enabled)
             {
-                return Task.FromResult(new HealthCheckStatus(_textService.Localize("fullTextSearch","fullTextSearchIsDisabled"))
+                return Task.FromResult(new HealthCheckStatus("FullTextSearch is disabled")
                     {
                         ResultType = StatusResultType.Warning
                     }.Yield());
@@ -94,7 +90,7 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
             {
                 var result = new List<HealthCheckStatus>() 
                 { 
-                    new HealthCheckStatus(_textService.Localize("fullTextSearch", "fullTextSearchIsEnabled"))
+                    new HealthCheckStatus("FullTextSearch is enabled")
                     {
                         ResultType = StatusResultType.Success
                     },
@@ -109,7 +105,7 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
         {
             if (!_statusService.TryGetMissingNodes(out ISearchResults missingNodes))
             {
-                return new HealthCheckStatus(_textService.Localize("fullTextSearch","couldntGetMissingNodes"))
+                return new HealthCheckStatus("Couldn't get missing nodes")
                 {
                     ResultType = StatusResultType.Error
                 };
@@ -117,17 +113,17 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
 
             if (missingNodes.TotalItemCount > 0)
             {
-                return new HealthCheckStatus(string.Format(_textService.Localize("fullTextSearch","nodesAreMissingInIndex"), missingNodes.TotalItemCount))
+                return new HealthCheckStatus(string.Format("{0} node(s) are missing full text content in index", missingNodes.TotalItemCount))
                 {
-                    Description = _textService.Localize("fullTextSearch", "missingNodesDescription"),
+                    Description = "The total number of missing indexed nodes, according to the current Full Text Search config",
                     ResultType = StatusResultType.Error,
                     Actions = new[] { ReIndexNodes(missingNodes) }
                 };
             }
 
-            return new HealthCheckStatus("#fullTextSearch_allIndexableNodesAreIndexed")
+            return new HealthCheckStatus("All indexable nodes has full text content in index")
             {
-                Description = _textService.Localize("fullTextSearch", "indexableNodesDescription"),
+                Description = "The total number of indexable nodes, according to the current Full Text Search config",
                 ResultType = StatusResultType.Success
             };
         }
@@ -136,7 +132,7 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
         {
             if (!_statusService.TryGetIncorrectIndexedNodes(out ISearchResults incorrectIndexedNodes))
             {
-                return new HealthCheckStatus(_textService.Localize("fullTextSearch","couldntGetIncorrectIndexedNodes"))
+                return new HealthCheckStatus("Couldn't get incorrectly indexed nodes")
                 {
                     ResultType = StatusResultType.Error
                 };
@@ -145,17 +141,17 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
             if (incorrectIndexedNodes != null && incorrectIndexedNodes.TotalItemCount > 0)
             {
 
-                return new HealthCheckStatus(string.Format(_textService.Localize("fullTextSearch","nodesAreIncorrectlyIndexed"), incorrectIndexedNodes.TotalItemCount))
+                return new HealthCheckStatus(string.Format("{0} node(s) are incorrectly indexed with full text content", incorrectIndexedNodes.TotalItemCount))
                 {
-                    Description = _textService.Localize("fullTextSearch", "incorrectIndexedNodesDescription"),
+                    Description = "The total number of indexed nodes searchable by Full Text Search",
                     ResultType = StatusResultType.Error,
                     Actions = new[] { ReIndexNodes(incorrectIndexedNodes) }
                 };
             }
 
-            return new HealthCheckStatus(string.Format(_textService.Localize("fullTextSearch","nodesAreIncorrectlyIndexed"), 0))
+            return new HealthCheckStatus(string.Format("{0} node(s) are incorrectly indexed with full text content", 0))
             {
-                Description = _textService.Localize("fullTextSearch", "incorrectIndexedNodesDescription"),
+                Description = "The total number of indexed nodes searchable by Full Text Search",
                 ResultType = StatusResultType.Success
             };
         }
@@ -165,7 +161,7 @@ namespace Our.Umbraco.FullTextSearch.HealthChecks
 
             var reindexNodesAction = new HealthCheckAction("reindexNodes", Id)
             {
-                Name = _textService.Localize("fullTextSearch","reindexNodes")
+                Name = "Reindex nodes"
             };
             if (nodes != null && nodes.TotalItemCount > 0)
             {

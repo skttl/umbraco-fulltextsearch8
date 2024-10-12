@@ -3,7 +3,6 @@
   "AlternatePackageNames": ["Full Text Search"],
   "AuthorDetails": {
     "Name": "Søren Kottal",
-    "Description": "4x Umbraco MVP working as Tech Lead and full stack developer at Ecreo, the Umbraco Gold Partner agency in Odense, Denmark.",
     "ImageUrl": "https://24days.in/media/cr3nhed0/1644397043794.jpg"
   },
   "DocumentationUrl": "https://github.com/skttl/umbraco-fulltextsearch8/blob/master/docs/developers-guide-v2.md",
@@ -11,8 +10,20 @@
   "IssueTrackerUrl": "https://github.com/skttl/umbraco-fulltextsearch8/issues",
   "Screenshots": [
     {
-      "ImageUrl": "https://our.umbraco.com/media/wiki/279435/637398594674775124_1l9q1vcvkkgif.gif",
-      "Caption": "Full Text Search comes with a backoffice section for controlling the searching and indexing of content in your Umbraco site."
+      "ImageUrl": "https://github.com/skttl/umbraco-fulltextsearch8/blob/v5/dev/docs/screenshots/frontend-search-result.png?raw=true",
+      "Caption": "Example frontend rendering of search results"
+    },
+    {
+      "ImageUrl": "https://github.com/skttl/umbraco-fulltextsearch8/blob/v5/dev/docs/screenshots/health-check.png?raw=true",
+      "Caption": "Backoffice Health Check displaying information about Full Text Search"
+    },
+    {
+      "ImageUrl": "https://github.com/skttl/umbraco-fulltextsearch8/blob/v5/dev/docs/screenshots/reindex-content.png?raw=true",
+      "Caption": "Context menu on content node offering reindexing of a node (or all content)"
+    },
+    {
+      "ImageUrl": "https://github.com/skttl/umbraco-fulltextsearch8/blob/v5/dev/docs/screenshots/reindex-modal.png?raw=true",
+      "Caption": "Modal allowing selection between just indexing the single node, or the node and its descendants"
     }
   ],
   "Category": "Search",

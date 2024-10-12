@@ -36,7 +36,7 @@ namespace Our.Umbraco.FullTextSearch.Migrations.ZeroOneZero
             public string Culture { get; set; }
 
             [Column("Text")]
-            [SpecialDbType(SpecialDbTypes.NTEXT)]
+            [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
             public string Text { get; set; }
 
             [Column("LastUpdated")]

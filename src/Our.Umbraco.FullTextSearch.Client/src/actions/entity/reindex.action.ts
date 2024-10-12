@@ -15,12 +15,16 @@ export class ReindexNodeAction extends UmbEntityActionBase<never> {
         });
     }
 
+
     async execute() {
-        this.#modalManagerContext?.open(this, REINDEX_NODE_MODAL_TOKEN, {
+        
+        const modal = this.#modalManagerContext?.open(this, REINDEX_NODE_MODAL_TOKEN, {
             data: {
                 unique: this.args.unique
             }
         });
+
+        await modal?.onSubmit();
     }
 
 };

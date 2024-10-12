@@ -20,7 +20,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.7.0" />
 	<PackageReference Include="Umbraco.Cms.Api.Management" Version="14.0.0" />
     <PackageReference Include="Umbraco.Cms.Web.Website" Version="14.0.0" />
 	<PackageReference Include="Umbraco.Cms.Persistence.Sqlite" Version="14.0.0" />
@@ -29,5 +28,6 @@
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\..\docs\search.png" Pack="true" PackagePath="\" />
+	<None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
 </Project>

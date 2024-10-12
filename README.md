@@ -22,7 +22,7 @@ Full Text Search can be installed via NuGet
 |2.x.x|9.0.0 - 9.x.x|[v2.x Developers Guide](docs/developers-guide-v2.md)|
 |3.x.x|10.0.0 - 12.x.x|[v2/3 Developers Guide](docs/developers-guide-v2.md)|
 |**4.x.x**|10.0.0 - 13.x.x|[v4.x Developers Guide](docs/developers-guide-v4.md)|
-[**5.x.x**]14.0.0 - ]|[v5.x Developers Guide](docs/developers-guide-v5.md)|
+[**5.x.x**]|14.0.0 - ]|[v5.x Developers Guide](docs/developers-guide-v5.md)|
 
 Only the latest minor is actively maintained.
 

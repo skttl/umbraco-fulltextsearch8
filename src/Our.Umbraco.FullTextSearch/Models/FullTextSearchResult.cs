@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Our.Umbraco.FullTextSearch.Models
+namespace Our.Umbraco.FullTextSearch.Models;
+
+public class FullTextSearchResult : IFullTextSearchResult
 {
-    public class FullTextSearchResult : IFullTextSearchResult
+    public FullTextSearchResult()
     {
-        public FullTextSearchResult()
-        {
-            Results = Enumerable.Empty<SearchResultItem>().ToList();
-        }
-        public long TotalPages { get; set; }
-        public long CurrentPage { get; set; }
-        public long TotalResults { get; set; }
-        public IEnumerable<ISearchResultItem> Results { get; set; }
+        Results = Enumerable.Empty<SearchResultItem>().ToList();
     }
+    public long TotalPages { get; set; }
+    public long CurrentPage { get; set; }
+    public long TotalResults { get; set; }
+    public IEnumerable<ISearchResultItem> Results { get; set; }
 }

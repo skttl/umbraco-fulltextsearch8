@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
+using System;
 
-namespace Our.Umbraco.FullTextSearch.Controllers.Models
+namespace Our.Umbraco.FullTextSearch.Controllers.Models;
+
+public class ReIndexRequest
 {
-    public class ReIndexRequest
-    {
-        [JsonProperty("nodeIds")]
-        public int[] NodeIds { get; set; }
+    [JsonProperty("nodeKey")]
+    public Guid? NodeKey { get; set; }
 
-        [JsonProperty("includeDescendants")]
-        public bool IncludeDescendants { get; set; }
-    }
+    [JsonProperty("includeDescendants")]
+    public bool IncludeDescendants { get; set; }
 }

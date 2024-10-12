@@ -1,20 +1,20 @@
-import { LitElement as T, html as c, property as m, state as p, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as S, html as c, property as p, state as f, customElement as v } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as y } from "@umbraco-cms/backoffice/element-api";
-import { FULLTEXTSEARCH_CONTEXT_TOKEN as S } from "./fulltextsearch.context-BLn8Y4qb.js";
-import { UMB_NOTIFICATION_CONTEXT as b } from "@umbraco-cms/backoffice/notification";
-var w = Object.defineProperty, z = Object.getOwnPropertyDescriptor, f = (e) => {
+import { FULLTEXTSEARCH_CONTEXT_TOKEN as b } from "./fulltextsearch.context-BP_Dxq3u.js";
+import { UMB_NOTIFICATION_CONTEXT as w } from "@umbraco-cms/backoffice/notification";
+var z = Object.defineProperty, g = Object.getOwnPropertyDescriptor, C = (e) => {
   throw TypeError(e);
 }, u = (e, t, a, l) => {
-  for (var i = l > 1 ? void 0 : l ? z(t, a) : t, n = e.length - 1, o; n >= 0; n--)
+  for (var i = l > 1 ? void 0 : l ? g(t, a) : t, n = e.length - 1, o; n >= 0; n--)
     (o = e[n]) && (i = (l ? o(t, a, i) : o(i)) || i);
-  return l && i && w(t, a, i), i;
-}, C = (e, t, a) => t.has(e) || f("Cannot " + a), h = (e, t, a) => (C(e, t, "read from private field"), t.get(e)), x = (e, t, a) => t.has(e) ? f("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), _ = (e, t, a, l) => (C(e, t, "write to private field"), t.set(e, a), a), s, d;
-let r = class extends y(T) {
+  return l && i && z(t, a, i), i;
+}, T = (e, t, a) => t.has(e) || C("Cannot " + a), h = (e, t, a) => (T(e, t, "read from private field"), t.get(e)), _ = (e, t, a) => t.has(e) ? C("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), m = (e, t, a, l) => (T(e, t, "write to private field"), t.set(e, a), a), s, d;
+let r = class extends y(S) {
   constructor() {
-    super(), x(this, s), x(this, d), this.consumeContext(S, (e) => {
-      _(this, d, e);
-    }), this.consumeContext(b, (e) => {
-      _(this, s, e);
+    super(), _(this, s), _(this, d), this.consumeContext(b, (e) => {
+      m(this, d, e);
+    }), this.consumeContext(w, (e) => {
+      m(this, s, e);
     });
   }
   _handleCancel() {
@@ -22,7 +22,7 @@ let r = class extends y(T) {
     (e = this.modalContext) == null || e.submit();
   }
   async _reindex(e) {
-    var a, l, i, n, o;
+    var a, l, i, n, o, x;
     if (!this.modalContext) return;
     (a = this.modalContext) == null || a.submit();
     const t = (l = h(this, s)) == null ? void 0 : l.stay("default", {
@@ -31,7 +31,7 @@ let r = class extends y(T) {
         message: this.localize.term("fullTextSearch_reindexingMessage")
       }
     });
-    await ((n = h(this, d)) == null ? void 0 : n.reindex(e, [Number((i = this.modalContext) == null ? void 0 : i.data.unique) || 0])), t == null || t.close(), (o = h(this, s)) == null || o.peek("positive", {
+    await ((o = h(this, d)) == null ? void 0 : o.reindex(e, (n = (i = this.modalContext) == null ? void 0 : i.data.unique) == null ? void 0 : n.toString())), t == null || t.close(), (x = h(this, s)) == null || x.peek("positive", {
       data: {
         headline: this.localize.term("fullTextSearch_reindexed"),
         message: this.localize.term("fullTextSearch_reindexedMessage")
@@ -70,16 +70,16 @@ let r = class extends y(T) {
 s = /* @__PURE__ */ new WeakMap();
 d = /* @__PURE__ */ new WeakMap();
 u([
-  m({ attribute: !1 })
+  p({ attribute: !1 })
 ], r.prototype, "modalContext", 2);
 u([
-  m({ attribute: !1 })
+  p({ attribute: !1 })
 ], r.prototype, "data", 2);
 u([
-  p()
+  f()
 ], r.prototype, "_withDescendantsState", 2);
 u([
-  p()
+  f()
 ], r.prototype, "_withoutDescendantsState", 2);
 r = u([
   v("our-umbraco-fulltext-search-reindex-node-modal")
@@ -87,4 +87,4 @@ r = u([
 export {
   r as default
 };
-//# sourceMappingURL=reindexnode.element-C5_DoL2X.js.map
+//# sourceMappingURL=reindexnode.element-DMQBLkN4.js.map

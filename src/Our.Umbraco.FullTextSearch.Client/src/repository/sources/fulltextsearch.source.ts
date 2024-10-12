@@ -10,37 +10,11 @@ export class FullTextSearchDataSource {
         this.#host = host;
     }
 
-    async config() {
-        return await tryExecuteAndNotify(this.#host, FulltextsearchService.getUmbracoFulltextsearchApiV5FulltextsearchConfig());
-    }
-
-    async indexStatus() {
-        return await tryExecuteAndNotify(this.#host, FulltextsearchService.getUmbracoFulltextsearchApiV5FulltextsearchIndexstatus());
-    }
-
-    async incorrectIndexedNodes(pageNumber?: number) {
-        return await tryExecuteAndNotify(this.#host, FulltextsearchService.getUmbracoFulltextsearchApiV5FulltextsearchIncorrectindexednodes({
-            pageNumber
-        }));
-    }
-
-    async indexedNodes(pageNumber?: number) {
-        return await tryExecuteAndNotify(this.#host, FulltextsearchService.getUmbracoFulltextsearchApiV5FulltextsearchIndexednodes({
-            pageNumber
-        }));
-    }
-
-    async missingNodes(pageNumber?: number) {
-        return await tryExecuteAndNotify(this.#host, FulltextsearchService.getUmbracoFulltextsearchApiV5FulltextsearchMissingnodes({
-            pageNumber
-        }));
-    }
-
-    async reindex(includeDescendants: boolean, nodeIds?: Array<(number)>) {
+    async reindex(includeDescendants: boolean, nodeKey?: string) {
         return await tryExecuteAndNotify(this.#host, FulltextsearchService.postUmbracoFulltextsearchApiV5FulltextsearchReindexnodes({
             requestBody: {
                 includeDescendants,
-                nodeIds
+                nodeKey
             }
         }));
     }

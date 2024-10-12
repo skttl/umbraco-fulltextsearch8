@@ -18,7 +18,7 @@ const m = {
   type: "modal",
   alias: "our.umbraco.fulltextsearch.modals.reindexnode",
   name: "Reindex node",
-  js: () => import("./reindexnode.element-C5_DoL2X.js")
+  js: () => import("./reindexnode.element-DMQBLkN4.js")
 }, T = [p], E = [
   {
     type: "localization",
@@ -79,7 +79,7 @@ const m = {
     type: "globalContext",
     alias: "our.umbraco.fulltextsearch.context",
     name: "Full Text Search context",
-    js: () => import("./fulltextsearch.context-BLn8Y4qb.js")
+    js: () => import("./fulltextsearch.context-BP_Dxq3u.js")
   }
 ], h = [...x];
 class n {
@@ -126,4 +126,4 @@ export {
   o as O,
   _ as o
 };
-//# sourceMappingURL=index-DB07aDTd.js.map
+//# sourceMappingURL=index-BfoeJ7q7.js.map

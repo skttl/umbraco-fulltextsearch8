@@ -3,8 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using CommandLine;
 
-using NPoco.fastJSON;
-
 namespace Our.Umbraco.FullTextSearch.SchemaGenerator
 {
     /// <summary>

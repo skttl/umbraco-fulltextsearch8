@@ -1,29 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Our.Umbraco.FullTextSearch.Options;
 
-using Our.Umbraco.FullTextSearch.Options;
+namespace Our.Umbraco.FullTextSearch.SchemaGenerator;
 
-namespace Our.Umbraco.FullTextSearch.SchemaGenerator
+internal class AppSettings
 {
-    internal class AppSettings
+    public UmbracoDefinition Umbraco { get; set; }
+
+    /// <summary>
+    /// Configuration of settings
+    /// </summary>
+    internal class UmbracoDefinition
     {
-        public UmbracoDefinition Umbraco { get; set; }
-
         /// <summary>
-        /// Configuration of settings
+        /// FullTextSearch settings
         /// </summary>
-        internal class UmbracoDefinition
-        {
-            /// <summary>
-            /// FullTextSearch settings
-            /// </summary>
-            public FullTextSearchOptions FullTextSearch { get; set; }
+        public FullTextSearchOptions FullTextSearch { get; set; }
 
-        }
     }
-
 }

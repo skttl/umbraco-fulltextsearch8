@@ -55,7 +55,7 @@ export default class ReindexNodeDialogElement
             }
         });
 
-        await this.#fullTextSearchContext?.reindex(includeDescendants, [Number(this.modalContext?.data.unique) || 0]);
+        await this.#fullTextSearchContext?.reindex(includeDescendants, this.modalContext?.data.unique?.toString());
         
         reindexingNotification?.close();
 

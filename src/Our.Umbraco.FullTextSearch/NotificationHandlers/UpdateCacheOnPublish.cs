@@ -14,93 +14,91 @@ using Umbraco.Cms.Core.Services.Changes;
 using Umbraco.Cms.Core.Sync;
 using Umbraco.Extensions;
 
-namespace Our.Umbraco.FullTextSearch.NotificationHandlers
+namespace Our.Umbraco.FullTextSearch.NotificationHandlers;
+
+public class UpdateCacheOnPublish : INotificationHandler<ContentCacheRefresherNotification>
 {
+    private FullTextSearchOptions _options;
+    private ILogger<UpdateCacheOnPublish> _logger;
+    private IExamineManager _examineManager;
+    private ICacheService _cacheService;
+    private IContentService _contentService;
 
-    public class UpdateCacheOnPublish : INotificationHandler<ContentCacheRefresherNotification>
+    public UpdateCacheOnPublish(
+        IOptions<FullTextSearchOptions> options,
+        ILogger<UpdateCacheOnPublish> logger,
+        IExamineManager examineManager,
+        ICacheService cacheService,
+        IContentService contentService
+        )
     {
-        private FullTextSearchOptions _options;
-        private ILogger<UpdateCacheOnPublish> _logger;
-        private IExamineManager _examineManager;
-        private ICacheService _cacheService;
-        private IContentService _contentService;
+        _options = options.Value;
+        _logger = logger;
+        _examineManager = examineManager;
+        _cacheService = cacheService;
+        _contentService = contentService;
 
-        public UpdateCacheOnPublish(
-            IOptions<FullTextSearchOptions> options,
-            ILogger<UpdateCacheOnPublish> logger,
-            IExamineManager examineManager,
-            ICacheService cacheService,
-            IContentService contentService
-            )
+    }
+
+    public void Handle(ContentCacheRefresherNotification notification)
+    {
+
+        if (notification.MessageType != MessageType.RefreshByPayload)
+            return;
+
+        if (!_options.Enabled)
         {
-            _options = options.Value;
-            _logger = logger;
-            _examineManager = examineManager;
-            _cacheService = cacheService;
-            _contentService = contentService;
-
+            _logger.LogDebug("FullTextIndexing is not enabled");
+            return;
         }
 
-        public void Handle(ContentCacheRefresherNotification notification)
+        if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
         {
+            _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
+            return;
+        }
 
-            if (notification.MessageType != MessageType.RefreshByPayload)
-                return;
+        if (_cacheService.CacheTableExists() == false)
+        {
+            _logger.LogError("Cache table doesn't exist, maybe the site is installing");
+            return;
+        }
 
-            if (!_options.Enabled)
+        foreach (var payload in (ContentCacheRefresher.JsonPayload[])notification.MessageObject)
+        {
+            if (payload.ChangeTypes.HasType(TreeChangeTypes.Remove))
             {
-                _logger.LogDebug("FullTextIndexing is not enabled");
-                return;
+                Task.WaitAll(_cacheService.DeleteFromCache(payload.Id));
             }
-
-            if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
+            else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll))
             {
-                _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
-                return;
+                // just ignore that payload (Umbracos examine implementation does the same)
             }
-
-            if (_cacheService.CacheTableExists() == false)
+            else // RefreshNode or RefreshBranch (maybe trashed)
             {
-                _logger.LogError("Cache table doesn't exist, maybe the site is installing");
-                return;
-            }
+                Task.WaitAll(_cacheService.AddToCache(payload.Id));
 
-            foreach (var payload in (ContentCacheRefresher.JsonPayload[])notification.MessageObject)
-            {
-                if (payload.ChangeTypes.HasType(TreeChangeTypes.Remove))
+                // branch
+                if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
                 {
-                    Task.WaitAll(_cacheService.DeleteFromCache(payload.Id));
-                }
-                else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll))
-                {
-                    // just ignore that payload (Umbracos examine implementation does the same)
-                }
-                else // RefreshNode or RefreshBranch (maybe trashed)
-                {
-                    Task.WaitAll(_cacheService.AddToCache(payload.Id));
-
-                    // branch
-                    if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
+                    const int pageSize = 500;
+                    var page = 0;
+                    var total = long.MaxValue;
+                    while (page * pageSize < total)
                     {
-                        const int pageSize = 500;
-                        var page = 0;
-                        var total = long.MaxValue;
-                        while (page * pageSize < total)
-                        {
-                            var descendants = _contentService.GetPagedDescendants(payload.Id, page++, pageSize, out total,
-                                //order by shallowest to deepest, this allows us to check it's published state without checking every item
-                                ordering: Ordering.By("Path", Direction.Ascending));
+                        var descendants = _contentService.GetPagedDescendants(payload.Id, page++, pageSize, out total,
+                            //order by shallowest to deepest, this allows us to check it's published state without checking every item
+                            ordering: Ordering.By("Path", Direction.Ascending));
 
-                            foreach (var descendant in descendants)
-                            {
-                                Task.WaitAll(_cacheService.AddToCache(descendant.Id));
-                            }
+                        foreach (var descendant in descendants)
+                        {
+                            Task.WaitAll(_cacheService.AddToCache(descendant.Id));
                         }
                     }
                 }
             }
         }
-
-
     }
+
+
 }

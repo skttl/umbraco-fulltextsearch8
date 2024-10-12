@@ -1,10 +1,9 @@
-﻿namespace Our.Umbraco.FullTextSearch.Models
+﻿namespace Our.Umbraco.FullTextSearch.Models;
+
+public enum SearchType
 {
-    public enum SearchType
-    {
-        MultiRelevance,
-        MultiAnd,
-        SimpleOr,
-        AsEntered
-    }
+    MultiRelevance,
+    MultiAnd,
+    SimpleOr,
+    AsEntered
 }

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 5.0.0
+- Compatibility with Umbraco 14
+- UI reworked to work with the new backoffice in Umbraco. Reindexing has been moved to the content tree, where you can trigger a reindex from the context menu.
+- Health checks added for checking if FullTextSearch is enabled, and the status of full text indexed nodes.
+- Appsettings Schema file added for easier configuration with intellisense.
+- Removes obsolete .IsIndexingActive() helper method (use .IsRenderingActive() instead)
+- Removes old migrations (up until 4.0.0) - if upgrading, you must have at least 4.0.0 installed.
+
 ## 4.0.2
 - Allows searching using an empty string as the search term
 

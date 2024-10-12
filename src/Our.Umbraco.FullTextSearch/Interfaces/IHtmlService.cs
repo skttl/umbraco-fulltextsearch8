@@ -1,7 +1,6 @@
-﻿namespace Our.Umbraco.FullTextSearch.Interfaces
+﻿namespace Our.Umbraco.FullTextSearch.Interfaces;
+
+public interface IHtmlService
 {
-    public interface IHtmlService
-    {
-        string GetTextFromHtml(string fullHtml);
-    }
+    string GetTextFromHtml(string fullHtml);
 }

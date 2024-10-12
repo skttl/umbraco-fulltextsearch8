@@ -3,45 +3,6 @@
 
 export type EventMessageTypeModel = 'Default' | 'Info' | 'Error' | 'Success' | 'Warning';
 
-export type FullTextSearchOptions = {
-    enabled: boolean;
-    defaultTitleField?: string | null;
-    /**
- * @deprecated
- */
-    indexingActiveKey?: string | null;
-    renderingActiveKey?: string | null;
-    disallowedContentTypeAliases?: Array<(string)> | null;
-    disallowedPropertyAliases?: Array<(string)> | null;
-    xPathsToRemove?: Array<(string)> | null;
-    fullTextContentField?: string | null;
-    fullTextPathField?: string | null;
-    highlightPattern?: string | null;
-};
-
-export type IndexStatus = {
-    totalIndexableNodes: number;
-    totalIndexedNodes: number;
-    incorrectIndexedNodes: number;
-    missingIndexedNodes: number;
-};
-
-export type IndexedNode = {
-    id?: string | null;
-    name?: string | null;
-    icon?: string | null;
-    description?: string | null;
-    allFields?: {
-        [key: string]: (string);
-    } | null;
-};
-
-export type IndexedNodeResult = {
-    items?: Array<(IndexedNode)> | null;
-    pageNumber: number;
-    totalPages: number;
-};
-
 export type NotificationHeaderModel = {
     message: string;
     category: string;
@@ -49,7 +10,7 @@ export type NotificationHeaderModel = {
 };
 
 export type ReIndexRequest = {
-    nodeIds?: Array<(number)> | null;
+    nodeKey?: string | null;
     includeDescendants: boolean;
 };
 
@@ -59,65 +20,6 @@ export type ReIndexResult = {
 };
 
 export type $OpenApiTs = {
-    '/umbraco/fulltextsearch/api/v5/fulltextsearch/config': {
-        get: {
-            res: {
-                /**
- * OK
- */
-                200: FullTextSearchOptions;
-            };
-        };
-    };
-    '/umbraco/fulltextsearch/api/v5/fulltextsearch/incorrectindexednodes': {
-        get: {
-            req: {
-                pageNumber?: number;
-            };
-            res: {
-                /**
- * OK
- */
-                200: IndexedNodeResult;
-            };
-        };
-    };
-    '/umbraco/fulltextsearch/api/v5/fulltextsearch/indexednodes': {
-        get: {
-            req: {
-                pageNumber?: number;
-            };
-            res: {
-                /**
- * OK
- */
-                200: IndexedNodeResult;
-            };
-        };
-    };
-    '/umbraco/fulltextsearch/api/v5/fulltextsearch/indexstatus': {
-        get: {
-            res: {
-                /**
- * OK
- */
-                200: IndexStatus;
-            };
-        };
-    };
-    '/umbraco/fulltextsearch/api/v5/fulltextsearch/missingnodes': {
-        get: {
-            req: {
-                pageNumber?: number;
-            };
-            res: {
-                /**
- * OK
- */
-                200: IndexedNodeResult;
-            };
-        };
-    };
     '/umbraco/fulltextsearch/api/v5/fulltextsearch/reindexnodes': {
         post: {
             req: {

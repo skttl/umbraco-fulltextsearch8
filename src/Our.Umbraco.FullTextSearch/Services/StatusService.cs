@@ -54,42 +54,6 @@ namespace Our.Umbraco.FullTextSearch.Services
             }
         }
 
-        public bool TryGetIndexableNodes(out ISearchResults results, int maxResults = int.MaxValue)
-        {
-            if (!TryGetSearcher(out ISearcher searcher))
-            {
-                results = null;
-                return false;
-            }
-
-            var indexableQuery = new StringBuilder(_allIndexableNodesQuery);
-            var disallowed = new List<string>();
-            disallowed.AddRange(_options.DisallowedContentTypeAliases.Select(x => $"__NodeTypeAlias:\"{x}\""));
-            disallowed.AddRange(_options.DisallowedPropertyAliases.Select(x => $"{x}:1"));
-
-            if (disallowed.Any()) indexableQuery.Append($" AND -({string.Join(" OR ", disallowed)})");
-
-            _logger.LogDebug("GetIndexableNodes using query {query}", indexableQuery.ToString());
-
-            results = searcher.CreateQuery().NativeQuery(indexableQuery.ToString()).Execute(new Examine.Search.QueryOptions(0, maxResults));
-            return true;
-        }
-
-        public bool TryGetIndexedNodes(out ISearchResults results, int maxResults = int.MaxValue)
-        {
-            if (!TryGetSearcher(out ISearcher searcher))
-            {
-                results = null;
-                return false;
-            }
-            var indexedQuery = new StringBuilder(_allIndexedNodesQuery);
-
-            _logger.LogDebug("GetIndexedNodes using query {query}", indexedQuery.ToString());
-
-            results = searcher.CreateQuery().NativeQuery(indexedQuery.ToString()).Execute(new Examine.Search.QueryOptions(0, maxResults));
-            return true;
-        }
-
         public bool TryGetIncorrectIndexedNodes(out ISearchResults results, int maxResults = int.MaxValue)
         {
             if (!TryGetSearcher(out ISearcher searcher))

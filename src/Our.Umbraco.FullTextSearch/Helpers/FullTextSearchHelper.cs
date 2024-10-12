@@ -4,76 +4,63 @@ using Microsoft.Extensions.Primitives;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Models;
 using Our.Umbraco.FullTextSearch.Options;
-using System;
 using Umbraco.Extensions;
 
-namespace Our.Umbraco.FullTextSearch.Helpers
+namespace Our.Umbraco.FullTextSearch.Helpers;
+public class FullTextSearchHelper
 {
-    public class FullTextSearchHelper
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ISearchService _searchService;
+    private readonly FullTextSearchOptions _options;
+
+    public FullTextSearchHelper(
+        IHttpContextAccessor httpContextAccessor,
+        ISearchService searchService,
+        IOptions<FullTextSearchOptions> options
+        )
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ISearchService _searchService;
-        private readonly FullTextSearchOptions _options;
+        _httpContextAccessor = httpContextAccessor;
+        _searchService = searchService;
+        _options = options.Value;
+    }
+    /// <summary>
+    /// Check whether the current page is being rendered by the Renderer
+    /// </summary>
+    /// <returns>true if being rendered by the Renderer</returns>
+    public bool IsRenderingActive()
+    {
+        return _httpContextAccessor.GetRequiredHttpContext().Request.Headers.TryGetValue(FullTextSearchConstants.HttpClientRequestHeaderName, out StringValues requestHeader) && requestHeader == _options.RenderingActiveKey;
+    }
 
-        public FullTextSearchHelper(
-            IHttpContextAccessor httpContextAccessor,
-            ISearchService searchService,
-            IOptions<FullTextSearchOptions> options
-            )
-        {
-            _httpContextAccessor = httpContextAccessor;
-            _searchService = searchService;
-            _options = options.Value;
-        }
-        /// <summary>
-        /// Check whether the current page is being rendered by the Renderer
-        /// </summary>
-        /// <returns>true if being rendered by the Renderer</returns>
-        public bool IsRenderingActive()
-        {
-            return _httpContextAccessor.GetRequiredHttpContext().Request.Headers.TryGetValue(FullTextSearchConstants.HttpClientRequestHeaderName, out StringValues requestHeader) && requestHeader == _options.RenderingActiveKey;
-        }
+    /// <summary>
+    /// Perform a search using the default search settings
+    /// </summary>
+    /// <param name="searchTerms"></param>
+    /// <param name="culture"></param>
+    /// <param name="currentPage"></param>
+    /// <returns></returns>
+    public IFullTextSearchResult Search(string searchTerms, string culture = null, int currentPage = 1)
+    {
+        currentPage = currentPage < 1 ? 1 : currentPage;
 
-        /// <summary>
-        /// Check whether the current page is being rendered by the Renderer
-        /// </summary>
-        /// <returns>true if being rendered by the Renderer</returns>
-        [Obsolete("Use IsRenderingActive")]
-        public bool IsIndexingActive()
-        {
-            return IsRenderingActive();
-        }
+        var search = new Search(searchTerms);
 
-        /// <summary>
-        /// Perform a search using the default search settings
-        /// </summary>
-        /// <param name="searchTerms"></param>
-        /// <param name="culture"></param>
-        /// <param name="currentPage"></param>
-        /// <returns></returns>
-        public IFullTextSearchResult Search(string searchTerms, string culture = null, int currentPage = 1)
-        {
-            currentPage = currentPage < 1 ? 1 : currentPage;
+        if (!culture.IsNullOrWhiteSpace())
+            search = search.SetCulture(culture);
 
-            var search = new Search(searchTerms);
+        return _searchService.Search(search, currentPage);
+    }
 
-            if (!culture.IsNullOrWhiteSpace())
-                search = search.SetCulture(culture);
+    /// <summary>
+    /// Perform a search using a search settings object
+    /// </summary>
+    /// <param name="search"></param>
+    /// <param name="currentPage"></param>
+    /// <returns></returns>
+    public IFullTextSearchResult Search(Search search, int currentPage = 1)
+    {
+        currentPage = currentPage < 1 ? 1 : currentPage;
 
-            return _searchService.Search(search, currentPage);
-        }
-
-        /// <summary>
-        /// Perform a search using a search settings object
-        /// </summary>
-        /// <param name="search"></param>
-        /// <param name="currentPage"></param>
-        /// <returns></returns>
-        public IFullTextSearchResult Search(Search search, int currentPage = 1)
-        {
-            currentPage = currentPage < 1 ? 1 : currentPage;
-
-            return _searchService.Search(search, currentPage);
-        }
+        return _searchService.Search(search, currentPage);
     }
 }

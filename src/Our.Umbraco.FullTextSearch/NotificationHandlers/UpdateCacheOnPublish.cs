@@ -25,13 +25,15 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
         private IExamineManager _examineManager;
         private ICacheService _cacheService;
         private IContentService _contentService;
+        private readonly IServerRoleAccessor _serverRoleAccessor;
 
         public UpdateCacheOnPublish(
             IOptions<FullTextSearchOptions> options,
             ILogger<UpdateCacheOnPublish> logger,
             IExamineManager examineManager,
             ICacheService cacheService,
-            IContentService contentService
+            IContentService contentService,
+            IServerRoleAccessor serverRoleAccessor
             )
         {
             _options = options.Value;
@@ -39,13 +41,14 @@ namespace Our.Umbraco.FullTextSearch.NotificationHandlers
             _examineManager = examineManager;
             _cacheService = cacheService;
             _contentService = contentService;
-
+            _serverRoleAccessor = serverRoleAccessor;
         }
 
         public void Handle(ContentCacheRefresherNotification notification)
         {
         
-            if (notification.MessageType != MessageType.RefreshByPayload)
+            if (notification.MessageType != MessageType.RefreshByPayload ||
+                _serverRoleAccessor.CurrentServerRole == ServerRole.Subscriber)
                 return;
 
             if (!_options.Enabled)

@@ -32,7 +32,7 @@ public class HttpPageRenderer : IPageRenderer
 
     public virtual async Task<string> Render(IPublishedContent publishedContent, PublishedCultureInfo culture)
     {
-        var publishedPageUrl = publishedContent.Url(mode: UrlMode.Absolute);
+        var publishedPageUrl = publishedContent.Url(culture.Culture, mode: UrlMode.Absolute);
 
         if (!Uri.TryCreate(publishedPageUrl, UriKind.Absolute, out var url))
         {

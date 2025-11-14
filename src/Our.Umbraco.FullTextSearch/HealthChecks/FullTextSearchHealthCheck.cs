@@ -76,8 +76,10 @@ public class FullTextSearchHealthCheck : HealthCheck
         }
         throw new NotImplementedException($"{action.Alias} action is not implemented");
     }
+    
+    
 
-    public override Task<IEnumerable<HealthCheckStatus>> GetStatus()
+    public override Task<IEnumerable<HealthCheckStatus>> GetStatusAsync()
     {
         if (!_options.Enabled)
         {
@@ -86,19 +88,17 @@ public class FullTextSearchHealthCheck : HealthCheck
                     ResultType = StatusResultType.Warning
                 }.Yield());
         }
-        else
-        {
-            var result = new List<HealthCheckStatus>() 
-            { 
-                new HealthCheckStatus("FullTextSearch is enabled")
-                {
-                    ResultType = StatusResultType.Success
-                },
-                GetMissingNodesStatus(), 
-                GetIncorrectIndexedNodesStatus() 
-            };
-            return Task.FromResult((IEnumerable<HealthCheckStatus>)result);
+        
+        var result = new List<HealthCheckStatus>() 
+        { 
+            new HealthCheckStatus("FullTextSearch is enabled")
+            {
+                ResultType = StatusResultType.Success
+            },
+            GetMissingNodesStatus(), 
+            GetIncorrectIndexedNodesStatus() 
         };
+        return Task.FromResult((IEnumerable<HealthCheckStatus>)result);
     }
 
     private HealthCheckStatus GetMissingNodesStatus()

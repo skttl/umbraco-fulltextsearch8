@@ -4,15 +4,19 @@ using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Options;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Services.Navigation;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.Examine;
 using Umbraco.Cms.Infrastructure.Migrations;
+using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch.Migrations.FourZeroZero;
 
-public class ReindexEverything : MigrationBase
+public class ReindexEverything : AsyncMigrationBase
 {
+    private readonly IDocumentNavigationQueryService _documentNavigationQueryService;
     private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly IIndexRebuilder _indexRebuilder;
     private readonly ICacheService _cacheService;
@@ -20,7 +24,7 @@ public class ReindexEverything : MigrationBase
     private readonly IExamineManager _examineManager;
     private readonly ILogger<ReindexEverything> _logger;
 
-    public ReindexEverything(IMigrationContext context, IIndexRebuilder indexRebuilder, ICacheService cacheService, IOptions<FullTextSearchOptions> options, IExamineManager examineManager, ILogger<ReindexEverything> logger, IUmbracoContextFactory umbracoContextFactory) : base(context)
+    public ReindexEverything(IMigrationContext context, IIndexRebuilder indexRebuilder, ICacheService cacheService, IOptions<FullTextSearchOptions> options, IExamineManager examineManager, ILogger<ReindexEverything> logger, IUmbracoContextFactory umbracoContextFactory, IDocumentNavigationQueryService documentNavigationQueryService) : base(context)
     {
         _indexRebuilder = indexRebuilder;
         _cacheService = cacheService;
@@ -28,11 +32,11 @@ public class ReindexEverything : MigrationBase
         _examineManager = examineManager;
         _logger = logger;
         _umbracoContextFactory = umbracoContextFactory;
+        _documentNavigationQueryService = documentNavigationQueryService;
     }
 
-    protected override async void Migrate()
+    protected override async Task MigrateAsync()
     {
-
         if (!_options.Enabled)
         {
             _logger.LogDebug("FullTextSearch disabled - nothing gets reindexed");
@@ -45,10 +49,10 @@ public class ReindexEverything : MigrationBase
             return;
         }
 
-        using (var cref = _umbracoContextFactory.EnsureUmbracoContext())
+        using var cref = _umbracoContextFactory.EnsureUmbracoContext();
+        if (_documentNavigationQueryService.TryGetRootKeys( out var rootKeys))
         {
-            var nodes = cref.UmbracoContext.Content.GetAtRoot().ToList();
-
+            var nodes = (await Task.WhenAll(rootKeys.Select(x => cref.UmbracoContext.Content.GetByIdAsync(x)))).WhereNotNull().ToList();
             foreach (var node in nodes)
             {
                 _logger.LogDebug("Rendering and caching {nodeId}, {nodeName}", node.Id, node.Name);
@@ -58,7 +62,7 @@ public class ReindexEverything : MigrationBase
             _logger.LogDebug("Rebuilding index");
 
             index.CreateIndex();
-            _indexRebuilder.RebuildIndex(Constants.UmbracoIndexes.ExternalIndexName);
+            await _indexRebuilder.RebuildIndexAsync(Constants.UmbracoIndexes.ExternalIndexName);
         }
     }
 }

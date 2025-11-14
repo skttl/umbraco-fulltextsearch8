@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.Testsite14", "Testsites\Our.Umbraco.FullTextSearch.Testsite14\Our.Umbraco.FullTextSearch.Testsite14.csproj", "{8BE7D11C-5869-44BF-91F9-18C708B1B2BE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.Testsite15", "Testsites\Our.Umbraco.FullTextSearch.Testsite15\Our.Umbraco.FullTextSearch.Testsite15.csproj", "{0D40EB66-AF85-47F5-A1EC-6649C2A8F6ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.FullTextSearch.Testsite", "Testsites\Our.Umbraco.FullTextSearch.Testsite\Our.Umbraco.FullTextSearch.Testsite.csproj", "{0D40EB66-AF85-47F5-A1EC-6649C2A8F6ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

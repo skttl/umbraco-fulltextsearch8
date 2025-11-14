@@ -1,23 +1,15 @@
 ﻿using NPoco;
 using System;
+using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 namespace Our.Umbraco.FullTextSearch.Migrations.FourZeroZero;
 
-public class CreateCacheTable : MigrationBase
+public class CreateCacheTable : AsyncMigrationBase
 {
     public CreateCacheTable(IMigrationContext context) : base(context)
     {
-    }
-
-    protected override void Migrate()
-    {
-        // Lots of methods available in the MigrationBase class - discover with this.
-        if (TableExists("FullTextCache") == false)
-        {
-            Create.Table<CacheTableSchema>().Do();
-        }
     }
 
     [TableName("FullTextCache")]
@@ -41,5 +33,14 @@ public class CreateCacheTable : MigrationBase
 
         [Column("LastUpdated")]
         public DateTime LastUpdated { get; set; }
+    }
+
+    protected override Task MigrateAsync()
+    {
+        if (TableExists("FullTextCache") == false)
+        {
+            Create.Table<CacheTableSchema>().Do();
+        }
+        return Task.CompletedTask;
     }
 }

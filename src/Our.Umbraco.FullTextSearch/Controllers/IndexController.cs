@@ -78,7 +78,7 @@ public class IndexController : FullTextSearchControllerBase
                 }
 
                 index.CreateIndex();
-                _indexRebuilder.RebuildIndex(Constants.UmbracoIndexes.ExternalIndexName);
+                await _indexRebuilder.RebuildIndexAsync(Constants.UmbracoIndexes.ExternalIndexName);
             }
             catch (Exception ex)
             {

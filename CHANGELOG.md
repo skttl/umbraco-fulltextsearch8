@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 17.0.1
+- Fixes caching issue for multilingual websites, thanks @kows! #141
+- Fixes performance issues, thanks @kows! #134
+- Updates client code to work with v17
+
+## 17.0.0
+- Compatibility with Umbraco 17
+
 ## 5.0.0
 - Compatibility with Umbraco 14
 - UI reworked to work with the new backoffice in Umbraco. Reindexing has been moved to the content tree, where you can trigger a reindex from the context menu.

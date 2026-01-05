@@ -1,4 +1,4 @@
-import { ManifestLocalization } from "@umbraco-cms/backoffice/extension-registry";
+import { ManifestLocalization } from "@umbraco-cms/backoffice/localization"
 
 const localizations: ManifestLocalization[] = [
     {

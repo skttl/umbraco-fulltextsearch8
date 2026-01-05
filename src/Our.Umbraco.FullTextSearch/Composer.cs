@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Umbraco.Cms.Api.Management.OpenApi;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
@@ -25,8 +26,16 @@ internal class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
             new OpenApiInfo
             {
                 Title = "Full Text Search Api",
-                Version = "Latest",
-                Description = "API for working with Full Text Search"
-            });
+                Version = "5.0",
+                Description = "API for working with Full Text Search",
+            }
+        );
+        options.OperationFilter<FullTextSearchApiOperationSecurityFilter>();
     }
+}
+
+public class FullTextSearchApiOperationSecurityFilter
+    : BackOfficeSecurityRequirementsOperationFilterBase
+{
+    protected override string ApiName => "fulltextsearch";
 }

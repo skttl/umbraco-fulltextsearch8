@@ -1,24 +1,33 @@
-﻿using Asp.Versioning;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Asp.Versioning;
 using Examine;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Controllers.Models;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Options;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Umbraco.Cms.Api.Common.Attributes;
+using Umbraco.Cms.Api.Management.Controllers;
+using Umbraco.Cms.Api.Management.Routing;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Examine;
 using Umbraco.Cms.Web.Common;
+using Umbraco.Cms.Web.Common.Authorization;
 using Umbraco.Extensions;
 
 namespace Our.Umbraco.FullTextSearch.Controllers;
 
-[ApiExplorerSettings(GroupName = "fulltextsearch")]
-public class IndexController : FullTextSearchControllerBase
+[Authorize(AuthorizationPolicies.SectionAccessContent)]
+[ApiVersion("5.0")]
+[MapToApi("fulltextsearch")]
+[ApiExplorerSettings(GroupName = "Full Text Search")]
+[VersionedApiBackOfficeRoute("fulltextsearch/index")]
+public class IndexController : ManagementApiControllerBase
 {
     private readonly ICacheService _cacheService;
     private readonly FullTextSearchOptions _options;
@@ -29,14 +38,16 @@ public class IndexController : FullTextSearchControllerBase
     private readonly IIndexRebuilder _indexRebuilder;
     private readonly UmbracoHelper _umbracoHelper;
 
-    public IndexController(ICacheService cacheService,
+    public IndexController(
+        ICacheService cacheService,
         ILogger<IndexController> logger,
         IOptions<FullTextSearchOptions> options,
         IExamineManager examineManager,
         IIndexRebuilder indexRebuilder,
         IPublishedContentValueSetBuilder valueSetBuilder,
         IContentService contentService,
-        UmbracoHelper umbracoHelper)
+        UmbracoHelper umbracoHelper
+    )
     {
         _cacheService = cacheService;
         _options = options.Value;
@@ -47,7 +58,6 @@ public class IndexController : FullTextSearchControllerBase
         _indexRebuilder = indexRebuilder;
         _umbracoHelper = umbracoHelper;
     }
-
 
     [ApiVersion("5.0")]
     [HttpPost("reindexnodes")]
@@ -60,11 +70,24 @@ public class IndexController : FullTextSearchControllerBase
             return new ReIndexResult(false, "FullTextIndexing is not enabled");
         }
 
-        if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
+        if (
+            !_examineManager.TryGetIndex(
+                Constants.UmbracoIndexes.ExternalIndexName,
+                out IIndex index
+            )
+        )
         {
-            _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
+            _logger.LogError(
+                new InvalidOperationException(
+                    $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"
+                ),
+                $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"
+            );
 
-            return new ReIndexResult(false, $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
+            return new ReIndexResult(
+                false,
+                $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"
+            );
         }
         if (request.NodeKey == null)
         {
@@ -106,8 +129,9 @@ public class IndexController : FullTextSearchControllerBase
                 {
                     await _cacheService.AddToCache(node);
                 }
-                index.IndexItems(_valueSetBuilder.GetValueSets(_contentService.GetByIds(nodeIds).ToArray()));
-
+                index.IndexItems(
+                    _valueSetBuilder.GetValueSets(_contentService.GetByIds(nodeIds).ToArray())
+                );
             }
             catch (Exception ex)
             {

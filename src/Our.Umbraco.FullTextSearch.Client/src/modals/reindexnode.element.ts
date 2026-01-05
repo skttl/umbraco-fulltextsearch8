@@ -1,11 +1,12 @@
 import { html, LitElement, property, customElement, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import type { UmbModalContext } from "@umbraco-cms/backoffice/modal";
-import { UmbModalExtensionElement } from "@umbraco-cms/backoffice/extension-registry";
+import { UmbModalExtensionElement } from "@umbraco-cms/backoffice/modal";
 import { ReindexNodeModalData } from "./reindexnode.modaltoken.ts";
 import { UUIButtonState } from "@umbraco-cms/backoffice/external/uui";
-import FullTextSearchContext, { FULLTEXTSEARCH_CONTEXT_TOKEN } from "../context/fulltextsearch.context.ts";
+import { FullTextSearch } from "../api/sdk.gen";
 import { UMB_NOTIFICATION_CONTEXT, UmbNotificationContext } from "@umbraco-cms/backoffice/notification";
+import { tryExecute } from "@umbraco-cms/backoffice/resources";
 
 @customElement('our-umbraco-fulltext-search-reindex-node-modal')
 export default class ReindexNodeDialogElement
@@ -13,14 +14,9 @@ export default class ReindexNodeDialogElement
     implements UmbModalExtensionElement<ReindexNodeModalData> {
     
     #notificationContext?: UmbNotificationContext;
-    #fullTextSearchContext?: FullTextSearchContext;
 
     constructor() {
         super();
-
-        this.consumeContext(FULLTEXTSEARCH_CONTEXT_TOKEN, (fullTextSearchContext) => {
-            this.#fullTextSearchContext = fullTextSearchContext;
-        })
 
         this.consumeContext(UMB_NOTIFICATION_CONTEXT, (instance) => {
             this.#notificationContext = instance;
@@ -55,7 +51,14 @@ export default class ReindexNodeDialogElement
             }
         });
 
-        await this.#fullTextSearchContext?.reindex(includeDescendants, this.modalContext?.data.unique?.toString());
+        const nodeKey = this.modalContext?.data.unique?.toString();
+
+        await tryExecute(this, FullTextSearch.postUmbracoManagementApiV5FulltextsearchIndexReindexnodes({
+            body: {
+                includeDescendants,
+                nodeKey
+            }
+        }));
         
         reindexingNotification?.close();
 

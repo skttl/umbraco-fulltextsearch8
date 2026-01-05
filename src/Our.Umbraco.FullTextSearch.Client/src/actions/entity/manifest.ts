@@ -1,5 +1,6 @@
 import { UMB_DOCUMENT_ENTITY_TYPE, UMB_DOCUMENT_DETAIL_REPOSITORY_ALIAS, UMB_DOCUMENT_ROOT_ENTITY_TYPE } from "@umbraco-cms/backoffice/document";
-import { ManifestEntityAction } from "@umbraco-cms/backoffice/extension-registry";
+import { ManifestEntityAction } from "@umbraco-cms/backoffice/entity-action";
+
 
 const entityAction: ManifestEntityAction = {
     type: 'entityAction',

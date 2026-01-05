@@ -1,10 +1,10 @@
-﻿using Examine;
+﻿using System;
+using System.Threading.Tasks;
+using Examine;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Our.Umbraco.FullTextSearch.Interfaces;
 using Our.Umbraco.FullTextSearch.Options;
-using System;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
@@ -23,27 +23,31 @@ public class UpdateCacheOnPublish : INotificationHandler<ContentCacheRefresherNo
     private IExamineManager _examineManager;
     private ICacheService _cacheService;
     private IContentService _contentService;
+    private IServerRoleAccessor _serverRoleAccessor;
 
     public UpdateCacheOnPublish(
         IOptions<FullTextSearchOptions> options,
         ILogger<UpdateCacheOnPublish> logger,
         IExamineManager examineManager,
         ICacheService cacheService,
-        IContentService contentService
-        )
+        IContentService contentService,
+        IServerRoleAccessor serverRoleAccessor
+    )
     {
         _options = options.Value;
         _logger = logger;
         _examineManager = examineManager;
         _cacheService = cacheService;
         _contentService = contentService;
-
+        _serverRoleAccessor = serverRoleAccessor;
     }
 
     public void Handle(ContentCacheRefresherNotification notification)
     {
-
-        if (notification.MessageType != MessageType.RefreshByPayload)
+        if (
+            notification.MessageType != MessageType.RefreshByPayload
+            || _serverRoleAccessor.CurrentServerRole == ServerRole.Subscriber
+        )
             return;
 
         if (!_options.Enabled)
@@ -52,9 +56,19 @@ public class UpdateCacheOnPublish : INotificationHandler<ContentCacheRefresherNo
             return;
         }
 
-        if (!_examineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out IIndex index))
+        if (
+            !_examineManager.TryGetIndex(
+                Constants.UmbracoIndexes.ExternalIndexName,
+                out IIndex index
+            )
+        )
         {
-            _logger.LogError(new InvalidOperationException($"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"), $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}");
+            _logger.LogError(
+                new InvalidOperationException(
+                    $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"
+                ),
+                $"No index found by name {Constants.UmbracoIndexes.ExternalIndexName}"
+            );
             return;
         }
 
@@ -86,9 +100,14 @@ public class UpdateCacheOnPublish : INotificationHandler<ContentCacheRefresherNo
                     var total = long.MaxValue;
                     while (page * pageSize < total)
                     {
-                        var descendants = _contentService.GetPagedDescendants(payload.Id, page++, pageSize, out total,
+                        var descendants = _contentService.GetPagedDescendants(
+                            payload.Id,
+                            page++,
+                            pageSize,
+                            out total,
                             //order by shallowest to deepest, this allows us to check it's published state without checking every item
-                            ordering: Ordering.By("Path", Direction.Ascending));
+                            ordering: Ordering.By("Path", Direction.Ascending)
+                        );
 
                         foreach (var descendant in descendants)
                         {
@@ -99,6 +118,4 @@ public class UpdateCacheOnPublish : INotificationHandler<ContentCacheRefresherNo
             }
         }
     }
-
-
 }

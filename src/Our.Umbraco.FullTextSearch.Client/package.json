@@ -17,6 +17,6 @@
     "chalk": "^5.4.1",
     "@umbraco-cms/backoffice": "^17.0.0",
     "typescript": "^5.9.3",
-    "vite": "^6.4.1"
+    "vite": "^6.4.2"
   }
 }

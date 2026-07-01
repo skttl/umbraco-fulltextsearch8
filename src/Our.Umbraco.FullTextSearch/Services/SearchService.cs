@@ -334,15 +334,24 @@ public class SearchService : ISearchService
         var searchProperties = GetSearchProperties(search);
         foreach (var term in searchTerms)
         {
-            var termQuery = new StringBuilder();
+            var propertyQueries = new List<string>();
+
             foreach (var property in searchProperties)
             {
-                termQuery.Append(simplify
-                                     ? QuerySingleItemSimple(term.Trim(), property, search)
-                                     : QuerySingleItem(term.Trim(), property, boostAll, search));
+
+                var propertyQuery = simplify
+                    ? QuerySingleItemSimple(term.Trim(), property, search)
+                    : QuerySingleItem(term.Trim(), property, boostAll, search);
+
+                if (!string.IsNullOrWhiteSpace(propertyQuery))
+                {
+                    propertyQueries.Add(propertyQuery.Trim());
+                }
             }
-            if (termQuery.Length > 0)
-                queryBuilder.Add(termQuery);
+            if (propertyQueries.Count > 0)
+            {
+                queryBuilder.Add(new StringBuilder(string.Join(" OR ", propertyQueries)));
+            }
         }
         var query = new StringBuilder();
         var count = queryBuilder.Count;

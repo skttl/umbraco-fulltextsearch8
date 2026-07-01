@@ -1,6 +1,7 @@
 ﻿using Examine.Search;
 using Lucene.Net.QueryParsers.Classic;
 using Our.Umbraco.FullTextSearch.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core;
@@ -52,7 +53,13 @@ public class Search : ISearch
 
     public ICollection<string> SearchTermQuoted => new List<string> { '"' + QueryParser.Escape(SearchTerm) + '"' };
 
-    public ICollection<string> SearchTermSplit => new List<string> { QueryParser.Escape(SearchTerm) };
+    public ICollection<string> SearchTermSplit =>
+        string.IsNullOrWhiteSpace(SearchTerm)
+            ? Array.Empty<string>()
+            : SearchTerm
+                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+                .Select(QueryParser.Escape)
+                .ToArray();
 
     public SortableField[] OrderByFields { get; set; }
     public OrderDirection OrderDirection { get; set; } = OrderDirection.Descending;

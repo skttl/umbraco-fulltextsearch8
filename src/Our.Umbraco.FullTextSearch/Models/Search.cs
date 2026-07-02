@@ -4,6 +4,7 @@ using Our.Umbraco.FullTextSearch.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Umbraco.Cms.Core;
 
 namespace Our.Umbraco.FullTextSearch.Models;
@@ -55,11 +56,21 @@ public class Search : ISearch
 
     public ICollection<string> SearchTermSplit =>
         string.IsNullOrWhiteSpace(SearchTerm)
-            ? Array.Empty<string>()
-            : SearchTerm
-                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
-                .Select(QueryParser.Escape)
-                .ToArray();
+            ? new List<string>()
+            : Regex.Matches(SearchTerm, "\"[^\"]+\"|\\S+")
+                .Select(x => x.Value.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x =>
+                {
+                    if (x.Length >= 2 && x.StartsWith('"') && x.EndsWith('"'))
+                    {
+                        var inner = x[1..^1];
+                        return $"\"{QueryParser.Escape(inner)}\"";
+                    }
+
+                    return QueryParser.Escape(x);
+                })
+                .ToList();
 
     public SortableField[] OrderByFields { get; set; }
     public OrderDirection OrderDirection { get; set; } = OrderDirection.Descending;

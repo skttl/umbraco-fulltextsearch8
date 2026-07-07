@@ -595,9 +595,9 @@ const ie = () => ({
     trace: n("TRACE")
   };
 }, fe = le(R({
-  baseUrl: "http://localhost:37830"
+  baseUrl: "http://localhost:37830/"
 }));
 export {
   fe as c
 };
-//# sourceMappingURL=client.gen-B-W0Avrw.js.map
+//# sourceMappingURL=client.gen-BACO-MNf.js.map

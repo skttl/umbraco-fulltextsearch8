@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { PostUmbracoManagementApiV5FulltextsearchIndexReindexnodesData, PostUmbracoManagementApiV5FulltextsearchIndexReindexnodesErrors, PostUmbracoManagementApiV5FulltextsearchIndexReindexnodesResponses } from './types.gen';
+import type { PostFulltextsearchIndexReindexnodesData, PostFulltextsearchIndexReindexnodesErrors, PostFulltextsearchIndexReindexnodesResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -19,8 +19,8 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 export class FullTextSearch {
-    public static postUmbracoManagementApiV5FulltextsearchIndexReindexnodes<ThrowOnError extends boolean = false>(options?: Options<PostUmbracoManagementApiV5FulltextsearchIndexReindexnodesData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostUmbracoManagementApiV5FulltextsearchIndexReindexnodesResponses, PostUmbracoManagementApiV5FulltextsearchIndexReindexnodesErrors, ThrowOnError>({
+    public static postFulltextsearchIndexReindexnodes<ThrowOnError extends boolean = false>(options: Options<PostFulltextsearchIndexReindexnodesData, ThrowOnError>) {
+        return (options.client ?? client).post<PostFulltextsearchIndexReindexnodesResponses, PostFulltextsearchIndexReindexnodesErrors, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
@@ -31,7 +31,7 @@ export class FullTextSearch {
             ...options,
             headers: {
                 'Content-Type': 'application/json',
-                ...options?.headers
+                ...options.headers
             }
         });
     }

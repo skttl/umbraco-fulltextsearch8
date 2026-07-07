@@ -3,6 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ContentTargetFolders>.</ContentTargetFolders>
 	  <StaticWebAssetBasePath>App_Plugins/FullTextSearch</StaticWebAssetBasePath>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
 
     <PackageId>Our.Umbraco.FullTextSearch</PackageId>
     <Product>FullTextSearch</Product>
@@ -20,9 +21,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Umbraco.Cms.Api.Management" Version="17.0.0" />
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="17.0.0" />
-	<PackageReference Include="Umbraco.Cms.Persistence.Sqlite" Version="17.0.0" />
+	<PackageReference Include="Umbraco.Cms.Api.Management" Version="18.0.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="18.0.0" />
+	<PackageReference Include="Umbraco.Cms.Persistence.Sqlite" Version="18.0.0" />
   </ItemGroup>
 
   <ItemGroup>

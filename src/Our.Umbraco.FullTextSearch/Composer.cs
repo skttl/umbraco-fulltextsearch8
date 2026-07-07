@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Umbraco.Cms.Api.Common.OpenApi;
 using Umbraco.Cms.Api.Management.OpenApi;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
@@ -13,29 +11,12 @@ public class Composer : IComposer
     public void Compose(IUmbracoBuilder builder)
     {
         builder.AddFullTextSearch();
-        builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
-    }
-}
-
-internal class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
-{
-    public void Configure(SwaggerGenOptions options)
-    {
-        options.SwaggerDoc(
+        builder.AddBackOfficeOpenApiDocument(
             "fulltextsearch",
-            new OpenApiInfo
-            {
-                Title = "Full Text Search Api",
-                Version = "5.0",
-                Description = "API for working with Full Text Search",
-            }
+            document => document
+                .WithTitle("Full Text Search Api")
+                .WithBackOfficeAuthentication()
+                .WithJsonOptions(Constants.JsonOptionsNames.BackOffice)
         );
-        options.OperationFilter<FullTextSearchApiOperationSecurityFilter>();
     }
-}
-
-public class FullTextSearchApiOperationSecurityFilter
-    : BackOfficeSecurityRequirementsOperationFilterBase
-{
-    protected override string ApiName => "fulltextsearch";
 }

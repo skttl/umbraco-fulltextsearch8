@@ -53,7 +53,7 @@ export default class ReindexNodeDialogElement
 
         const nodeKey = this.modalContext?.data.unique?.toString();
 
-        await tryExecute(this, FullTextSearch.postUmbracoManagementApiV5FulltextsearchIndexReindexnodes({
+        await tryExecute(this, FullTextSearch.postFulltextsearchIndexReindexnodes({
             body: {
                 includeDescendants,
                 nodeKey

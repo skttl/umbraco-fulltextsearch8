@@ -4,7 +4,7 @@ const o = [
     alias: "our.umbraco.fulltextsearch.entrypoint",
     name: "Our.Umbraco.FullTextSearch.EntryPoint",
     type: "backofficeEntryPoint",
-    js: () => import("./entrypoint-BvEYOnO2.js")
+    js: () => import("./entrypoint-8jnGEUF0.js")
   }
 ], i = {
   type: "entityAction",
@@ -24,7 +24,7 @@ const o = [
   type: "modal",
   alias: "our.umbraco.fulltextsearch.modals.reindexnode",
   name: "Reindex node",
-  js: () => import("./reindexnode.element-DK8m4Ock.js")
+  js: () => import("./reindexnode.element-BO5mIYm6.js")
 }, r = [n], c = [
   {
     type: "localization",
